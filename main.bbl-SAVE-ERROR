@@ -1,0 +1,486 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ynt/global//global/global/global}
+    \entry{Cartmell}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9b02ac2bb6045470a8ee961d67d68bf}{%
+           family={Cartmell},
+           familyi={C\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{fullhash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{fullhashraw}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{bibnamehash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{authorbibnamehash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{authornamehash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{authorfullhash}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \strng{authorfullhashraw}{a9b02ac2bb6045470a8ee961d67d68bf}
+      \field{labelalpha}{Car86}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Pure and Applied Logic}
+      \field{title}{Generalised algebraic theories and contextual categories}
+      \field{year}{1986}
+      \field{pages}{209\bibrangedash 243}
+      \range{pages}{35}
+      \verb{doi}
+      \verb https://doi.org/10.1016/0168-0072(86)90053-9
+      \endverb
+    \endentry
+    \entry{Hofmann1997}{inbook}{}{}
+      \name{author}{1}{}{%
+        {{hash=d3c25d820c67e8530324893291b911d5}{%
+           family={Hofmann},
+           familyi={H\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{d3c25d820c67e8530324893291b911d5}
+      \strng{fullhash}{d3c25d820c67e8530324893291b911d5}
+      \strng{fullhashraw}{d3c25d820c67e8530324893291b911d5}
+      \strng{bibnamehash}{d3c25d820c67e8530324893291b911d5}
+      \strng{authorbibnamehash}{d3c25d820c67e8530324893291b911d5}
+      \strng{authornamehash}{d3c25d820c67e8530324893291b911d5}
+      \strng{authorfullhash}{d3c25d820c67e8530324893291b911d5}
+      \strng{authorfullhashraw}{d3c25d820c67e8530324893291b911d5}
+      \field{labelalpha}{Hof97}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Extensional Constructs in Intensional Type Theory}
+      \field{title}{Syntax and semantics of dependent types}
+      \field{year}{1997}
+      \field{pages}{13\bibrangedash 54}
+      \range{pages}{42}
+      \verb{doi}
+      \verb 10.1007/978-1-4471-0963-1_2
+      \endverb
+    \endentry
+    \entry{Luo}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=f789800bf50172c2c7c05f14da12b08e}{%
+           family={Luo},
+           familyi={L\bibinitperiod},
+           given={Zhaohui},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{fullhash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{fullhashraw}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{bibnamehash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{authorbibnamehash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{authornamehash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{authorfullhash}{f789800bf50172c2c7c05f14da12b08e}
+      \strng{authorfullhashraw}{f789800bf50172c2c7c05f14da12b08e}
+      \field{labelalpha}{Luo12}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Institute for advance study in Princeton}
+      \field{title}{Notes on universes in type theory}
+      \field{year}{2012}
+      \verb{urlraw}
+      \verb https://www.cs.rhul.ac.uk/home/zhaohui/universes.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.cs.rhul.ac.uk/home/zhaohui/universes.pdf
+      \endverb
+    \endentry
+    \entry{Streicher}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=2fe23e7e33c4a306653b7fae358fc988}{%
+           family={Streicher},
+           familyi={S\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{fullhash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{fullhashraw}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{bibnamehash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{authorbibnamehash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{authornamehash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{authorfullhash}{2fe23e7e33c4a306653b7fae358fc988}
+      \strng{authorfullhashraw}{2fe23e7e33c4a306653b7fae358fc988}
+      \field{labelalpha}{Str12}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9781461204336}
+      \field{title}{Semantics of Type Theory: Correctness, Completeness and Independence Results}
+      \field{year}{2012}
+    \endentry
+    \entry{assaf}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=ae7deb44669649b6249c8925d1ae52e8}{%
+           family={Assaf},
+           familyi={A\bibinitperiod},
+           given={Ali},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{fullhash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{fullhashraw}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{bibnamehash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{authorbibnamehash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{authornamehash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{authorfullhash}{ae7deb44669649b6249c8925d1ae52e8}
+      \strng{authorfullhashraw}{ae7deb44669649b6249c8925d1ae52e8}
+      \field{labelalpha}{Ass14}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{TYPES}
+      \field{title}{A calculus of constructions with explicit subtyping}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb https://hal.science/hal-01097401v2/file/coc-explicit-subtyping-types-2014%20%281%29.pdf
+      \endverb
+      \verb{url}
+      \verb https://hal.science/hal-01097401v2/file/coc-explicit-subtyping-types-2014%20%281%29.pdf
+      \endverb
+    \endentry
+    \entry{CWF-CCD}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=089bb43a1278884db548621724a37492}{%
+           family={Castellan},
+           familyi={C\bibinitperiod},
+           given={Simon},
+           giveni={S\bibinitperiod}}}%
+        {{hash=dc5a6afa22ce6a610bb38bb46b9b05b9}{%
+           family={Clairambault},
+           familyi={C\bibinitperiod},
+           given={Pierre},
+           giveni={P\bibinitperiod}}}%
+        {{hash=bdd189d12ca169d8e07b3b5c936e668c}{%
+           family={Dybjer},
+           familyi={D\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{fullhash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{fullhashraw}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{bibnamehash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{authorbibnamehash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{authornamehash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{authorfullhash}{88dd83018aa35a16f319d2cee1a551a6}
+      \strng{authorfullhashraw}{88dd83018aa35a16f319d2cee1a551a6}
+      \field{labelalpha}{CCD19}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{CoRR}
+      \field{title}{Categories with Families: Unityped, Simply Typed, and Dependently Typed}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/1904.00827
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/1904.00827
+      \endverb
+    \endentry
+    \entry{Coq19}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=9a0915de15d028e82e7de497c09fe93c}{%
+           family={Coquand},
+           familyi={C\bibinitperiod},
+           given={Thierry},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{fullhash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{fullhashraw}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{bibnamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorbibnamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authornamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorfullhash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorfullhashraw}{9a0915de15d028e82e7de497c09fe93c}
+      \field{extraname}{1}
+      \field{labelalpha}{Coq19}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{CoRR}
+      \field{title}{Canonicity and normalisation for Dependent Type Theory}
+      \field{year}{2019}
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/1810.09367
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/1810.09367
+      \endverb
+    \endentry
+    \entry{Sattler}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=d026ba10ac7a7054ff175197ac6ee5ff}{%
+           family={Kaposi},
+           familyi={K\bibinitperiod},
+           given={Ambrus},
+           giveni={A\bibinitperiod}}}%
+        {{hash=3bbd93a8eec36945f24bd56e8a71ec58}{%
+           family={Huber},
+           familyi={H\bibinitperiod},
+           given={Simon},
+           giveni={S\bibinitperiod}}}%
+        {{hash=5e47cf0864c8fdec9cc79368541c9c4d}{%
+           family={Sattler},
+           familyi={S\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{d146097f318b60a76fac64ec991551dc}
+      \strng{fullhash}{d146097f318b60a76fac64ec991551dc}
+      \strng{fullhashraw}{d146097f318b60a76fac64ec991551dc}
+      \strng{bibnamehash}{d146097f318b60a76fac64ec991551dc}
+      \strng{authorbibnamehash}{d146097f318b60a76fac64ec991551dc}
+      \strng{authornamehash}{d146097f318b60a76fac64ec991551dc}
+      \strng{authorfullhash}{d146097f318b60a76fac64ec991551dc}
+      \strng{authorfullhashraw}{d146097f318b60a76fac64ec991551dc}
+      \field{labelalpha}{KHS19}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{FSCD}
+      \field{title}{{Gluing for Type Theory}}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.4230/LIPIcs.FSCD.2019.25
+      \endverb
+    \endentry
+    \entry{Brunerie}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=676bcecd8e1322c53d9ab79cdbc31f68}{%
+           family={Boer},
+           familyi={B\bibinitperiod},
+           given={Menno},
+           giveni={M\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+      }
+      \strng{namehash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{fullhash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{fullhashraw}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{bibnamehash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{authorbibnamehash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{authornamehash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{authorfullhash}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \strng{authorfullhashraw}{676bcecd8e1322c53d9ab79cdbc31f68}
+      \field{labelalpha}{Boe20}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A Proof and Formalization of the Initiality Conjecture of Dependent Type Theory}
+      \field{year}{2020}
+      \verb{urlraw}
+      \verb https://su.diva-portal.org/smash/get/diva2:1431287/FULLTEXT01.pdf
+      \endverb
+      \verb{url}
+      \verb https://su.diva-portal.org/smash/get/diva2:1431287/FULLTEXT01.pdf
+      \endverb
+    \endentry
+    \entry{thire}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=f04afd289cc5b0d7d5924ed00e224647}{%
+           family={Thiré},
+           familyi={T\bibinitperiod},
+           given={François},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{fullhash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{fullhashraw}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{bibnamehash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{authorbibnamehash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{authornamehash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{authorfullhash}{f04afd289cc5b0d7d5924ed00e224647}
+      \strng{authorfullhashraw}{f04afd289cc5b0d7d5924ed00e224647}
+      \field{labelalpha}{Thi20}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Interoperability between proof systems using the logical framework Dedukti}
+      \field{type}{phdthesis}
+      \field{year}{2020}
+    \endentry
+    \entry{Coq21}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=9a0915de15d028e82e7de497c09fe93c}{%
+           family={Coquand},
+           familyi={C\bibinitperiod},
+           given={Thierry},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{fullhash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{fullhashraw}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{bibnamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorbibnamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authornamehash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorfullhash}{9a0915de15d028e82e7de497c09fe93c}
+      \strng{authorfullhashraw}{9a0915de15d028e82e7de497c09fe93c}
+      \field{extraname}{2}
+      \field{labelalpha}{Coq21}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{CoRR}
+      \field{title}{Reduction Free Normalisation for a proof irrelevant type of propositions}
+      \field{year}{2021}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2103.04287
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2103.04287
+      \endverb
+    \endentry
+    \entry{polymorphism}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=6d232f8f72448bcec4812b308c5674c0}{%
+           family={Bezem},
+           familyi={B\bibinitperiod},
+           given={Marc},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9a0915de15d028e82e7de497c09fe93c}{%
+           family={Coquand},
+           familyi={C\bibinitperiod},
+           given={Thierry},
+           giveni={T\bibinitperiod}}}%
+        {{hash=bdd189d12ca169d8e07b3b5c936e668c}{%
+           family={Dybjer},
+           familyi={D\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=4d8cf97a0dd01b4aeb3e81b3003a505c}{%
+           family={Escardó},
+           familyi={E\bibinitperiod},
+           given={Martín},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{a5468c3178958fd24bb5b9fd00ef2bd3}
+      \strng{fullhash}{6dd45ad18fb72c9550ba8b349f22d274}
+      \strng{fullhashraw}{6dd45ad18fb72c9550ba8b349f22d274}
+      \strng{bibnamehash}{a5468c3178958fd24bb5b9fd00ef2bd3}
+      \strng{authorbibnamehash}{a5468c3178958fd24bb5b9fd00ef2bd3}
+      \strng{authornamehash}{a5468c3178958fd24bb5b9fd00ef2bd3}
+      \strng{authorfullhash}{6dd45ad18fb72c9550ba8b349f22d274}
+      \strng{authorfullhashraw}{6dd45ad18fb72c9550ba8b349f22d274}
+      \field{labelalpha}{Bez+23}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{TYPES}
+      \field{title}{Type Theory with Explicit Universe Polymorphism}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.4230/LIPICS.TYPES.2022.13
+      \endverb
+    \endentry
+    \entry{subtyping}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=a4c1b153fc740a8a76a80287c1924d3f}{%
+           family={Laurent},
+           familyi={L\bibinitperiod},
+           given={Théo},
+           giveni={T\bibinitperiod}}}%
+        {{hash=b57358d0328b44ba3d0b525a5a3fb565}{%
+           family={Lennon-Bertrand},
+           familyi={L\bibinithyphendelim B\bibinitperiod},
+           given={Meven},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b8a081c8cc32f3980d3166701c087db1}{%
+           family={Maillard},
+           familyi={M\bibinitperiod},
+           given={Kenji},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{fullhash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{fullhashraw}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{bibnamehash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{authorbibnamehash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{authornamehash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{authorfullhash}{7c6e49fef0d334659d0cbd317130ff62}
+      \strng{authorfullhashraw}{7c6e49fef0d334659d0cbd317130ff62}
+      \field{labelalpha}{LLM24}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{CoRR}
+      \field{title}{Definitional Functoriality for Dependent (Sub)Types -- Extended version}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2310.14929
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2310.14929
+      \endverb
+    \endentry
+    \entry{KennyLo}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=1376b286448b7d699cbec84653c9d427}{%
+           family={Lau},
+           familyi={L\bibinitperiod},
+           given={Kenny},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{1376b286448b7d699cbec84653c9d427}
+      \strng{fullhash}{1376b286448b7d699cbec84653c9d427}
+      \strng{fullhashraw}{1376b286448b7d699cbec84653c9d427}
+      \strng{bibnamehash}{1376b286448b7d699cbec84653c9d427}
+      \strng{authorbibnamehash}{1376b286448b7d699cbec84653c9d427}
+      \strng{authornamehash}{1376b286448b7d699cbec84653c9d427}
+      \strng{authorfullhash}{1376b286448b7d699cbec84653c9d427}
+      \strng{authorfullhashraw}{1376b286448b7d699cbec84653c9d427}
+      \field{labelalpha}{Lau25}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Universes issues in algebraic geometry}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Universe.20issues.20in.20algebraic.20geometry/with/528407171
+      \endverb
+      \verb{url}
+      \verb https://leanprover.zulipchat.com/#narrow/channel/287929-mathlib4/topic/Universe.20issues.20in.20algebraic.20geometry/with/528407171
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,96 @@
+\begin{thebibliography}{10}
+
+\bibitem{AdapTT}
+Arthur Adjedj, Meven Lennon-Bertrand, Thibaut Benjamin, and Kenji Maillard.
+\newblock Adaptt: Functoriality for dependent type casts.
+\newblock {\em Proc. ACM Program. Lang.}, (POPL), 2026.
+
+\bibitem{assaf}
+Ali Assaf.
+\newblock A calculus of constructions with explicit subtyping.
+\newblock {\em TYPES}, 2014.
+
+\bibitem{polymorphism}
+Marc Bezem, Thierry Coquand, Peter Dybjer, and Martín Escardó.
+\newblock Type theory with explicit universe polymorphism.
+\newblock {\em TYPES}, 2023.
+
+\bibitem{bcde2026}
+Marc Bezem, Thierry Coquand, Peter Dybjer, and Martín Escardó.
+\newblock A {Generalized} {Algebraic} {Theory} for {Type} {Theory} with {Explicit} {Universe} {Polymorphism}.
+\newblock 2026.
+
+\bibitem{Cartmell}
+John Cartmell.
+\newblock Generalised algebraic theories and contextual categories.
+\newblock {\em Annals of Pure and Applied Logic}, pages 209--243, 1986.
+
+\bibitem{CWF-CCD}
+Simon Castellan, Pierre Clairambault, and Peter Dybjer.
+\newblock Categories with families: Unityped, simply typed, and dependently typed.
+\newblock {\em CoRR}, 2019.
+
+\bibitem{Coq19}
+Thierry Coquand.
+\newblock Canonicity and normalisation for dependent type theory.
+\newblock {\em CoRR}, 2019.
+
+\bibitem{Coq21}
+Thierry Coquand.
+\newblock Reduction free normalisation for a proof irrelevant type of propositions.
+\newblock {\em CoRR}, 2021.
+
+\bibitem{Brunerie}
+Menno de~Boer.
+\newblock A proof and formalization of the initiality conjecture of dependent type theory, 2020.
+
+\bibitem{Hofmann1997}
+Martin Hofmann.
+\newblock {\em Syntax and semantics of dependent types}, pages 13--54.
+\newblock 1997.
+
+\bibitem{Sattler}
+Ambrus Kaposi, Simon Huber, and Christian Sattler.
+\newblock {Gluing for Type Theory}.
+\newblock {\em FSCD}, 2019.
+
+\bibitem{subtyping}
+Théo Laurent, Meven Lennon-Bertrand, and Kenji Maillard.
+\newblock Definitional functoriality for dependent (sub)types -- extended version.
+\newblock {\em CoRR}, 2024.
+
+\bibitem{meven}
+Meven Lennon-Bertrand.
+\newblock {What Does It Take to Certify a Conversion Checker?}
+\newblock In {\em FSCD}, 2025.
+
+\bibitem{Luo}
+Zhaohui Luo.
+\newblock Notes on universes in type theory, 2012.
+
+\bibitem{MARTINLOF75}
+Per Martin-Löf.
+\newblock An intuitionistic theory of types: Predicative part.
+\newblock 1975.
+
+\bibitem{MARTINLOF82}
+Per Martin-Löf.
+\newblock Constructive mathematics and computer programming.
+\newblock 1982.
+
+\bibitem{MARTINLOF84}
+Per Martin-Löf.
+\newblock Intuitionistic type theory.
+\newblock {\em Bibliopolis}, 1984.
+
+\bibitem{Streicher}
+Thomas Streicher.
+\newblock {\em Semantics of Type Theory: Correctness, Completeness and Independence Results}.
+\newblock 2012.
+
+\bibitem{thire}
+François Thiré.
+\newblock {\em Interoperability between proof systems using the logical framework Dedukti}.
+\newblock PhD thesis, 2020.
+
+\end{thebibliography}

@@ -1,0 +1,3649 @@
+\documentclass[acmsmall,nonacm,screen]{acmart}
+\usepackage{bussproofs}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{circuitikz}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{etoolbox}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{tikz-cd}
+
+% Formatted letters
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bK}{\mathbb{K}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\bM}{\mathbb{M}}
+\newcommand{\bGL}{\mathbb{GL}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cO}{\mathcal{O}}
+
+
+% Text command for text strings I need to type in math mode
+\newcommand{\nf}{\mathsf{nf}}
+\newcommand{\ctx}{\mathsf{ctx}}
+\newcommand{\reify}{\mathsf{reify}}
+\newcommand{\Var}{\mathsf{Var}}
+\newcommand{\Norm}{\mathsf{Norm}}
+\newcommand{\Neut}{\mathsf{Neut}}
+\newcommand{\Elem}{\mathsf{Elem}}
+\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\Term}{\mathsf{Term}}
+\newcommand{\type}{\mathsf{type}}
+\newcommand{\Set}{\mathsf{Set}}
+\newcommand{\conv}{\mathsf{conv}}
+\newcommand{\strip}{\mathsf{strip}}
+\newcommand{\erase}{\mathsf{erase}}
+\newcommand{\proj}{\mathsf{proj}}
+\newcommand{\app}{\mathsf{app}}
+\newcommand{\brec}{\mathsf{brec}}
+\newcommand{\Id}{\mathsf{id}}
+\newcommand{\p}{\mathsf{p}}
+\newcommand{\q}{\mathsf{q}}
+\newcommand{\lvq}{\mathsf{lq}}
+\newcommand{\lvp}{\mathsf{lp}}
+\newcommand{\lvid}{\mathsf{lid}}
+\newcommand{\mk}{\mathsf{mk}}
+\newcommand{\fst}{\mathsf{fst}}
+\newcommand{\snd}{\mathsf{snd}}
+\newcommand{\lst}{\mathsf{list}}
+\renewcommand{\r}{\mathsf{r}}
+\newcommand{\U}{\mathsf{U}}
+\newcommand{\N}{\mathsf{N}}
+\newcommand{\NA}{\mathsf{NA}}
+
+% Rocq links
+
+\DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}}}
+\DeclareDocumentCommand{\formfile}{O{blob/main/} m}{%
+  \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2}{\coqlogo}}
+
+% Arguments: optional = root folder, mandatory = file (including subfolder), then line number,
+% finally definition name
+\DeclareDocumentCommand{\formline}{O{blob/main/} m m m}{%
+  \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2\#L#3}{\coqlogo}}
+
+%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\title{Cummulative hierarchies of universes and their equivalence in dependent type theory}
+
+\author{Rapha\"el Sterbac}
+\email{raphael.sterbac@ens-paris-saclay.fr}
+\orcid{0009-0001-6779-8323}
+\affiliation{%
+  \institution{ENS Paris-Saclay --- Université Paris-Saclay}
+  \city{Gif-sur-Yvette}
+  \country{France}
+}
+
+\author{Thierry Coquand}
+\email{Thierry.Coquand@cse.gu.se}
+\orcid{0000-0002-5429-5153}
+\affiliation{%
+  \institution{University of Gothenburg}
+  \city{Gothenburg}
+  \country{Sweden}
+}
+
+\begin{document}
+
+\begin{abstract}
+    In this paper, we present a modular and algorithmic proof for the equivalence of different
+    presentations of type theory, notably relating Russell and Tarski presentations for a cumulative
+    hierarchy of universes. More generally, we relate generalised algebraic and pure type system formulations. Crucial lemmas are injectivity of type formers,
+    and "no-confusion", which we get by proving normalization for the Tarski-style theory via an adaptation of the gluing
+    technique. Our work can be seen as an extension of initiality results to more informal
+    presentations of type theory.
+\end{abstract}
+
+\maketitle
+
+
+\section{Introduction}
+
+\subsection{Motivation}
+
+In type theory, universes 
+
+There are two different ways to formulate the notion of universe in type theory. Martin-Löf’s
+first versions \cite{MARTINLOF75, MARTINLOF82} were formulated à la Russell, where a universe is seen as a type of types. Later, an alternative version à la Tarski \cite{MARTINLOF84}, where a universe is seen as a type of codes along with a decoding function, was also introduced. Usually, Russell universes are regarded as an informal notation of the latter, as \cite{Luo} suggested.
+
+When presenting Type Theory as a Generalised Algebraic Theory, Tarski universes are mandatory, and one can show that the system à la Tarski presents the initial model of such a theory.
+This initial model has been constructed explictely in \cite{bcde2026}, following the method presented in \cite{Streicher} and formalised in \cite{Brunerie}. 
+However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
+extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
+To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for large class of theories.
+A first step at solving this goal was achieved by Streicher \cite{Streicher}, proving initiality for a fully annotated Calculus of Constructions, and then
+proving its equivalence with the more common, unannotated, Pure Type System formulation. 
+
+Generalised Algebraic Theories provide a framework to describe type theories and their model in a uniform
+way, and to prove initiality in a easy way \cite{bcde2026}, % TODO: Cite BCDE on Gats and CwFs
+thus solving the first part of the problem. However, they are a fully explicit and annotated presentation of type theory, which is inconvenient to work in,
+and it would be essential to extend Streicher equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
+with Russell universes and unannotated syntax.
+
+We shall here show that Streicher’s technique can be extended to show the equivalence of the Russell and Tarski formulations of a hierarchy of universes.
+
+\subsection{Previous work}
+Some recent works \cite{assaf,thire} show the equivalence between these two formulations for the Calculus
+of Constructions with $\beta$ as an external reduction. However, these arguments do not apply to
+formulations of type theory with judgemental equality and do not extend to $\eta$-equivalence.
+
+% TODO : reformulate
+The work of \cite{assaf} provides the structural equations necessary for this equivalence, by achieving what 
+he calls \textit{full reflection}. 
+
+In the papers \cite{assaf,thire,Luo}, they consider cumulativity with a structural sub-typing judgement $A \leq B$
+which can lead to discrepancy between Russell and Tarski universes in a more general setting, as pointed out in \cite{Luo}.
+In fact, when adding inductive types such as a type of lists $\lst(.)$, the sub-typing relation propagates
+along this new constructor: $A \leq B$ implies $\lst(A) \leq \lst(B)$.
+Concretely, this means that we get $\lst(\U_0) \leq \lst(\U_1)$, already breaking canonicity as we thus have $\mathsf{nil}_{\U_0} : \lst(\U_1)$
+with $\mathsf{nil}_{\U_0} \neq \mathsf{nil}_{\U_1}$.
+
+Therefore, we believe that such a sub-typing relation is not desirable for our theory. 
+This is also true for $\Pi$-types, the relation $B \leq B'$ implying $\Pi(A,B) \leq \Pi(A,B')$
+is not true in the Set model, or at least unclear depending on the encoding of application in the set theory. 
+Yet, there are some cases where structural sub-typing can be useful, as described in the paper
+\cite{subtyping}. The recent work \cite{AdapTT} also provides a general framework which would provide 
+the necessary equations to solve the issues mentioned above. 
+
+\subsection{Contributions}
+In this paper we show the equivalence for this case by a method due to Streicher \cite{Streicher}
+that seems more modular and transparent than the one in \cite{assaf,thire}. Therefore, we present a proof of equivalence between Russell and Tarski universes for
+type theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality. 
+The main argument is as follows: there is a natural forgetful map from the Tarski version to the
+Russell version, and one can show that any Russell judgement can be lifted in a unique way
+to a Tarski judgement.
+
+Our proof adapts to a theory with universe polymorphism and internal universe levels such as in \cite{polymorphism}.
+We rely on basic properties of Type Theory like no confusion and injectivity of type constructors,
+which seem to be strongly related to conversion \cite{meven}. We get those properties by showing
+normalisation of the Tarski theory, by an adaptation of the gluing proof from \cite{Coq19} Then,
+we show the proper equivalence result by adapting the method of \cite{Streicher}.
+
+The proof is
+elementary and provides an algorithm to translate from one presentation to the other. We formalised the proof
+of equivalence in Rocq, taking the results given by normalization as axioms. The development
+is available \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence}{here}.\\
+
+
+\section{Models and syntax}
+
+In this section, we define the theory with Tarski-style universes as a generalized algebraic theory (GAT), which both
+presents the syntax in an algebraic way, and provides a canonical notion of model in categories with families (CwF). Those
+were originally described in \cite{Cartmell}, and extended with dependent products and universes by \cite{CWF-CCD}.
+
+% TODO : cite BCDE and complete this discussion
+
+Our Generalised Algebraic Theory of Categories with families has four sorts: contexts, substitutions, types, and elements: 
+\begin{align*}
+    &\vdash \ctx\\
+    \Delta, \Gamma : \ctx &\vdash \Delta \rightarrow \Gamma\\
+    \Gamma : \ctx &\vdash \Type(\Gamma)\\
+    \Gamma : \ctx, A : \Type(\Gamma) &\vdash \Elem(\Gamma,A)\\
+\end{align*}
+
+It also has operations making $\ctx$ a category (of contexts) which acts on types and terms.
+
+\begin{definition}[Substitutions]
+    It has a composition and identity operation: 
+    \begin{align*}
+        \Gamma : \ctx &\vdash \Id_\Gamma : \Gamma \rightarrow \Gamma\\
+        \Theta, \Delta, \Gamma : \ctx, \sigma : \Delta \rightarrow \Gamma, \delta : \Theta \rightarrow \Delta &\vdash \sigma\delta : \Theta \rightarrow \Gamma
+    \end{align*}
+
+    which satisfies the following equations (we ommit the contexts for the sake of simplicity) :
+
+    \vspace{1em}
+
+    \begin{minipage}{0.50\linewidth}
+        \centering
+        $\sigma \, \Id_\Gamma = \Id_\Gamma \, \sigma = \sigma$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \centering
+        $(\theta \sigma)\delta = \theta (\sigma \delta)$
+    \end{minipage}
+
+    \vspace{1em}
+
+    We also require a terminal object in this category, written $1$ and corresponding to the empty context:
+    \begin{align*} 
+        &\vdash 1 : \ctx\\
+        \Gamma &\vdash ()_\Gamma : \Gamma \rightarrow 1
+    \end{align*} 
+\end{definition}
+
+Subsitutions are acting on types and elements, in the sense of the following definition.
+
+\begin{definition}[Action of substitutions on types and terms]
+    Our GAT has the following operations:
+    \begin{align*}
+    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdash A \sigma : \Type(\Gamma)\\
+    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash a \sigma : \Elem(\Delta, A\sigma)
+    \end{align*}
+
+    Satisfying the following equations:
+
+    \vspace{1em}
+
+    \begin{minipage}{0.20\linewidth}
+        $A \, \Id = A$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $(A\sigma)\delta = A(\sigma \delta)$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $a \, \Id = a$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $(a\sigma)\delta = a (\sigma \delta)$
+    \end{minipage}
+
+\end{definition}
+
+We also need context extension, in the sense of the following.
+
+\begin{definition}[Projections]
+    Our GAT has the following operations:
+    \begin{align*}
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \Gamma.A : \ctx\\
+        \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash (\sigma,a) : \Delta  \rightarrow \Gamma.A\\
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \p_{\Gamma,A} : \Gamma.A \rightarrow \Gamma \\
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \q_{\Gamma,A} : \Elem(\Gamma.A, A\p_{\Gamma,A})
+    \end{align*}
+
+    Satisfying the following equations:
+    
+    \vspace{1em}
+
+    \begin{minipage}{0.20\linewidth}
+        $\p(\sigma,a) = \sigma$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $\q(\sigma,a) = a$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $(\sigma,a)\delta = (\sigma \delta, a\delta)$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $(\p,\q) = \Id$
+    \end{minipage}
+
+\end{definition}
+
+All of this defines an \textit{explicit} substitution calculus, from which
+we can recover the usual presentation of substition, as defined in the following.
+
+\begin{definition}[Usual syntax for substitutions]
+    If $a : \Elem(\Gamma,A)$, we write $[a] = (\Id,a) : \Gamma \rightarrow \Gamma.A$.
+    We also define $\sigma^+ = (\sigma\p,\q) : \Delta.A\sigma \rightarrow \Gamma.A$ for a
+    substitution $\sigma : \Delta \rightarrow \Gamma$ and a type $A : \Type(\Gamma)$. This
+    extends our substitution $\sigma$ to the extended context $\Gamma.A$.
+\end{definition}
+
+Now, we can add logical structure by requiring type connectives in our theory, starting with dependent products.
+
+\begin{definition}[Dependent product]
+     We require the following operations, corresponding to the dependent product with lambda abstraction and application:
+     \begin{align*}
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A) &\vdash \Pi(A,B) : \Type(\Gamma)\\
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A), b : \Elem(\Gamma.A,B) &\vdash \lambda(A,B,b) : \Elem(\Gamma,\Pi(A,B))\\
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A), f : \Elem(\Gamma, \Pi(A,B)), a : \Elem(\Gamma,A) &\vdash \app(A,B,f,a) : \Elem(\Gamma,B[a])
+     \end{align*}
+
+    This type connective must be functorial :
+    \[
+        \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)
+    \]
+
+    Those should be functorial and satisfy the $\beta$ and $\eta$ rules, given by the following equations.
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)\\
+            \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^+,b\sigma^+)\\
+            \app(A,B,(\lambda(A,B,b),a)) = b[a]
+        \end{gather*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            c = \lambda(A,B, \app(A\p,B\p^+,c\p,\q))\\
+            \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^+,c\sigma,a\sigma)
+        \end{gather*}
+    \end{minipage}
+
+\end{definition}
+
+We now add cumulative universes to our theory, by requiring a countable hierarchy of universes $\U_0, \U_1,...$,
+along with explicit codes, lifting and decoding operations. This presentation of universes is usually referred to as Tarski-Style universes.
+This explicit system is the only known (generalised) algebraic presentation for type theory with cumulative universes.
+
+\begin{definition}[À la Tarski universes]
+    In our Generalised Algebraic Theory, we add a countable list of universes $\U_n$ with a decoding operation $T_n(a)$
+    which takes  a code (i.e. an element of a universe) $a :\Elem(\Gamma,\U_n)$ and produces a type.
+
+    We also close each universe under all the type connectives. Namely, we require
+    $\Pi^n \; A \; B$ for $n \geq 0$, which are codes for $\Pi$-types in $\U_n$, alongside with
+    $\U^k_n$ which are codes for $\U_k$ in $\U_n$ (with $k < n$). 
+
+    Cumulativity is encoded by a lifting operation $t_n^k$ that takes a code in $\U_k$, and produces a code in $\U_n$ for $k < n$. To summarize,
+    we need all the following operations:
+
+    \begin{align*}
+            \Gamma : \ctx &\vdash (\U_l)_\Gamma : \Type(\Gamma)\\
+            \Gamma : \ctx &\vdash (\U_l^m)_\Gamma : \Elem(\Gamma,(\U_m)_\Gamma) \\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash t_l^m(a) : \Elem(\Gamma,(\U_m)_\Gamma) \\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash T_l(a) : \Type(\Gamma)\\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma),  b : \Elem(\Gamma.T_l(a),(\U_l)_\Gamma) &\vdash \Pi^l(a,b) : \Elem(\Gamma,(\U_l)_\Gamma)
+        \end{align*}
+
+    The decoding and lifting maps must be strict and natural:
+
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            T_l(t_n^l(X)) = T_n(X) \text{ for } l \leq n \\
+            T_n(\Pi^n \; X \; Y) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
+            T_n(\U_m^n) = \U_m \text{ for } m < n 
+        \end{gather*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m < n < p \\
+            t_n^p(\Pi^n \; X \; Y) = \Pi^p \; t_n^p(X) \; t_n^p(Y) \text{ for } n < p \\
+            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n < p
+        \end{gather*}
+    \end{minipage}
+
+\end{definition}
+
+It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes.
+In fact, those naturality and functoriality equations are already well-known and already appear in the work of \cite{assaf, thire},
+where they are described as requiring "\textit{full reflection}".
+
+All of this defines a Generalised Alebraic Theory of Categories with Families like with dependent products and a hierarchy of universes.
+We can then construct the initial model of this theory, which correspond to the syntax of the corresponding type theory.
+% TODO : citer BCDE ici
+This initial system
+will be called $\mathcal{T}_G$, and can be presented with more usual inference rules, while keeping substitution explicit.
+We also consider the identical system $\mathcal{T}_T$, but with implicit substitutions.
+
+% TODO : présenter quelques règles ici, et envoyer vers l'appendice pour la liste complète
+% TO
+The main goal of this paper is to relate $\mathcal{T}_T$ to the implicit \textit{"à la Russell"} formulation of cumulative universes,
+which  adds universes directly as $\U_m : \U_n$ for $m<n$, and enables to deduce
+$A:\U_m$ from $A: \U_n$ if $n<m$, with no codes or liftings involved. In this presentation,
+there is no syntactical distinction between terms and types.
+
+Such a system cannot be formulated as a GAT, as in this setting we can't have one universe belonging
+to different sorts at the same time.
+
+The system with Russell-style universe will be called $\mathcal{T}_R$, and is also described in detail
+in appendix with inference rules. % TODO : Développer les règles du système (en disant ce qui change par rapport au précédent)
+
+Finally, we also consider a system $\mathcal{T}_P$, which removes redundant type annotations in application
+and abstraction from $\mathcal{T}_R$. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ becomes $c \, a$ and $\lambda(A,b)$.
+This system is closer to the usual syntax of type theory, inherited from the lambda calculus,
+and often referred to as the "pure type system" presentation (PTS). This system is also described in appendix.
+% TODO : Idem : développer les règles
+
+In the next sections, we will prove the equivalence of those systems. The links 
+between them are summarized in the following figure, where the strong arrows are the known
+forgetful maps, and the dotted arrows are the sections we will be constructing.
+
+% TODO : définir toutes les forgetful map ici ?
+
+\vspace{1em}
+
+\begin{figure}[!ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{circuitikz}
+\tikzstyle{every node}=[font=\LARGE]
+
+\draw  (-2.5,18.75) rectangle  node {\LARGE GAT ($\mathcal{T}_G$)} (2.5,16.25);
+\draw  (5,18.75) rectangle  node {\LARGE Tarski ($\mathcal{T}_T$)} (10,16.25);
+\draw  (12.5,18.75) rectangle  node {\LARGE Russell ($\mathcal{T}_R$)} (17.5,16.25);
+\draw  (20,18.75) rectangle  node {\LARGE PTS ($\mathcal{T}_P$)} (25,16.25);
+
+
+
+
+
+
+\draw [->, >=Stealth] (2.5,18.25) -- (5,18.25)node[pos=0.5, fill=white]{proj};
+\draw [->, >=Stealth] (10,18.25) -- (12.5,18.25)node[pos=0.5, fill=white]{$|.|$};
+\draw [->, >=Stealth] (17.5,18.25) -- (20,18.25)node[pos=0.5, fill=white]{strip};
+\draw [->, >=Stealth, dashed] (5,16.75) -- (2.5,16.75);
+\draw [->, >=Stealth, dashed] (12.5,16.75) -- (10,16.75);
+\draw [->, >=Stealth, dashed] (20,16.75) -- (17.5,16.75);
+\end{circuitikz}
+}%
+
+\label{fig:my_label}
+\caption{The hierarchy of our systems (from left to right)}
+\end{figure}
+
+% TODO : Expliquer qu'on va devoir avoir l'injectivité, mais seulement pour T_G et que cela se propage vers la droite 
+
+\section{Normalisation}
+
+In this section, we show that the system on top of our hierarchy ($\mathcal{T}_G$) normalises.
+To prove normalisation for this theory, we apply the gluing technique
+presented in \cite{Coq19}, which can be seen as a proof-relevant
+formulation of the usual Tait's normalisation proof. This proof
+is adapted here to a system with Tarski-style universes, by only presenting the corresponding
+construction for universes.
+
+Let $M$ be an arbitrary model. In the following, we write $\Type_M$ and $\Elem_M$ for
+its types and elements.
+
+\subsection{Presheaf models}
+
+In the follwoing, we will construct and work with a presheaf model of type theory, which is a category with families
+constructed as the category of Set-valued functors over a special base category. The latter will be the category
+of telescopes.
+
+\begin{definition}[Telescopes]
+    A telescope $X$ is a finite list of types $A_0, A_1, ..., A_{n-1}$ with $A_0$ in
+    $\Type_M ()$, $A_1$ in $\Type_M(().A_0)$ and so on.
+    We define its interpretation $\langle X \rangle = ().A_0. \, ... \, .A_{n-1}$ which is
+    a context of $M$.
+
+    Maps $\alpha : Y \rightarrow_S X$ between two telescopes are syntactic objects,
+    constructed inductively in the natural way, with syntactic versions of $()$, $\p$ and $.^+$.
+    We also have an interpretation $\langle \alpha \rangle$ of a map as a substitution, and hence such a map
+    $\alpha$ can be seen as a witness that the telescope $Y$ extends $X$.
+
+    We also define an identity map  $\Id_S : X \rightarrow_S X$, a composition operation $\alpha\beta$,
+    and a syntactic projection $\p_S$ such that $\langle\p_S\rangle = \p$. 
+\end{definition}
+
+This defines the category $\mathcal{C}$ of telescopes on which we define a presheaf category
+$\widehat{\mathcal{C}}$ which objects are functors $F : \mathcal{C}^{\text{op}} \rightarrow \Set$.
+
+Such a presheaf category defines a model of type theory in the sense of category with families, as
+shown in \cite{Hofmann1997}. In this model we assume to have a cumulative sequence of universes $\mathcal{U}_n$.
+
+We now introduce the sets $\Elem_N(X,A)$ of normal terms, $\Type_N(X)$ of normal types, and $\Neut(X,A)$ of neutral terms,
+along with their interpretation $\langle.\rangle$. Those definitions are analogous to the proof by reducibility candidates.
+
+\begin{definition}[Neutral and Normal terms]
+    We define $\Elem_N(X,A)$, $\Type_N(X)$ and $\Neut(X,A)$ for $X$ a telescope and $A$ in $\Type_M(\langle X \rangle)$, simultaneously 
+    by induction, along with their interpretation $\langle . \rangle$ :
+    \begin{align*}
+        \U_n &\in \Type_N(X) \text{ for } n \geq 0.\\
+        \Pi \, K \, L &\in \Type_N(X) \text{ if } K \in \Type_N(X) \text{ and } L \in \Type_N(X.\langle K \rangle).\\
+        T_n k &\in \Type_N(X) \text{ if } k \in \Neut(X,\U_n).\\
+        v_0 &\in \Neut(X.A,A\p) \text{, and } v_{n+1} \in \Neut(X.A,B\p) \text{ if } v_n \in \Neut(X,B).\\
+        \app \, K \, L \, k \, t &\in \Neut(X,\langle L \rangle[\langle t \rangle]) \text{ if } K \in
+            \Type_N(X), \  L \in \Type_N(X.\langle K \rangle), \  k \in \Neut(X,\langle \Pi \, K \, L \rangle),\\
+                                 &\text{ and } t \in \Elem_N(X,\langle K \rangle).\\
+        \lambda \, K \, L \, t &\in \Elem_N(X,\langle \Pi \, K \, L \rangle[\langle t \rangle]) \text{ if } K
+            \in \Type_N(X), L \in \Type_N(X.\langle K \rangle),
+            \text{ and } t \in \Elem_N(X,\langle K \rangle).\\
+        \Pi^n \, k \, l &\in \Elem_N(X,\U_n) \text{ if } k \in \Elem_N(X,\U_n) \text{ and } l \in \Elem_N(X.\langle T_n k \rangle, \U_n).\\
+        \U_m^n &\in \Elem_N(X, \U_n).\\
+        t_m^n k &\in \Elem_N(X, \U_n) \text{ if } k \in \Neut(X,\U_m).\\
+        k &\in \Elem_N(X,\U_n) \text{ and } t \in \Elem_N(X,\langle T_n k\rangle), \text{ if } k \in \Neut(X,\U_n) \text{ and } t \in \Neut(X,\langle T_n k \rangle).\\
+    \end{align*}
+
+\end{definition}
+
+\begin{definition}[Normal forms syntax]
+    If $A$ is in $\Type_M(\langle X \rangle)$, we write $\Type_N(X)|A$ for the subset of normal types $K$ such
+    that $\langle K \rangle = A$.
+
+    If $a$ is in $\Elem_M(\langle X \rangle, A)$, we write $\Elem_N(X,A)|a$ for the subset of normal terms 
+    such that $\langle k \rangle = u$.
+\end{definition}
+
+The interpretation $\langle . \rangle$ from $\Elem_N$ and $\Type_N$ to $\Elem_M$ and $\Type_M$ can be seen as quotient maps : from syntactical
+normal terms and types, we associate the corresponding term or type, quotiented up to conversion.
+Therefore, normalisation amounts to showing that those quotient maps are isomorphisms. 
+
+It is important to note that $\Type_M$, $\Elem_M(T)$, $\Type_N$, $\Elem_N(T)$, and $\Neut(T)$
+are presheafs, and thus types in the presheaf model $\widehat{\mathcal{C}}$. This will allow us to work
+internally in the presheaf topos $\widehat{\mathcal{C}}$, and in the following, we will freely use type
+theoretic notations in this topos.
+
+\subsection{Normalisation model}
+
+Now, we define the normalisation model, a "proof-relevant" way to express the
+reducibility candidates: in this model, a type is equipped with a proof of 
+its reducibility, a normal form, a proof that its neutral terms are reducible (i.e a reflect function), and a proof that
+every reducible term is normalisable (i.e a quote function).
+
+This is described in the following definition.
+
+\begin{definition}[Reducibility candidates]\label{struct}
+    This definition is internal to the model $\widehat{\mathcal{C}}$.
+
+    For $T$ in $\Type_M$, we define $\Type'(T)$ the set of $4$-tuples  $(T',K,\q_T,\r_T)$ with :
+    \begin{itemize}
+        \item $T'$ in $\Elem_M(T) \rightarrow \text{Set}$
+        \item $K$ is in $\Type_N | T$. 
+        \item $\q_T$ is in $\Pi_{u:\Elem_M(T)} \, T'\, u \rightarrow \Elem_N(T)|u$. 
+        \item $\r_T$ is in $\Pi_{k:\Neut(T)} \, T' \, \langle k \rangle$. 
+    \end{itemize}
+\end{definition}
+
+Wa first define a left-exact morphism from $M$ to $\widehat{\mathcal{C}}$ i.e a morphism of models being strict
+on the category structure, but weak on context extensions.
+
+\begin{definition}[Morphism from M to $\widehat{\mathcal{C}}$]
+    To a context $\Gamma$ in $M$, we associate a presheaf $|\Gamma|$ in $\widehat{\mathcal{C}}$
+    by taking $|\Gamma|(X)$ to be the set of substitutions $\langle X \rangle \rightarrow \Gamma$ with
+    restriction maps $\rho \mapsto \rho \alpha = \rho  \langle\alpha\rangle$ for $\alpha : Y \rightarrow_S X$.
+
+    Each type $A$ in $\Type_M(\Gamma)$ in the model $M$ defines a presheaf map $|A| :
+    |\Gamma| \rightarrow \Type_M$ by $\rho \mapsto A \rho$ (formally, $|A|$ is a presheaf from
+    the category of elements $\smallint(\Gamma)$, and this is indeed a type in the presheaf model, see \cite{Hofmann1997}). 
+
+    Each element $a$
+    in $\Elem_M(\Gamma,A)$ in $M$ defines a global element $|a| : \Pi_{\rho:|\Gamma|} \,\Elem_M(|A|\rho)$.
+\end{definition}
+
+For any $A$ in $\Type_M(\Gamma)$ in $M$, we have a constant in the presheaf model :
+\[
+    \mk : \Pi_{\rho : |\Gamma|} \, |A|\rho \rightarrow |\Gamma.A|
+\]
+
+with projections $\fst : |\Gamma.A| \rightarrow |\Gamma|$ and $\snd : \Pi_{\nu : |\Gamma.A|} \, |A| (\fst \, \nu)$
+which gives an inverse to the canonical arrow $\langle|\p|, |\q|\rangle : |\Gamma.A| \rightarrow |\Gamma|.|A|$. This makes
+our map $|.| : M \rightarrow \widehat{\mathcal{C}}$ a left-exact morphism : we have $|\Gamma.A| \cong |\Gamma|.|A|$ (but not equal!).
+
+In fact, this morphism corresponds directly to the Yoneda embedding : we map the context $\Gamma$ (object)
+to its representing presheaf. 
+
+With all that, we define operations for normal forms in the presheaf model, with good properties 
+regarding their interpretation. Those will allow us to construct well-behaved type connectives 
+in the normalisation model.
+
+\begin{proposition}
+    Let $X$ be a telescope and $\Gamma = \langle X \rangle$ its interpreting context, $A$ in $\Type_M(\Gamma)$
+    and $B$ in $\Type_M(\Gamma.A)$ two types forming $C = \Pi \, A \, B$. 
+
+    Also, let $\rho : |\Gamma|$ be an environment and $K: \Type_N(X)$ such that $\langle K \rangle = |A|\rho$ (a normal form for $|A|\rho$), along with 
+    $G : \Pi_{k:\Neut(|A|\rho)} \, \Type_N$ such that $\langle G \, k\rangle = |B|(\mk \, \rho \, \langle k \rangle)$ 
+    (normal form for $B$ in the context extended with $k$).
+
+    With all that, we define the following operations :
+
+    \begin{itemize}
+        \item We define $\Pi_S \, K \, G : \Type_N$ such that $\langle \Pi_S \, K \, G \rangle = |C|\rho$.
+
+        \item We define $\lambda_S \, g : \Elem_N(|C|\rho)|w$, for $w$ in
+            $\Elem_M(|C|\rho)$ and $g: \Pi_{k:\Neut(|A|\rho)} \Elem_N(|B|(\mk \, \rho \, \langle k \rangle))|(w \, \langle k \rangle)$.
+
+        \item We define $\app_S \, K \, G \, k' \, k : \Neut(|B|(\mk \, \rho \, u))|(w\, u)$ for $w$ in $\Elem_M(|C|\rho)$
+            and $u$ in $\Elem_M(|A|\rho)$, $k': \Neut(|C|\rho)|w$ and $k:\Elem_N(|A|\rho)|u$.
+    \end{itemize}
+\end{proposition}
+\begin{proof}
+    We detail the construction of the operations for codes. 
+    \begin{itemize}
+        \item For $\lambda_S \, g$, we define : 
+            $ 
+                \lambda_S \, g \; := \; \lambda(K,G \p_S \, v_0, g \, v_0)
+            $.
+
+            Which satisfies the desired property, because of $\eta$-conversion : $\langle \lambda_S g \rangle = \lambda(|A| \rho, |B|(\rho \p, \q), w \, v_0) = w$.
+
+        \item For $\app_S$, we define :
+            $ 
+                \app_S \, K \, G \, k' \, k \; := \; \app(K,G \p_S \, v_0, k', k)
+            $.     
+
+            Which satisfies the desired property : $\langle \app_S \, K \, G \, k' \, k \rangle = \app(|A|\rho, |B|(\rho \p, \q), w, u)$.
+    \end{itemize}
+\end{proof}
+
+ With those operations, we define the normalisation model $M^*$. This model can be seen as the gluing model along the 
+ left-exact morphism $|.|$, with the construction for universes and dependent products
+ described in \cite{Sattler}. In the following definition, we describe the model explicitly, and add the
+ appropriate definitions for Tarski universes.
+
+\begin{definition}[Normalisation model]
+    A context in $M^*$ is a pair $\Gamma,\Gamma'$ where $\Gamma$ is a context of $M$
+    and $\Gamma'$ is a dependent family over $|\Gamma|$ in the presheaf model.
+
+    \begin{itemize}
+        \item We define $()'$ to be the constant presheaf $\{0\}$
+
+        \item We define the extension operation by $(\Gamma,\Gamma').(A,\overline{A}) = \Gamma.A,(\Gamma.A)'$,
+            where $(\Gamma.A)'(\rho,u)$ is defined as the set of pairs $\rho',u'$ with $\rho'$ in $\Gamma'(\rho)$ and
+            $u'$ in $\overline{A}\rho\rho'.1(u)$.
+
+        \item We define $\Type^*(\Gamma,\Gamma')$ (types of $M^*$) as the set of pairs $A,\overline{A}$ where $A$ is
+        in $\Type_M(\Gamma)$ and $\overline{A}$ is a global element of :
+            \[\Pi_{\rho:|\Gamma|} \,\Gamma'(\rho)\rightarrow \Type'(|A|\rho)\]
+        Such that $\overline{A} \rho \rho'$ is a proof of reducibility for $A$. Hence, every type is equipped with its reducibility proof.
+
+        \item We define $\Elem^*(\Gamma,(A,\overline{A}))$ (elements of $M^*$) as the set of pairs $a,\overline{a}$ where $a$ is in
+        $\Elem_M(\Gamma,A)$ and $\overline{a}$ is an element of :
+            \[\Pi_{\rho:|\Gamma|} \,\Pi_{\rho':\Gamma'(\rho)} \overline{A}\rho\rho'.1(|a|\rho)\]
+        Such that $\overline{a} \rho \rho'$ is a proof of reducibility for $a$. Hence, every term is equipped with its reducibility proof.
+
+        \item We define the dependent product in $M^*$, denoted $\Pi^* \, (A,\overline{A}) \, (B,\overline{B})$,
+            which will be equal to $C,\overline{C}$ with $C = \Pi \, A \, B$ and $\overline{C}\rho \rho' = (R',L,\q_R,\r_R)$
+            is defined by the following:
+
+            \begin{itemize}
+                \item $R'(w) = \Pi_{u:\Elem_M(|A|\rho)} \Pi_{u':T'(u)} F'uu'(w\, u)$
+                \item $L = \Pi_S \, K \, G$
+                \item $\q_R \, w \, w' = \lambda_S \, g$
+                \item $(\r_R k)u u' = \r_F u u' (\app_S \, K \, G \, k \, (\q_T u u'))$
+            \end{itemize}
+
+            with $(T',K,\q_T,\r_T) = \overline{A}\rho \rho'$ and 
+            $(F'u u',F_0 u u', \q_F u u', \r_F u u') = \overline{B}(\mk \, \rho \, u)(\rho',u')$ for each $u \in Elem_M(|A|\rho)$ and $u' \in T'(u)$,
+            and where $G$ is the function $G \, k = F_0 \langle k \rangle (\r_T \, k)$, and $g$ the one
+            which maps $g \, k = \q_F \langle k \rangle(\r_T k)(w \, \langle k \rangle)(w' \langle k \rangle (r_T \, k))$.
+    \end{itemize}
+\end{definition}
+
+Now we can add the constructions related to universes. The existing proof of normalisation by gluing
+such as the ones in \cite{Coq19, Coq21} work on a theory with a stratified type sort $\Type_n$ and a
+sort equation $\Elem(\U_n) = \Type_n$. To our knowledge, a rigorous proof of normalisation by gluing of
+a Tarksi-style theory has not been written down properly.\\
+
+In fact, the proof is not completely identical. For instance, one needs to embed the normal form of the decoding and
+lifting  of a code inside its computability structure.
+
+\begin{theorem}[Construction for universes]
+    The following describes the operations related to universes in the normalisation model, including
+    lifts, codes and decoding.
+    
+    \begin{itemize}
+        % TODO: check what is presheaf and what is not in all the following, make sure there is |.| and rho in the right places 
+        % TODO: Make sure identity coercions are handled 
+
+        \item We define $\U_n^* = \U_n, \overline{\U_n}$, with $\overline{\U_n} \rho \rho'= \U_n', \U_n,\q_{\U_n},\r_{\U_n}$ defined by the following :
+            \begin{itemize}
+                \item $\U_n'$ where $\U_n' a$ is the set of $5$-tuples $(a',a_0,A_N,a_l,\q_a,\r_a)$ such that :
+
+                    \begin{itemize}
+                        \item $a' : \Elem_M(T_n(a)) \rightarrow \mathcal{U}_n$
+                        \item $a_0: \Elem_N(\U_n)|a$
+                        \item $A_N : \Type_N|T_n(a)$,
+                        \item $a_l : \Pi_{m \geq n} \Elem_N(\U_m)|t_n^m(a)$,
+                        \item $\q_a \, u \, u' : \Elem_N(T_n(a)) | u$ for $u : \Elem_M(T_n(a))$ and $u' : a' u$
+                        \item $\r_a k : a' \, k$ for $k: \Neut(T_n(a))$.
+                    \end{itemize}
+
+                \item $\U_n$ is the normal form.
+
+                \item $\q_{\U_n} \, a \, (a',a_0,\q_a,\r_a) = a_0$.
+
+                \item $\r_{\U_n} K = (K',K,\q_K,\r_K)$ where $K'u$ is $\Neut(K)|u$ and $\q_K \, u \, u' = u'$, and $\r_K \, k = k$.
+            \end{itemize}
+
+        \item We define $T_n(a)^* = T_n(a), \overline{T_n(a)}$ for $a$ in $\Elem_M(X,\U_n)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, a_l, q_a, r_a)$. Then we can define :
+            \begin{itemize}
+                \item $R' = a'$
+                \item $L = A_N$
+                \item $\q_R = \q_a$
+                \item $\r_R = \r_a$
+            \end{itemize}
+
+        \item We define $t_n^m(a)^* = t_n^m(a), \overline{t_n^m(a)}$ for $a$ in $\Elem_M(X,\U_n)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, a_l, q_a, r_a)$.
+            Then we can define $\overline{t_n^m(a)} \rho \rho' = (b',b_0, B_N, q_b, r_b)$ :
+            \begin{itemize}
+                \item $b' = a'$, which is well-defined because $\mathcal{U}_n \subset \mathcal{U}_m$ 
+                \item $b_0 = a_l \, m$ 
+                \item $B_N = A_N$ 
+                \item $q_b = q_a$ 
+                \item $r_b = r_a$ 
+            \end{itemize}
+
+        \item We define $(\U_n^m)^* = \U_n^m, \overline{\U_n^m}$
+            writing $\overline{\U_n^m} \rho \rho' = (a',a_0, A_N, q_a, r_a)$ :
+            \begin{itemize}
+                \item $a' u = Elem_N(\U_n)|u$ 
+                \item $a_0 = \U_n^m$ 
+                \item $A_N = \U_n$ 
+                \item $q_a u u'= u' $
+                \item $r_a k = (k',k_0,K_N,q_k,r_k)$ where : 
+                    \[
+                        (k' u = Neut(T_n(u)), \ k_0 = k, \ K_N = T_n(k_0), \ k_l \, m' = t_m^{m'} (k_0), \ q_k u u' = u', \ r_k k' = k')
+                    \]
+                    % TODO: Ici ajouter la coercion identité dans le k_l 
+            \end{itemize}
+
+        \item We define $(\Pi^n \; a \; b)^* = \Pi^n \; a \; b, \overline{\Pi^n \; a \; b}$
+             for $a$ in $\Elem_M(X,\U_n)$ and $b$ in $\Elem_M(|T_n a| \rho)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, q_a, r_a)$
+             and $\overline{b} (\mk \, \rho \, u) (\rho',u') = (b' u u', b_0 u u', B_N u u', q_b u u', r_b u u')$ for every $u \in \Elem_M(|T_n| \rho)$ and $u' \in a'(u)$.
+             Writing $\overline{\Pi^n \; a \; b} = (c',c_0,C_N,q_c,r_c)$ we define:
+            \begin{itemize}
+                \item $c' w = \Pi_{u : \Elem_M(|T_n(a)| \rho)} \Pi_{u': a'(u)} b' u u' (w u)$ 
+                \item $c_0 = \Pi^n \; a_0 \; b_0$
+                \item $C_N = \Pi \; A_N \; B_N$ 
+                \item $c_l = \Pi \; c_l \; b_l$
+                \item $q_c w w' = \lambda_S \, g$ % TODO: Double check 
+                \item $(r_c k) u u' = \r_b u u' (\app_S \, a_0 \, G \, k \, (q_a u u')$ % TODO: Idem 
+            \end{itemize}
+
+            Where $G$ is the function $G \, k = B_N \langle k \rangle (\r_a \, k)$, and $g$ the one
+            which maps $g \, k = \q_b \langle k \rangle(\r_a k)(w \, \langle k \rangle)(w' \langle k \rangle (r_a \, k))$.
+
+
+
+    \end{itemize}
+\end{theorem}
+\begin{proof}
+    The only thing to check is that our construction is well-defined and satisfies
+    the equations required for it to be a model of type theory.
+\end{proof}
+
+We now instantiate this construction to the term model $M_0$, which is the initial model, so that
+we get an initial map $M_0 \rightarrow M_0^*$ which is a section of the projection map $M_0^* \rightarrow M_0$.
+Moreover, as the term model $M_0$ is the syntactical model, here contexts are the same as telescopes : we have
+$\langle X \rangle = X$.
+
+Hence, from a context $\Gamma$ of $M_0$, we use this section to compute $\Gamma'$, a context of $M_0^*$. This $\Gamma'$ is internally
+a dependent family over presheafs $|\Gamma|$, but can be seen externally as a family $\Gamma'(\Delta,\rho)$
+over $\Delta$ and $\rho : \Delta \rightarrow \Gamma$, along with restriction maps $\rho' \mapsto \rho'\alpha$ 
+for $\alpha : \Theta \rightarrow_S \Delta$.
+
+To conclude, we construct $\Id'_\Gamma$ in $\Gamma'(\Gamma,\Id)$.
+This is also analogous to Tait's proof, where we also need to instantiate the result using the identity substitution,
+along with the reducibility candidate for neutral terms, here replaced by $\r_A$.
+
+\begin{lemma}
+    By induction : 
+
+    \begin{itemize}
+        \item For $\Gamma = ()$, we take $\Id'_\Gamma = 0$ (as we defined $()' = {0}$, there is no choice).
+        \item If $\Delta = \Gamma.A$, we define $\rho' = \Id'_\Gamma \p_S$ in $\Gamma'(\Delta,\p)$,
+            and then $\Id'_\Delta = \rho', \r_A(\Delta,\p) \rho' v_0$ which is an element of $\Delta'(\rho,\p)$
+            because $\r_A(\Delta,\p) \rho' v_0$ is an element of $A'(\Delta,\p) \rho' \langle v_0 \rangle$, which is what we wanted.
+    \end{itemize}
+\end{lemma}
+
+In the next section, we will conclude by defining a normalisation by evaluation function.
+
+\section{Normalisation by evaluation and consequences}
+
+We have the normalisation model instantiated to the term model $M_0$, along with a projection map $M_0^* \rightarrow M$
+and its section $M_0 \rightarrow M_0^*$. With this, we define a normalisation by evaluation function 
+$\nf : \Elem_M(\Gamma,A) \rightarrow \Elem_N(\Gamma,A)$, which is described in the following. \\
+
+\begin{definition}
+    For $A$ in $\Type_M(\Gamma)$ and $a$ is in $\Elem_M(\Gamma,A)$ we define :
+
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+    \[
+        \nf(A) := (\overline{A}\, \Id\, \Id').2
+    \]
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+    \[
+        \nf(a) := ((\q_A \, \Id \, \Id') \, a \, (\overline{a} \, \Id \, \Id')).1
+    \]
+    \end{minipage}
+\end{definition}
+
+Finally, we get normalisation, by showing that the quotient maps in $\Elem_N$ and $\Type_N$ are split by $\nf$ :
+
+\begin{theorem}[Normalisation]
+    For a context $\Gamma$, the quotient maps $k \mapsto \langle k \rangle$ and $K \mapsto \langle K \rangle$ (for
+    types and terms) have sections given by $\nf$. 
+\end{theorem}
+
+\begin{proof}
+    We have $\langle \nf(A) \rangle = \langle K \rangle = A$ as $K$ is in $\Norm(A)|K$.\\
+
+    We also have : 
+    \[ \langle \nf(a) \rangle = \langle \q_A \, \Id \, \Id' \, a \, (\overline{a} \, \Id \, \Id').1 \rangle = a\] 
+
+    as $q_A \, \Id \, \Id'$
+    is in $\Pi_{u:\Elem_M(|A|\rho)} A'\,\Id \,\Id' \, u \rightarrow \Elem_N(A\rho)|u$, and $(\overline{a} \, \Id \, \Id').1$ is
+    indeed in $A' \, \Id \, \Id' \, a$.
+\end{proof}
+
+It is important to note that this function $\nf$ is well defined and can be effectively computed because of the 
+section of the projection $M_0 \rightarrow M_0^*$, which comes from the initiality of the term
+model. We have the following corollary :
+
+\begin{corollary}
+    Equality in $M_0$ is decidable.
+\end{corollary}
+ 
+\begin{proof}
+    If $a$ and $b$ are in $\Elem_M(\Gamma,A$, we can compute $\nf(a)$ and $\nf(b)$ in $\Elem_N(\Gamma,A)$,
+    and then check syntactically if $\nf(a) = \nf(b)$ or not.
+
+    Then, as $\nf(a) = \nf(b)$ if and only if $a=b$, we can decide if $a=b$ or not.
+\end{proof}
+
+\subsection{Injectivity of type formers}
+
+In this section we show the injectivity of dependent product (in the term model), 
+using a semantic argument in the normalisation model. First we need the following
+essential lemma.
+
+\begin{lemma}
+    $\nf$ commutes with the dependent product operation.
+\end{lemma}
+
+\begin{proof}
+    We use the definitions: 
+    $
+        \nf(\Pi(A, B))  = \Pi_S \, K \,G 
+                        = \Pi \, K \, (G \, \p_S \, v_0)
+                        = \Pi \, K \, (F_0 \, \langle v_0 \rangle \, (\r_T \, v_0))
+    $.\\
+
+    Where $\overline{A} \, \Id \, \Id' = (T',K,\q_T,\r_T)$ and $(F' v_0 v_0',F_0 v_0 v_0', \q_F v_0 v_0', \r_F v_0 v_0') = \overline{B}(\mk \, \Id \, v_0)(\Id',v_0')$.\\
+
+    So our calculation gives the desired : $\nf(\Pi(A,B)) = \Pi \,\nf(A) \,\nf(B)$.
+\end{proof}
+
+From this, we deduce $\Pi$-injectivity really easily :
+
+\begin{theorem}[Injectivity of dependent product]
+    The dependent product (in $M_0$) is injective.
+\end{theorem}
+
+\begin{proof}
+    Let's assume that $\Pi \; A \; B = \Pi \; A' \; B'$ in $M_0$. Then, we have 
+    \[\nf (\Pi \; A \; B) = \nf (\Pi \; A' \; B')\] i.e 
+    \[\Pi (\nf \; A) (\nf \; B) = \Pi (\nf \; A') (\nf \; B')\]
+
+    Thus, as $\Pi$ is injective in $\Type_N$ (it is a syntactic operation),
+    we get : $\nf(A) = \nf(A')$ and $\nf(B) = \nf(B')$, and so
+    $A = [\nf(A)] = [\nf(A')] = A'$. Likewise, we also have  $B = B'$.
+\end{proof}
+
+To prove our equivalence results in the next section, we will also need a injectivity for universes, which
+is stated by the following theorem.
+
+\begin{theorem}[Injectivity of universes]
+    If we have $\U_{n_0} = \U_{n_1}$ in $M_0$, then $n_0 = n_1$. 
+\end{theorem}
+
+\begin{proof}
+    We have $\U_{n_0} = \U_{n_1}$ in $M_0$, so $\nf(\U_{n_0}) = \nf(\U_{n_1})$ in the normalisation
+    model $M^*$, which corresponds to $\U_{n_0} = \U_{n_1}$ in $M^*$, and as this equality is syntactic we get $n_0 = n_1$.
+\end{proof}
+
+Subject reduction for $\beta$-conversion also follows from $\Pi$-injectivity.
+
+\subsection{Subject reduction}
+We are going to show an essential property of type theory : subject reduction. It corresponds
+to a form of "type correctness", and to the static specification of a program that has to be
+stable by execution (which corresponds here to reduction).
+
+\begin{theorem}
+    If $\Gamma \vdash a  =  b : A$ and $\Gamma \vdash a : A$ then we have a derivation
+    $\Gamma \vdash b : A$.
+\end{theorem}
+
+\begin{proof}
+    We show the property by induction on the term $a$. We will only consider the 
+    interesting case where $a$ is a $\beta$-redex i.e $a = (\lambda (x: A_1).t)u : A$ and 
+    $b = t[u]$.
+
+    Then by inverting the derivation, we necessarily have types $B_1$, $B_2$, $A_2$
+    and derivations $\Gamma, x:A_1 \vdash t: B_1$, $\Gamma \vdash u : A_2$, 
+    $\Gamma \vdash B_2 [u]  =  A$ and $\Gamma \vdash \Pi (x:A_1) B_1 = 
+    \Pi (x:A_2) B_2$.
+
+    By $\Pi$-injectivity we thus have $\Gamma \vdash A_2 = A_1$ and $\Gamma, x:A_1 \vdash
+    B_1 = B_2$. Finally, by combining the derivations, we obtain 
+    $\Gamma, x: A_1 \vdash t: B_2$ and $\Gamma \vdash u : A_1$, and hence : $\Gamma \vdash t[u] : B_2[u]$.
+
+    We then conclude with $B_2[u] = A$ that gives us the desired $\Gamma \vdash t[u] : A$
+\end{proof}
+
+
+With all of those result, we will be able to show that the equivalence of all our systems. 
+
+\section{Equivalence results}
+
+In this section, we show that all the systems $\mathcal{T}_G$, $\mathcal{T}_T$, $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent. In particular,
+we show that Tarski-style and Russell-style universes are equivalent.
+
+\subsection{Equivalence of $\mathcal{T}_G$ and $\mathcal{T}_T$ : explicit and implicit substitutions}
+
+We show by an elementary proof that $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent, and thus, 
+$\mathcal{T}_T$ can be rigorously interpreted as a CWF.
+
+First, we would have to show that we can remove context annotations from the substitutions in
+$\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes, and the main point is that the contexts and
+types can be inferred from the derivation. We will not detail this proof here. 
+
+Then, we define a from $\mathcal{T}_G$ to $\mathcal{T}_T$ that creates a judgment in $\mathcal{T}_T$ with
+implicit substitutions. For this, we map substitutions in $\mathcal{T}_G$ to a list of "elementary"
+substitutions in $\mathcal{T}_T$, as there is no composition in this system. Then, when translating the application of a substitution
+to a term or a type, we can fold that list to get a type formed by applying all those substitutions successively.
+
+\begin{definition}
+    We define  $\proj(.)$ by induction:
+
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+    \begin{align*}
+        \proj(\Gamma \vdash J) &= \proj(\Gamma) \vdash \proj(J)\\
+        \proj(\sigma : \Gamma \rightarrow \Delta) &=\; \vdash\\ 
+        \proj([a]) &= [\proj(a)]\\
+        \proj(A \sigma) &= (...(\proj(A)\sigma_1)...)...\sigma_n\\
+        \proj(a \sigma) &= (...(\proj(a)\sigma_1)...)...\sigma_n\\ 
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+    \begin{align*}
+        \proj(\q) &= v_0\\
+        \proj(\p) &= \p\\
+        \proj(\Id) &= \\ 
+        \proj(\sigma\delta) &= \proj(\sigma)::\proj(\delta)\\
+        \proj(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+\begin{proof}
+    We check that this definition gives types and term in $\mathcal{T}_T$, which is
+    not completely clear with what is going on in the cases $A\sigma$ and $a \sigma$.
+
+    In fact, we check that $\proj(\sigma)$ gives a list of substitutions which are
+    valid syntactically in $\mathcal{T}_T$. This can be done easily by induction, but we ommit the details here.
+\end{proof}
+
+For the equivalence result, we need the usual subsitution lemma in $\mathcal{T}_T$:
+
+\begin{lemma}[Substitution lemma]\label{Substitution}
+    If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
+    then we have a derivation : $\Gamma \vdash J\alpha$.
+\end{lemma}
+
+\begin{proof}
+    By direct induction.
+\end{proof}
+
+With all of this, we show the following admissibility result :
+
+\begin{lemma}
+    The erasure of rules in $\mathcal{T}_G$ are admissible in $\mathcal{T}_T$.
+\end{lemma}
+\begin{proof}
+    Direct with the substitution lemma, which we iterate when we unfold the list
+    of "elementary" substitutions created by erase. For example for the rule :
+
+    \noindent
+    \begin{minipage}{0.40\linewidth}
+    \begin{prooftree}
+        \AxiomC{$\Gamma \vdash A \, \type$}
+        \AxiomC{$ \vdash \sigma : \Delta \rightarrow \Gamma$}
+        \BinaryInfC{$\Delta \vdash A \sigma \, \type$}
+    \end{prooftree}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.15\linewidth}
+    the erasure is just : 
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+    \begin{prooftree}
+        \AxiomC{$\Gamma \vdash \proj(A) \, \type$}
+        \UnaryInfC{$\Delta \vdash \proj(A) \sigma_1 ... \sigma_n \, \type$}
+    \end{prooftree}
+    \end{minipage}
+
+    \vspace{0.5em}
+
+    Where $\proj(\sigma) = (\sigma_1, ..., \sigma_n)$, and this derivation is admissible with
+    $n$ applications of the substitution lemma.
+\end{proof}
+
+Consequently, we get the following correction result : 
+
+\begin{theorem}
+    If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\proj(\Gamma \vdash J)$ is derivable in $\mathcal{T}_T$.
+\end{theorem}
+\begin{proof}
+    By direct induction with the lemma, we replace the rules by the admissible ones. 
+\end{proof}
+
+Finally, we deduce that the two systems are equivalent :
+
+\begin{theorem}
+    The two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are equivalent.
+\end{theorem}
+\begin{proof}
+    Each rule of $\mathcal{T}_T$ is trivially admissible of $\mathcal{T}_G$ because $\mathcal{T}_T$ is a subsystem
+    of $\mathcal{T}_G$.
+
+    Hence, we have the identity map from $\mathcal{T}_T$ and $\mathcal{T}_G$, and as $\proj$ acts identically
+    on types and terms without substitution, we get our equivalence result.
+\end{proof}
+
+Hence, we can use implicit substitutions freely with the system "à la Tarski", while still being able
+to give a rigorous interpretation in a CWF model. This proves the equivalence of $\mathcal{T}_T$
+and the GAT presentation of type theory (here $\mathcal{T}_G$).
+An alternative approach could use the initiality result of \cite{Brunerie}
+for contextual categories, which may be adapted to interpret $\mathcal{T}_T$ as a CWF. 
+\begin{comment}
+-------Old version--------
+\begin{lemma}\label{pident}
+    If $\vdash \sigma : \Gamma \rightarrow \Delta'$ and $\erase(\p_{\Gamma,\Delta}) = \erase(\sigma)$,
+    then necessarily $\sigma = \Id^n\,\p_{\Gamma,\Delta}\,\Id^m$.
+\end{lemma}
+\begin{proof}
+    By induction on $\vdash \sigma : \Gamma \rightarrow \Delta$. The only two possible applicable rules are 
+    composition and $\p$ introduction (because of the equality of the erasures).
+
+    \begin{itemize}
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \nu : \Theta \rightarrow \Delta'$}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \delta : \Gamma \rightarrow \Theta$}
+        \BinaryInf$\fCenter \nu \delta : \Gamma \rightarrow \Delta'$
+        \end{prooftree}
+
+        Then, we have $\p = \erase(\nu) \, \erase(\delta)$, and thus necessarily one of the
+        two erasures is empty and one is $\p$. By symmetry, let's assume that $\erase(\nu) = \p$ and $\erase(\delta)$
+        is empty. Necessarily, $\delta = \Id_\Gamma$ and hence $\Theta = \Gamma$.\\
+
+        We apply the induction hypothesis on $\vdash \nu : \Gamma \rightarrow \Delta$ to get $\nu = \Id^n \, \p \, \Id^m$,
+        which gives us $\sigma = \Id^n \, \p_{\Gamma,\Delta} \, \Id^{m+1}$.
+
+    \item If the last rule applied is :
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Delta \vdash A \; \type$}
+        \UnaryInfC{$\vdash \p_{\Gamma, \Delta'} : \Delta,A \rightarrow \Delta'$}
+        \end{prooftree}
+
+        Then we have $\Delta',A = \Gamma = \Delta,B$ which gives us $\Delta = \Delta'$ and
+        we get the result immediately.
+
+    \end{itemize}
+\end{proof}
+
+We need the following lemma to make sure that we can lift a derivation.
+
+\begin{lemma}\label{uniqueness0}
+    We have the three "injectivity" results :
+    \begin{itemize}
+        \item If $\vdash \sigma : \Gamma \rightarrow \Delta$ and $\vdash \sigma' : \Gamma \rightarrow \Delta'$ in $\mathcal{T}_G$,
+            with $\erase(\sigma) = \erase(\sigma')$ in $\mathcal{T}_T$, then we have : $\vdash \sigma = \sigma'$ in $\mathcal{T}_G$ and the contexts
+            $\Delta$ and $\Delta'$ are convertible.
+        \item If $\Gamma \vdash A \;\type$ and $\Gamma \vdash B \;\type$ in $\mathcal{T}_G$ with $\erase(A) = \erase(B)$, then
+            they are convertible : $\Gamma \vdash A = B$.
+        \item If $\Gamma \vdash a: A$ and $\Gamma \vdash b: B$ in $\mathcal{T}_G$ with $\erase(a)=\erase(b)$
+            then they are convertible : $\Gamma \vdash a=b:A$ and $\Gamma \vdash A=B$.
+    \end{itemize}
+\end{lemma}
+
+\begin{proof}
+    We prove the statements by mutual induction.
+
+    First, by induction on the derivation $\vdash \sigma : \Gamma \rightarrow \Delta$.
+    \begin{itemize}
+        \item If the last rule applied was 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \nu : \Theta \rightarrow \Delta$}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \delta : \Gamma \rightarrow \Theta$}
+        \BinaryInf$\fCenter \nu \delta : \Gamma \rightarrow \Delta$
+        \end{prooftree}
+
+        Then necessarily $\sigma' = \nu'\delta'$ with $\erase(\nu') = \erase(\nu)$ and
+        $\erase(\delta) = \erase(\delta')$ in $\mathcal{T}_T$, with the analogous rule applied :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \nu' : \Theta' \rightarrow \Delta'$}
+        \AxiomC{}
+        \UnaryInfC{$\vdash \delta' : \Gamma \rightarrow \Theta'$}
+        \BinaryInf$\fCenter \nu' \delta' : \Gamma \rightarrow \Delta'$
+        \end{prooftree}
+
+        Hence, we apply the induction hypothesis for $\delta$ and get : $\vdash \delta = \delta' : \Gamma \rightarrow \Theta$,
+        along with $\Theta$ and $\Theta'$ convertible. Hence, we transform the derivation for $\nu'$ to get 
+        $\vdash \nu = \nu' : \Theta \rightarrow \Delta$ and $\Gamma$, $\Gamma'$ convertible. Finally, with the rule for convertibility of
+        composition, we construct a derivation $\vdash \sigma = \sigma' : \Gamma \rightarrow \Delta$.
+
+        \item If the last rule applied was :
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Delta \vdash A \; \type$}
+        \UnaryInfC{$\vdash \p_{\Gamma, \Delta} : \Delta,A \rightarrow \Delta$}
+        \end{prooftree}
+
+        Then by lemma \ref{pident}, we have $\sigma' = \Id^n \p_{\Gamma,\Delta} \Id^m$, which allows
+        us to construct a derivation $\vdash \sigma = \sigma'$.
+
+        \item If the last rule applied is for identity, then the erasure is empty and necessarily $\sigma = \Id^n$ and
+            $\sigma' = \Id^m$ which are convertible.
+    \end{itemize}
+
+    Then by induction on the type $A$ and term $a$.
+    \begin{itemize}
+        \item The proof for most of the rules is similar to proposition \ref{mainuniverse} for $\mathcal{T}_T$ and $\mathcal{T}_R$, where the proof is 
+            detailed.
+        \item If $A = A' \sigma$ then $\erase(A) = \erase(A') \,\erase(\sigma) = \erase(B)$. Thus $B = B' \sigma'$ with
+            $\erase(A') = \erase(B')$ and $\erase(\sigma) = \erase(\sigma')$. In fact, $B$ could be 
+            the expansion of the definition of $B' \sigma'$, and then we could do the same construction,
+            just using the corresponding convertibility rules to get the right derivation. By inversion, the last rule applied in 
+            $\Gamma \vdash A \, \type$ is :
+
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{}
+            \UnaryInfC{$\Delta \vdash A' \, \type$}
+            \AxiomC{$\Pi$}
+            \UnaryInfC{$\vdash \sigma : \Gamma \rightarrow \Delta$}
+            \BinaryInf$\Gamma \fCenter A'\sigma \, \type$
+            \end{prooftree}
+
+            And the analogous one for $B$, with $\sigma'$ and $\Delta'$. Then, by induction hypothesis on $\Pi$,
+            we get $\vdash \sigma = \sigma'$ and $\Delta$, $\Delta'$ are convertible. Hence we  transform the 
+            derivation $\Delta' \vdash B' \, \type$ and apply the induction hypothesis to get $\Delta \vdash A' = B'$,
+            which leads to the desired $\Gamma \vdash A'\sigma = B'\sigma'$ with the convertibility rules.
+
+        \item The proof is almost the same for $a = a'\sigma$.
+    \end{itemize}
+
+    Finally, we proved our lemma.
+\end{proof}
+
+Then, we want to lift a derivation in $\mathcal{T}_T$ to one in $\mathcal{T}_G$, and we want it to be unique up
+to conversion.
+
+\begin{theorem}
+    If $\Gamma \vdash J$ in $\mathcal{T}_T$ then there exists a unique up to conversion judgment 
+    $\Gamma \vdash J'$ in $\mathcal{T}_G$ such that $\erase(\Gamma \vdash J') = \Gamma \vdash J$.
+\end{theorem}
+\begin{proof}
+    We prove uniqueness up to conversion and existence of the lifting. 
+
+    \underline{Uniqueness :} Direct by the previous lemma.
+
+    \underline{Existence :} 
+    We proceed by induction on the derivation $\Gamma \vdash J$. The interesting cases are the 
+    rules for variables, as the other rules are exactly the same, we just need to add the typing anotations
+    to $\p$ and $+$ in the $\eta$ conversion rule, which can be easily infered by looking at the contexts.
+
+    \begin{itemize}
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash B \; \type$}
+        \UnaryInfC{$\Gamma,B \vdash v_0 : B \p$}
+        \end{prooftree}
+
+        Then we construct the analogous derivation : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash B \; \type$}
+        \UnaryInfC{$\Gamma,B \vdash \q_{\Gamma.B}: B \p_{\Gamma,\Gamma.B}$}
+        \end{prooftree}
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash v_i : B$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash C \; \type$}
+        \BinaryInf$\Gamma,C \fCenter v_{i+1} : B\p$
+        \end{prooftree}
+        
+        Then we construct by induction a derivation $\Gamma \vdash b : B$ such that its erasure is $\Gamma \vdash v_i : B$.
+        Also, we have $v_i = v_0\p^i$, and let us write $\sigma = \p_{(),A_1}...\p_{A_1...A_{i-1},\Gamma}$
+        and $\Gamma = ().A_1...A_i$. Thus by lemma \ref{uniqueness0}, we get : $\Gamma \vdash b = \q_{\Gamma.C}\sigma$ because $\erase(\sigma) = \p^i$
+        and the image contexts are the same. Hence, we modify the derivation $\Gamma \vdash b:B$ to get $\Gamma \vdash \q\sigma: B$ and construct :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi'$}
+        \UnaryInfC{$\Gamma \vdash \q_{\Gamma}\sigma: B$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash  C \; \type$}
+        \UnaryInfC{$\p : \Gamma,C \rightarrow \Gamma$}
+        \BinaryInf$\Gamma,C \fCenter \q_{\Gamma.C}\,\sigma\p_{\Gamma,\Gamma.C} : B\p_{\Gamma,\Gamma.C}$
+        \end{prooftree}
+
+    \end{itemize}
+
+    Hence, we get the desired lifting of our judgment.
+\end{proof}
+\end{comment}
+
+\subsection{Equivalence of $\mathcal{T}_T$ and $\mathcal{T}_R$ : Tarski and Russell universes}\label{sectionT1T2}
+
+With the essential properties of $\mathcal{T}_T$ shown in section 4, we prove the equivalence
+of Tarski-style and Russell-style universes. First, we need to consider both theories with type
+annotations the derivation rules are those corresponding to the equational theory in section $2$.
+
+For that we consider the following erasure operation, which forms a forgetful map from
+Tarski universes to Russell ones. 
+
+\begin{definition}[\formline{Erasure.v}{7}{Erasurefunction} Erasure]
+    We define the erasure operation, denoted $|.|$ :
+
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+    \begin{align*}
+        |\U_n| &= U_n\\
+        |\U_m^n| &= \U_m\\
+        |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
+        |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
+        |v_i| &= v_i\\
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+    \begin{align*}
+        |T_n(a)| &= |a|\\
+        |t_m^n(a)| &= |a|\\
+        |\Pi^n \, a \, b| &= \Pi(|a|, |b|)\\
+        |\Pi(A, B)| &= \Pi(|A|, |B|)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+We now show that this operation indeed preserves derivations.
+
+\begin{lemma}[\formline{Erasure.v}{64}{Erasurecorrection} Correction of erasure]
+    If $\Gamma \vdash J$ in $\mathcal{T}_T$, then $|\Gamma| \vdash |J|$ in $\mathcal{T}_R$.
+\end{lemma}
+
+\begin{proof}
+    By direct induction.
+\end{proof}
+
+Then, we want to show that this forgetful map has an inverse, hence proving the equivalence
+of the two systems. For this, we first show a useful theorem.
+
+For this we will need some technical lemmas.
+
+
+\begin{lemma}
+    If we have a derivation $\Gamma, A \vdash J$, where $J$ is an arbitrary judgment,
+    then we necessarily have a derivation $\Gamma \vdash A \; \type$.
+\end{lemma}
+
+\begin{proof}
+    We prove the result by induction on the derivation $\Gamma, A \vdash J$.
+    \begin{comment}
+    ---- Omit proof ----
+    \begin{itemize}
+        \item If the rule has a premise whith the same contexts as the derivation, we can
+            just apply the induction hypothesis to get our result.
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A \; \type$}
+        \UnaryInfC{$\Gamma,A \vdash$}
+        \end{prooftree}
+
+        Then we immediately have the result with the derivation $\Pi$.
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A \; \type$}
+        \UnaryInfC{$\Gamma,A \vdash v_0 : A \p$}
+        \end{prooftree}
+
+        Then we immediately have the result with the derivation $\Pi$.
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash v_i : B$}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A \; \type$}
+        \BinaryInf$\Gamma,A \fCenter v_{i+1} : B\p$
+        \end{prooftree}
+
+        Then we immediately have the result with the derivation $\Pi$.
+
+    \end{itemize}
+    \end{comment}
+\end{proof}
+
+And similarly, we have the other lemma :
+
+\begin{lemma}
+    If we have a derivation $\Gamma \vdash a : A$ then we necessarily have a derivation $\Gamma \vdash A \; \type$.
+\end{lemma}
+
+\begin{proof}
+   By induction on $\Gamma \vdash a : A$. It is important to note that the obtained derivation is not necessarily 
+   a sub-derivation of $\Gamma \vdash a: A$ (if $A$ is a universe for example).
+    \begin{comment}
+    ---- Omit proof ----
+   \begin{itemize}
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma,C\vdash b : B$}
+        \UnaryInfC{$\Gamma \vdash \lambda(C,B,b) : \Pi(C,B)$}
+        \end{prooftree}
+
+        So by the previous lemma on $\Pi$ we get : $\Gamma \vdash B \,\type$. And
+        by the induction hypothesis, we get : $\Gamma \vdash C \; \type$. Hence, with
+        the rule on $Pi$-type formation, we get : $\Gamma \vdash \Pi(C,B) \; \type$.
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash C : \Pi(B,C)$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash a : B$}
+        \BinaryInf$\Gamma \fCenter \app(B,C,c,a):C[a]$
+        \end{prooftree}
+
+        The, by induction hypothesis we have $\Gamma \vdash \Pi(B,C) \; \type$, and by inversion
+        on this derivation we have :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash B \; \type$}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma, B \vdash C \; \type$}
+        \BinaryInf$\Gamma \fCenter \Pi(B,C) \; \type$
+        \end{prooftree}
+
+        So, by the substitution lemma applied on $\Pi$, we get : $\Gamma \vdash C[a] \; \type$.
+
+        \item If the last rule applied is for a code or a lifing, then $A = \U_n$ and we trivially
+            have $\Gamma \vdash \U_n \; \type$. Note that here the derivation is not a subderivation.
+
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash B \; \type$}
+        \UnaryInfC{$\Gamma',B \vdash v_0 : B \p$}
+        \end{prooftree}
+
+        Then by the substitution lemma we have $\Gamma', B \vdash B \p \; \type$ i.e $\Gamma \vdash A \; \type$.
+
+        \item If the last rule is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash v_i : B$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma' \vdash C \; \type$}
+        \BinaryInf$\Gamma',C \fCenter v_{i+1} : B\p$
+        \end{prooftree}
+
+        Then by the induction hypothesis on $\Pi$, we get $\Gamma' \vdash B \; \type$, and with the substitution lemma
+        we obtain the desired $\Gamma \vdash A \; \type$.
+
+   \end{itemize}
+    \end{comment}
+\end{proof}
+
+Those two lemmas allow us to consider rules in $\mathcal{T}_T$ with a premise $\Gamma \vdash A \,\type$ for all
+rules that require it. Indeed, it will be essential for us to apply the induction hypothesis in the proof
+of equivalence. Everything is condensed in the following lemma : 
+
+\begin{lemma}\label{Inversion1}\label{Inversion2}
+    We can remove the typing premises to the application, abstraction and $\Pi^n$ rule. This
+    new system is equivalent to the previous one. 
+
+    In the following proof of proposition \ref{mainuniverse}, we will use freely that we have the
+    typing hypothesises in the rule, but we will use the new rules to simplify the notations.
+\end{lemma}
+
+We also need the following lemma to modify derivations when we have a conversion judgment.
+
+\begin{lemma}\label{Transform}
+    If we have a derivation $\Gamma, A \vdash J$ and a convertibility derivation $\Gamma \vdash A = B$,
+    then we construct a derivation $\Gamma, B \vdash J$.
+\end{lemma}
+\begin{proof}
+    It results from the fact that $=$ is a congruence, and of the rule that gives $a:B$ when $a:A$ and $A=B$. Then,
+    it is shown by direct induction.
+\end{proof} 
+
+We also need this lemma that will be useful in the proof of the main lemma.
+
+\begin{lemma}[\formline{Equivalence.v}{8}{simplifyinduction}]\label{Utile}
+     Let's assume that : $\Gamma \vdash A_0 = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$ and 
+     $\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1$ with
+     $\Gamma \vdash v_0 = v_1 : \U_k$.
+
+     Then if $\Gamma \vdash A_0 = A_1$, we have : $\Gamma \vdash u_0 = u_1: A_0$.
+\end{lemma}
+
+\begin{proof}
+    Mostly direct using the conversion rules for liftings in $\mathcal{T}_T$. See the detailed proof in appendix \ref{proofmainuniverse}. 
+\end{proof}
+
+Now we state the main result, which is adapted from chapter 4 of \cite{Streicher},
+where he proves metatheoretical results.
+
+\begin{proposition}[\formline{Equivalence.v}{809}{eraseinjty}] \label{mainuniverse}
+    If $\Gamma \vdash A\; \type$, $\Gamma \vdash B\; \type$ in $\mathcal{T}_T$ and $|A| = |B|$, then $\Gamma \vdash A = B$.\\
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ and $|u_0| = |u_1|$ then
+    \begin{itemize}
+        \item Either $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
+        \item Or $\Gamma \vdash A_0 = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$ and 
+            $\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1$ with
+            $\Gamma \vdash v_0 = v_1 : \U_k$.
+    \end{itemize}
+\end{proposition}
+
+\begin{proof}
+    We prove the property by mutual induction, proving both statements at the same time. One of the key
+    property used is the injectivity of type formers. For instance, when treating the $\app$ case, we
+    get an equality of $\Pi$-types by induction hypothesis, and need to deduce the convertibility of the two
+    composing types. The proof also makes an extensive use of lemma \ref{Transform} to construct derivation
+    with the appropriate contexts when we have two premises. See appendix \ref{proofmainuniverse} for the detailed proof.
+\end{proof}
+
+Hence, we deduce the following corollary, which states that if we have two judgments
+in $\mathcal{T}_T$ which are syntactically equal in $\mathcal{T}_R$ (when removing coercions, liftings...), then
+they are provably convertible in $\mathcal{T}_T$. Hence, the Tarski system is not much stronger than
+the Russell one.
+
+\begin{corollary}[\formline{Equivalence.v}{1121}{eraseinjtermplus} Judgemental injectivity of erasure]
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ and $|u_0| = |u_1|$,
+    with the additional hypothesis $|A_0| = |A_1|$, then : $\Gamma \vdash A_0 = A_1$ and 
+    $\Gamma \vdash u_0 = u_1 : A_0$.
+\end{corollary}
+
+\begin{proof}
+    This is a direct application of the two previous lemmas.
+\end{proof}
+
+Now we prove the following theorem, stating the formal equivalence between the two systems:
+
+\begin{theorem}[\formline{Equivalence.v}{1358}{sectionctx} Section of erasure]\label{equT1T2}
+    If $\Gamma \vdash J$ in the system $\mathcal{T}_R$, then there exists a unique, up to conversion judgment
+    $\Gamma_1 \vdash J_1$ in the system $\mathcal{T}_T$ such that $|\Gamma_1| = \Gamma$ and $|J_1| = J$.
+\end{theorem}
+
+\begin{proof}
+    Uniqueness up to conversion follows directly from the previous lemma. We prove existence
+    by induction, by making an extensive use of the previous lemma for rules with two premises. Indeed,
+    when using the induction hypothesis on two premises, we need to make sure that the same types have 
+    the same translations. See detailed proof in appendix.
+\end{proof}
+
+Hence, we showed the equivalence of the two systems, and thus we can give categorial semantics rigorously
+to the system $\mathcal{T}_R$ "à la Russell", with CWFs.
+
+\subsection{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : finally GAT and PTS}
+
+We define the $\strip$ function, which erases type annotations from a term of the system $\mathcal{T}_R$, and gives a term of $\mathcal{T}_P$.
+This function is analogous to the one defined in \cite{Streicher}.
+
+\begin{definition}
+    $\strip$ is defined inductively by :
+
+    \begin{itemize}
+        \item $\strip(\lambda (A,B,b)) = \lambda \; (A, \strip(b))$ 
+        \item $\strip(\app (A,B,c,a)) = \strip(c) \; \strip(a)$.
+        \item $\strip(\Pi(A,B)) = \Pi(\strip(A), \strip(B))$.
+        \item $\strip(\U_n) = \U_n$
+    \end{itemize}
+\end{definition}
+
+We have quite easily : 
+
+\begin{theorem}
+    If $\Gamma \vdash J$ in $\mathcal{T}_R$, then we have a derivation $\strip(\Gamma) \vdash \strip(J)$ in $\mathcal{T}_P$.
+\end{theorem}
+\begin{proof}
+    We just need to prove that the stripping of rules in $\mathcal{T}_R$ are admissible in $\mathcal{T}_P$, and we just need 
+    to inspect each rule. Then, the theorem is deduced by an induction on the derivation
+    which replaces rules in $\mathcal{T}_R$ by the admissible ones in $\mathcal{T}_P$.
+\end{proof}
+
+
+Hence, like in \cite{Streicher}, we prove the following lemma.
+
+\begin{lemma}\label{streichT2T2'}
+
+    We have :
+    \begin{itemize}
+        \item If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
+            with $\strip(u_0) = \strip(u_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$.
+        \item If $\Gamma \vdash A \, \type$ and $\Gamma \vdash B \, \type$ with $\strip(A) = \strip(B)$, then we have
+            $\Gamma \vdash A = B$.
+    \end{itemize}
+\end{lemma}
+
+\begin{proof}    
+    Here, again we prove the two statements simultaneously, by mutual induction. The proof is similar to the
+    one of proposition \ref{mainuniverse}. See appendix for the detailed proof.
+\end{proof}
+
+And we show the following theorem :
+
+\begin{theorem}\label{equT2T2'}
+    If $\Gamma \vdash J$ in $\mathcal{T}_P$, then we have a unique up to conversion judgment 
+    $\Gamma' \vdash J'$ in $\mathcal{T}_R$ such that $\strip(\Gamma') = \Gamma$ and $\strip(J') = J$.
+\end{theorem}
+\begin{proof}
+    By induction on the derivation $\Gamma \vdash J$, with the previous lemma, we construct a derivation in $\mathcal{T}_R$.
+    The main point is that the typing annotations can be inferred from the derivation, and that the previous lemma gives
+    us uniqueness for rules with two premises. See appendix for the detailed proof.
+\end{proof}
+
+We can also relax the rules of our system $\mathcal{T}_P$ to remove "$A \; \type$" judgments. 
+In fact, we observe that the following rules are redundant.
+
+\begin{lemma}\label{ruleuniverse}
+    The rules for $\Gamma \vdash \U_n \, \type$ and $\Gamma \vdash \Pi(A,B) \, \type$ are redundant
+    because of the following rule :
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Gamma \vdash A : \U_n$}
+        \UnaryInfC{$\Gamma \vdash A \; \type$}
+        \end{prooftree}
+\end{lemma}
+
+\begin{proof}
+
+        For the rule :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_1$}
+        \UnaryInfC{$\Gamma \vdash C \, \type$}
+        \AxiomC{$\Pi_2$}
+        \UnaryInfC{$\Gamma,C \vdash D \, \type$}
+        \BinaryInfC{$\Gamma \vdash \Pi(C,D) \; \type$}
+        \end{prooftree}
+
+        When we translate the premises, we get $\Gamma \vdash C : \U_{n_1}$ and $\Gamma,C \vdash D :\U_{n_2}$, with
+        not necessarily $n_1 = n_2$. By taking $n := \max(n_1,n_2)$, and replacing the premises with
+        the appropriate rules for cumulativity, we get  $\Gamma \vdash \Pi \,C \,D : \U_n$.
+\end{proof}
+
+Hence, we remove those rules in the system $\mathcal{T}_R$, and get a system with no
+"well-formed type" judgments ("$A$ type"). We can also consider named variables
+instead of de Bruijn indices. Hence, we get a theory really close to a pure type
+system, with the additional rule for cumulativity :
+
+\begin{prooftree}
+    \AxiomC{$\Gamma \vdash A : \U_n$}
+    \RightLabel{($n<p$)}
+    \UnaryInfC{$\Gamma \vdash A : \U_p$}
+\end{prooftree}
+
+\section{Extending the results}
+
+One thing to mention, is that in the system with Russell universes, typing is not closed under
+$\eta$ reduction, as shown in the following :
+
+\begin{example}
+    In the context $x : \U_1 \rightarrow \U_1$, we have $\lambda_{y:\U_0} (x y) : \U_0 \rightarrow \U_2$ but we 
+    \textit{do not have} $x: \U_0 \rightarrow \U_2$.
+\end{example}
+
+However, we believe that this property is not that essential for a type theory.\\
+
+We can extend the proof of normalisation to a theory with identity types.
+Hence, we still get injectivity of $\Pi$-types and universes, which were the crucial lemmas for our equivalence result.
+Hence, the proof directly adapts to a theory with univalence taken as an axiom i.e where we work in the context $U \vdash$.
+
+It would also be great if the equivalence result still holds when adding general inductive
+    types. However, a thing that could go wrong would be canonicity, according to \cite{Luo}. But the counter-example he provides makes use of the fact that subtyping propagates along constructors : $A \leq B$ implies $\lst(A) \leq \lst(B)$, so
+for our system with cumulative universes it would mean that $\lst(\U_0) \leq \lst(\U_1)$. This breaks canonicity,
+and allow to define a coercion function $c_k^l : \lst(\U_k) \rightarrow \lst(\U_l)$ which do not satisfy $c_1^2(c_0^1(l)) = c_0^2(l)$.
+
+Hence, we believe that such a subtyping propagation is not desirable for our theory. 
+This is also true for $\Pi$-types, the relation $B \leq B'$ implying $\Pi(A,B) \leq \Pi(A,B')$
+is not true in the Set model, or at least unclear depending on the encoding of application in the set theory. 
+If we do not impose such propagation of cumulativity, the equivalence proof still holds and we still have canonicity,
+as the proof of \cite{Coq19} extends to general inductive types.
+However, there are some cases where structural subtyping could be useful, as described
+in the paper \cite{subtyping}.
+
+When adding an impredicative universe of proof-irrelevant propositions such as it is done in \cite{Coq21}, we 
+still get the equivalence result for such a system, which is close to the one used in Lean.
+
+\subsection{Universe polymorphism}
+
+We want to extend the equivalence result to a theory with universe polymorphism.
+In fact, one often wants to prove theorems uniformly  for arbitrary universes. 
+Thus, we need a way to describe universe levels and constraints explicitly,
+while keeping decidability of equality. The system described in \cite{polymorphism}
+fulfills those requirements. Nevertheless, normalisation for such a system has not been
+proven yet, even if it is conjectured that it could be proven by an extension of the
+gluing proof, with a notion of model that will be described in a forthcoming paper 
+from Bezem et al.\\
+
+If we assume that such a proof holds, we get injectivity of type formers,
+and we adapt our equivalence proof to a system with universe polymorphism.
+In fact, we just have to look at the rules closely to make sure that the inductions 
+will still work. This work is done in appendix \ref{polyeq}. 
+\section{Conclusion}
+
+To conclude, we proved that the GAT and PTS presentations of type theory are equivalent, and
+that the latter is also initial as CWF models. Notably, Tarski and Russell 
+presentations of cumulative universes are equivalent for a theory with $\beta\eta$
+judgmental conversion and common inductive types, and this work extend with universe polymorphism.
+
+Those equivalence result are fundamental to justify the informal use of Russell universes in type theory. Also,
+this new proof relies on normalisation, which is a strong result, yet it is still elementary and modular. We believe
+that it could be adapted to many extensions of the theory presented in this paper.
+
+
+\begin{comment}
+------- Former version  : removing abstraction annotation --------
+If we want to remove the type annotation from the variable in abstractions, we first need 
+to normalise the judgment, as removing this annotation can lead to multiple non
+convertible derivations for the same judgment, as shown by the following example :
+    
+    \begin{itemize}
+        \item $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_n)$ is derivable.
+        \item $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_p)$ is derivable as well, with $n<p$, and is not convertible to
+            the first one.
+        \item $t :\U_n \vdash (\lambda \,y.t) \; (\lambda \,x.x) : \U_n$ is derivable
+    \end{itemize}
+
+Hence, we will map from normal derivations, and will need the following lemma, on 
+an extended version of $\strip$ which maps $\strip(\lambda(A,B,b)) = \lambda \; b$
+
+\begin{lemma}
+    If $\strip(u)=\strip(v)$ then we have $\strip(\nf(u)) = \strip(\nf(v))$. 
+\end{lemma}
+\begin{proof}
+    We show this property by induction on the term $u$, reasoning by case analysis.
+    The crucial part in this demonstration is that the normalisation by evaluation function
+    $\nf$ must commute with types and terms constructors.\\
+
+    \begin{itemize}
+        \item If $u = \app(A,B,c,a)$, then we have $\strip(u)=\strip(v) = \strip(c) \, \strip(a)$ that gives 
+            $v = \app(A',B',c',a')$ with $\strip(c') = \strip(c)$ and $\strip(a') = \strip(a)$.
+
+            Then, we consider two cases :\\
+
+            \underline{Second case :} If $c$ is neutral, then $\nf(u) = u$ and the result follows immediately.
+
+            \underline{First case :} If $c$ is not neutral, then $\nf(u) = \nf(c)[\nf(a)]$,
+            and thus $\strip(\nf(u)) = \strip(\nf(c))[\strip(\nf(a))]$ as we easily show by induction that $\strip(a[b]) = \strip(a)[\strip(b)]$.
+
+            Then by induction hypothesis, we get $\strip(\nf(c)) = \strip(\nf(c'))$ and the same for $a'$,
+            hence we have: $\strip(\nf(u)) = \strip(\nf(v))$
+
+        \item If $u = \lambda(A,B,b)$, then $v = \lambda(A',B',b')$ with $\strip(b') = \strip(b)$.
+
+            Then, $\nf(u) = \lambda(A,B,\nf(b))$ and $\nf(v) = \lambda(A',B',\nf(b')$. By induction, we have $\strip(\nf(b)) = \strip(\nf(b'))$
+            and it follows that $\strip(\nf(u)) = \lambda(A,\strip(\nf(b))) = \strip(\nf(v))$.
+        
+        \item If $u = \Pi(A,B)$, then $v = \Pi(A',B')$ with the corresponding strippings, and we have the result by the induction
+            hypothesis.
+
+        \item If $u = \U_n$ or $u = v_i$, the result is trivial.
+
+
+    \end{itemize}
+\end{proof}
+
+Then we show the crucial lemma.
+
+\begin{lemma}
+    We have the two statements :
+
+    \begin{itemize}
+        \item  If $\Gamma \vdash A \, \type$ and $\Gamma \vdash B \, \type$, then $\Gamma \vdash A = B$.
+        \item  If $\Gamma \vdash t : A$ and $\Gamma \vdash s : B$, then $\Gamma \vdash t = s : A$.
+    \end{itemize}
+\end{lemma}
+
+\begin{proof}
+    To prove this lemma, we will first prove it on $\beta$-normal terms and types, as said
+    previously. Like in \cite{Streicher}, we consider the sets of syntactical expressions N and NA, given by :
+
+    \[
+        \NA ::= v_i \; | \; \app(\NA,\N)
+    \]
+    \[
+        \N ::= \NA \; | \; \lambda x.\N \; | \; \Pi (x:\N).\N \; | \; \U_n
+    \]
+
+    We observe that the strippings of normal forms is included in the set $\N$.
+    Hence, we show the following statements by mutual induction :
+
+    \begin{enumerate}
+        \item If $\Gamma \vdash t: A$ and $\Gamma \vdash s : B$ with $\strip(t) = \strip(s)$ contained in NA,
+            then $\Gamma \vdash t = s : A$.
+        \item If $\Gamma \vdash t: A$ and $\Gamma \vdash s : A$ with $\strip(t) = \strip(s)$ contained in N,
+            then $\Gamma \vdash t = s : A$.
+        \item If $\Gamma \vdash A \, \type$ and $\Gamma \vdash B \, \type$ with $\strip(A) = \strip(B)$ contained in N,
+            then $\Gamma \vdash A = B$.
+    \end{enumerate}
+
+    Hence, we first reason by induction on the term $t$ :
+    \begin{itemize}
+        \item
+    \end{itemize}
+
+\end{proof}
+\end{comment}
+
+\bibliographystyle{plain}
+\bibliography{main}
+
+\appendix
+
+\section{Appendix : Type systems}
+
+\subsection{The system $\mathcal{T}_T$ : Tarski universes}
+
+We specify the system $\mathcal{T}_T$ with derivation rules, which directly translates the equations
+of section $2$. This formulation with rules will be useful to prove properties by induction.
+We start with the "typing" judgments $a : A$ and the well-formed type judgment $A \;\type$ :
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\UnaryInfC{$\Gamma.A \vdash v_0 : A\p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $v_n:A$}
+\AxiomC{$\Gamma \vdash$ $B$ type}
+\BinaryInf$\Gamma.B \fCenter v_{n+1} : A\p$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\AxiomC{$\Gamma.A \vdash$ $B$ type}
+\BinaryInf$\Gamma \fCenter \Pi(A, B) \; \type$
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$ }
+\AxiomC{$\Gamma.A \vdash B \, \type$ }
+\AxiomC{$\Gamma \vdash A \, \type$ }
+\TrinaryInfC{$\Gamma \vdash \lambda(A,B,b) : \Pi (A, B)$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $c:\Pi(A, B)$}
+\AxiomC{$\Gamma.A \vdash$ $a: A$}
+\AxiomC{$\Gamma.A \vdash B \, \type$ }
+\AxiomC{$\Gamma \vdash A \, \type$}
+\QuaternaryInfC{$\Gamma \vdash \app(A,B,c,a) : B[a]$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash \U_n$ type}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a: \U_n$}
+\AxiomC{$\Gamma.T_n(a) \vdash$ $b: \U_n$}
+\AxiomC{$\Gamma \vdash T_n(a) \, \type$}
+\TrinaryInfC{$\Gamma \vdash \Pi^n \, a \, b: \U_n$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a:\U_n$}
+\UnaryInfC{$\Gamma \vdash T_n(a)$ type}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\RightLabel{($m<n$)}
+\UnaryInfC{$\Gamma \vdash \U_m^n: \U_n$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a: \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$\Gamma \vdash t_m^n(a): \U_p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a: A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \fCenter a:B$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+We also have the following conversion rules : 
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=a' : A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \fCenter a=a':B$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\AxiomC{$\Gamma \vdash$ $A = C$}
+\BinaryInf$\Gamma \fCenter B = C$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A$ type}
+\UnaryInfC{$A=A$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=b : A$}
+\AxiomC{$\Gamma \vdash$ $a=c : A$}
+\BinaryInf$\Gamma \fCenter b=c:A$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$a:A$}
+\UnaryInfC{$a=a:A$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = A'$}
+\AxiomC{$\Gamma.A \vdash$ $B = B'$}
+\BinaryInf$\Gamma \fCenter \Pi(A, B) = \Pi(A', B')$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$}
+\AxiomC{$\Gamma \vdash$ $a:A$}
+\RightLabel{($\beta$-rule)}
+\BinaryInf$\Gamma \fCenter \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$f: \Pi \; A \; B$}
+\RightLabel{($\eta$-rule)}
+\UnaryInfC{$f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a = a': \U_n$}
+\UnaryInfC{$\Gamma \vdash T_n(a) = T_n(a')$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a = a': \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$\Gamma \vdash t_n^p(a) = t_n^p(a'): \U_p$}
+\end{prooftree}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a: \U_n$}
+\AxiomC{$\Gamma,T_n(a) \vdash b: \U_n$}
+\BinaryInfC{$T_n(\Pi^n \, a \, b) = \Pi(T_n(a),T_n(b))$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a: \U_n$}
+\AxiomC{$\Gamma,T_n(a) \vdash b: \U_n$}
+\RightLabel{($n<p$)}
+\BinaryInfC{$t_n^p(\Pi^n \, a \, b) = \Pi^p(t_n^p(a),t_n^p(b))$}
+\end{prooftree}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash T_n(\U_m^n) = \U_m$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\RightLabel{($n<p$)}
+\UnaryInfC{$\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p$}
+\end{prooftree}
+\end{minipage}
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a : \U_m$}
+\RightLabel{($n<m$)}
+\UnaryInfC{$\Gamma \vdash T_n(t_m^n(a)) = T_m(a)$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a : \U_m$}
+\RightLabel{($m<n<p$)}
+\UnaryInfC{$\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p$}
+\end{prooftree}
+\end{minipage}
+\vspace{2em}
+
+We also require the rules that makes $=$ a congruence, even if we don't precise them all.
+
+\subsection{The system $\mathcal{T}_G$ : explicit substitutions}
+
+The system $\mathcal{T}_G$ is really close to $\mathcal{T}_T$, the only difference is that substitiutions
+are explicit : they appear directly in the syntax.
+Hence, the syntax is given by :
+
+\[
+    \Gamma,\Delta ::= () \; | \; \Gamma.A
+\]
+\[
+    A,B ::=  \Pi \; A \; B \;|\; \U_n \; | \; T_n(a) \; | \; A \sigma
+\]
+\[
+    a,b ::= \app(A,B,c,a) \; | \; \lambda(A,B,b) \; | \; t_m^n(a) \; | \; \U_m^n \; | \; \Pi^n \, a \, b \; | \; \q_\Gamma \; | \; a\sigma 
+\]
+\[
+    \sigma , \delta ::= \sigma \delta \; | \; \Id_\Gamma \; | \; \p_{\Gamma,\Gamma.A} \; | \; [a] \; | \; \sigma^{+(A)}
+\]
+
+The rules are the same as $\mathcal{T}_T$, with only one modification for variables, that are replaced by the rule
+for $\q$ :
+
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\UnaryInfC{$\Gamma.A \vdash q_{\Gamma.A} : A\p_{\Gamma,\Gamma.A}$}
+\end{prooftree}
+
+\vspace{1em}
+
+Then, we have introduction rules for substitutions :
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$}
+\UnaryInfC{$\vdash \Id_\Gamma : \Gamma \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash A \, \type$}
+\UnaryInfC{$\vdash \p_{\Gamma,\Gamma.A} : \Gamma.A \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a:A$}
+\UnaryInfC{$\vdash [a] : \Gamma \rightarrow \Gamma.A$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\AxiomC{$\Gamma \vdash A \, \type$}
+\BinaryInfC{$\vdash \sigma^{+(A)}  : \Delta.A\sigma \rightarrow \Gamma.A$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\AxiomC{$\vdash \delta : \Theta \rightarrow \Delta$}
+\BinaryInfC{$\vdash \sigma \delta : \Theta \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\AxiomC{$\Gamma \vdash A \, \type$}
+\BinaryInfC{$\Delta \vdash A \sigma \, \type$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.20\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\AxiomC{$\Gamma \vdash t : A$}
+\BinaryInfC{$\Delta \vdash t \sigma \, \type$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{2em}
+
+And the conversion rules for substitutions :
+
+\vspace{2em}
+\noindent
+
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\UnaryInfC{$\vdash \sigma \Id_\Delta = \sigma : \Delta \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\UnaryInfC{$\vdash \Id_\Gamma \sigma = \sigma : \Delta \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash a = a' : A$}
+\UnaryInfC{$\vdash [a] = [a'] : \Gamma \rightarrow \Gamma.A$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+\noindent
+
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\AxiomC{$\vdash \delta : \Theta \rightarrow \Delta$}
+\AxiomC{$\vdash \nu : \Xi \rightarrow \Theta$}
+\TrinaryInfC{$\vdash (\sigma \delta)\nu = \sigma(\delta \nu) : \Xi \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma = \delta : \Delta \rightarrow \Gamma$}
+\AxiomC{$\vdash \sigma = \nu : \Delta \rightarrow \Gamma$}
+\BinaryInfC{$\vdash \sigma = \nu : \Delta \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+\noindent
+
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma = \sigma' : \Delta \rightarrow \Gamma$}
+\AxiomC{$\vdash \delta : \Theta \rightarrow \Delta$}
+\BinaryInfC{$\vdash \sigma\delta = \sigma'\delta : \Theta \rightarrow \Gamma$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\vdash \sigma = \sigma' : \Delta \rightarrow \Gamma$}
+\AxiomC{$\vdash \delta : \Gamma \rightarrow \Theta$}
+\BinaryInfC{$\vdash \delta\sigma = \delta\sigma' : \Delta \rightarrow \Theta$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash \Pi(A,B) \, \type$}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\BinaryInfC{$\Delta \vdash \Pi(A,B)\sigma = \Pi(A\sigma,B\sigma^{+(A)})$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+\noindent
+
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash \lambda(A,B,b) : \Pi(A,B)$}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\BinaryInfC{$\Delta \vdash \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^{+(A)},b\sigma^{+(A)}) : \Pi(A\sigma,B\sigma^{+(A)})$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash \app(A,B,c,a) : B[a]$}
+\AxiomC{$\vdash \sigma : \Delta \rightarrow \Gamma$}
+\BinaryInfC{$\Delta \vdash \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^{+(A)},c\sigma,a\sigma) : B\sigma[a\sigma]$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\subsection{The system $\mathcal{T}_R$ : Russell with annotations}
+
+We specify the system $\mathcal{T}_R$, which is similar to $\mathcal{T}_T$, the only difference being that
+this system has Russell universes instead of Tarski ones. 
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\UnaryInfC{$\Gamma.A \vdash v_0 : A\p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $v_n:A$}
+\AxiomC{$\Gamma \vdash$ $B$ type}
+\BinaryInf$\Gamma.B \fCenter v_{n+1} : A\p$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\AxiomC{$\Gamma.A \vdash$ $B$ type}
+\BinaryInf$\Gamma \fCenter \Pi(A, B) \; \type$
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$ }
+\UnaryInfC{$\Gamma \vdash \lambda(A,B,b) : \Pi (A, B)$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $c:\Pi(A, B)$}
+\AxiomC{$\Gamma.A \vdash$ $a: A$}
+\BinaryInf$\Gamma \fCenter \app(A,B,c,a) : B[a]$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash \U_n$ type}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash A:\U_n$}
+\UnaryInfC{$\Gamma \vdash A$ type}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A: \U_n$}
+\AxiomC{$\Gamma.A \vdash$ $B: \U_n$}
+\BinaryInf$\Gamma \fCenter \Pi(A, B): \U_n$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\RightLabel{($m<n$)}
+\UnaryInfC{$\Gamma \vdash \U_m: \U_n$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash A: \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$\Gamma \vdash A: \U_p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a: A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \fCenter a:B$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+We also have the following conversion rules : 
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=a' : A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \vdash\fCenter a=a':B$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\AxiomC{$\Gamma \vdash$ $A = C$}
+\BinaryInf$\Gamma \vdash\fCenter B = C$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A$ type}
+\UnaryInfC{$A=A$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=b : A$}
+\AxiomC{$\Gamma \vdash$ $a=c : A$}
+\BinaryInf$\Gamma \vdash\fCenter b=c:A$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$a:A$}
+\UnaryInfC{$a=a:A$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = A'$}
+\AxiomC{$\Gamma.A \vdash$ $B = B'$}
+\BinaryInf$\Gamma \fCenter \Pi(A, B) = \Pi(A', B')$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$}
+\AxiomC{$\Gamma \vdash$ $a:A$}
+\RightLabel{($\beta$-rule)}
+\BinaryInf$\Gamma \fCenter \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$f: \Pi \; A \; B$}
+\RightLabel{($\eta$-rule)}
+\UnaryInfC{$f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0) : \Pi(A, B)$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A = A': \U_n$}
+\UnaryInfC{$A = A'$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A = A': \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$A = A': \U_p$}
+\end{prooftree}
+\end{minipage}
+\vspace{2em}
+
+We also require the rules that makes $=$ a congruence, even if we don't precise them all.
+
+\subsection{The system $\mathcal{T}_P$ : Russell without annotations}
+
+We specify the system $\mathcal{T}_P$, which is the same as the system $\mathcal{T}_R$, but without
+typing annotations.
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\UnaryInfC{$\Gamma.A \vdash v_0 : A\p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $v_n:A$}
+\AxiomC{$\Gamma \vdash$ $B$ type}
+\BinaryInf$\Gamma.B \fCenter v_{n+1} : A\p$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A$ type}
+\AxiomC{$\Gamma.A \vdash$ $B$ type}
+\BinaryInf$\Gamma \fCenter \Pi \, A \,B \;\; \type$
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$ }
+\UnaryInfC{$\Gamma \vdash \lambda \; A \; b : \Pi \, A \, B$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $c:\Pi \, A\, B$}
+\AxiomC{$\Gamma.A \vdash$ $a: A$}
+\BinaryInf$\Gamma \fCenter c\; a : B[a]$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash \U_n$ type}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash A:\U_n$}
+\UnaryInfC{$\Gamma \vdash A$ type}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A: \U_n$}
+\AxiomC{$\Gamma.A \vdash$ $B: \U_n$}
+\BinaryInf$\Gamma \fCenter \Pi \, A \, B : \U_n$
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{}
+\RightLabel{($m<n$)}
+\UnaryInfC{$\Gamma \vdash \U_m: \U_n$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash A: \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$\Gamma \vdash A: \U_p$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a: A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \fCenter a:B$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+We also have the following conversion rules : 
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=a' : A$}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\BinaryInf$\Gamma \vdash\fCenter a=a':B$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = B$}
+\AxiomC{$\Gamma \vdash$ $A = C$}
+\BinaryInf$\Gamma \vdash\fCenter B = C$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A$ type}
+\UnaryInfC{$A=A$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $a=b : A$}
+\AxiomC{$\Gamma \vdash$ $a=c : A$}
+\BinaryInf$\Gamma \vdash\fCenter b=c:A$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$a:A$}
+\UnaryInfC{$a=a:A$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.30\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma \vdash$ $A = A'$}
+\AxiomC{$\Gamma.A \vdash$ $B = B'$}
+\BinaryInf$\Gamma \fCenter \Pi \, A \, B = \Pi \, A' \, B'$ 
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$\Gamma.A \vdash$ $b: B$}
+\AxiomC{$\Gamma \vdash$ $a:A$}
+\RightLabel{($\beta$-rule)}
+\BinaryInf$\Gamma \fCenter ((\lambda \;A \;b) \; a) = b[a] : B[a]$ 
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$f: \Pi \; A \; B$}
+\RightLabel{($\eta$-rule)}
+\UnaryInfC{$f = \lambda \; A \; (f\p \; v_0) : \Pi \, A \, B$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\noindent
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A = A': \U_n$}
+\UnaryInfC{$A = A'$}
+\end{prooftree}
+\end{minipage}
+\hfill
+\begin{minipage}{0.50\linewidth}
+\begin{prooftree}
+\def\fCenter{\mbox{\ $\vdash$\ }}
+\AxiomC{$A = A': \U_n$}
+\RightLabel{($n<p$)}
+\UnaryInfC{$A = A': \U_p$}
+\end{prooftree}
+\end{minipage}
+
+\vspace{1em}
+
+\section{Detailed equivalence proofs}
+
+\subsection{$\mathcal{T}_T$ and $\mathcal{T}_R$}
+We give the detailed proof for the two main lemmas : 
+
+\begin{proof} (Of lemma \ref{Utile})\\
+
+    We have $\Gamma \vdash A_0 = A_1$, using the rule for transitivity we have 
+    $\Gamma \vdash \U_{n_0} = \U_{n_1}$ and necessarily : $n_0 = n_1$, written $n$.
+
+    Then, using $\Gamma \vdash u_0 = t_k^{n}(v_0) : A_0$ and $\Gamma \vdash u_1 = t_k^{n}(v_1) : A_1$,
+    we use the rule for type equality that gives us the same derivations with $A_0$ in both. Moreover,
+    we transform the $\Gamma \vdash v_0 = v_1 : \U_k$ derivation to : $\Gamma \vdash t_k^n (v_0) = t_k^n (v_1) : \U_n$.
+    Finally, considering $\Gamma \vdash A_0 = U_n$, we use transitivity to obtain : $\Gamma \vdash u_0 = u_1 : A_0$.\\
+\end{proof}
+
+\begin{proof} \label{proofmainuniverse} (Of proposition \ref{mainuniverse})\\
+
+    We prove the lemma by mutual induction, proving both statements at the same time.\\
+    
+    First, let's reason by induction on the lexicographical order based on first the term $u_0$ and then on the derivation $\Gamma \vdash u_0: A_0$. 
+
+    \begin{itemize}
+
+    \item There is one rule that can always be applied, and justified the choice of the lexicographical order
+        for the induction :
+
+        \begin{prooftree}
+            \AxiomC{$\Pi$}
+            \UnaryInfC{$\Gamma \vdash u_0 : A_0'$}
+            \AxiomC{$\Pi'$}
+            \UnaryInfC{$\Gamma \vdash A_0' = A_0$}
+            \BinaryInfC{$\Gamma \vdash u_0 : A_0$}
+        \end{prooftree}
+
+        Then, we just have to apply the induction hypothesis on $\Pi$, and transitivity with $\Pi'$ to get the desired result.
+
+    \item If $u_0$ is a $\lambda$-abstraction, then by inversion, the derivation $\Gamma \vdash u_0 : A_0$
+        looks like :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_0$}
+    \UnaryInfC{$\Gamma, C_0 \vdash b_0 : B_0$}
+    \UnaryInfC{$\Gamma \vdash \lambda(C_0, B_0, b_0): \Pi (C_0,  B_0)$}
+    \end{prooftree}
+
+    Then $|u_0| = \lambda(|C_0|, |B_0|, |b_0|) = |u_1|$ and so $u_1$ is necessarily
+    an abstraction : $u_1 = \lambda(C_1, B_1, b_1)$ with $|C_1| = |C_0|$, $|B_1| = |B_0|$, $|b_1| = |b_0|$.
+    Also, by inversion $\Gamma \vdash u_1 : A_1$ is necessarily :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_1$}
+    \UnaryInfC{$\Gamma, C_1 \vdash b_1 : B_1$}
+    \UnaryInfC{$\Gamma \vdash \lambda(C_1; B_1, b_1): \Pi (C_1, B_1)$}
+    \end{prooftree}
+
+    With lemma \ref{Inversion1} and the first case of the induction hypothesis, we deduce that $\Gamma \vdash C_0 = C_1$.
+    Then, we modify the derivation $\Pi_1$ using lemma \ref{Transform} to get a derivation
+    $\Gamma,C_0 \vdash b_1 : B_1$. Thus, we use the induction hypothesis along with lemmas \ref{Inversion1} and \ref{Utile} to 
+    get $\Gamma \vdash b_1 = b_0 : B_0$. Then, with the rule on conversion of product types we finally get : 
+    $\Gamma \vdash A_0 = A_1$, and with the one for $\lambda$-abstractions we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$.
+
+    \item If $u_0$ is an application, then by inversion, the last rule applied in $\Gamma \vdash u_0 : A_0$ is :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_0$}
+    \UnaryInfC{$\Gamma \vdash$ $c_0 : \Pi (C_0, B_0)$}
+    \AxiomC{$\Pi_0'$}
+    \UnaryInfC{$\Gamma \vdash$ $a_0 : C_0$}
+    \BinaryInf$\Gamma \fCenter \app(C_0, B_0, c_0, a_0,) : B_0[a_0]$ 
+    \end{prooftree}
+
+    Then $|u_0| = \app(|C_0|, |B_0|, |c_0|, |a_0|) = |u_1|$ and so $u_1$ is necessarily an application :
+    $u_1 = \app(C_1, B_1, c_1, a_1)$ with $|C_1| = |C_0|$, $|B_1| = |B_0|$, $|c_1| = |c_0|$, $|a_1| = |a_0|$.
+    Also, by inversion : $\Gamma \vdash u_1 : A_1$ is necessarily :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_1$}
+    \UnaryInfC{$\Gamma \vdash$ $c_1 : \Pi (C_1, B_1)$}
+    \AxiomC{$\Pi_1'$}
+    \UnaryInfC{$\Gamma \vdash$ $a_1 : C_1$}
+    \BinaryInf$\Gamma \vdash\fCenter \app(C_1, B_1, c_1, a_1,) : B_1[a_1]$ 
+    \end{prooftree}
+
+    And so by lemma \ref{Inversion1} and the induction hypothesis we get a premise $\Gamma \vdash \Pi(C_0,B_0) = \Pi(C_1,B_1)$. Hence
+    with lemma \ref{Utile} and the induction hypothesis, we deduce : $\Gamma \vdash c_0 = c_1 : \Pi(C_0,B_0)$.
+    Also, by using $\Pi$-injectivity, we get : $\Gamma \vdash C_0 = C_1$ and $\Gamma \vdash B_0 = B_1$.\\
+
+    We also get that $\Gamma : a_0 = a_1 : C_0$ with the induction hypothesis and the previous lemma applied on $\Pi_0'$ and $\Pi_1'$. Finally, with the convertibility rule for $\app$, and the substitution lemma,
+    we get the desired $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$.
+
+    \item If $u_0$ is a lifting function, then by inversion we have : 
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi$}
+    \UnaryInfC{$\Gamma \vdash a : \U_m$}
+    \RightLabel{($m<n$)}
+    \UnaryInfC{$\Gamma \vdash t_m^n(a) : U_n$}
+    \end{prooftree}
+    
+    Then $|u_0| = |a| = |u_1|$, and with the induction hypothesis on $\Gamma \vdash a : \U_m$ and
+    $\Gamma \vdash u_1 : A_1$, we get two cases.\\
+
+    \underline{First case :} We have $\Gamma \vdash \U_m = A_1$ and $\Gamma \vdash a = u_1 : \U_m$.
+    Then immediately we have $\Gamma \vdash A_0 = \U_n$, $\Gamma \vdash A_1 = \U_m$ and
+    $\Gamma \vdash u_0 = t_m^n(a) : A_0$, $\Gamma \vdash u_1 = t_m^m(a) : A_1$ with 
+    $\Gamma \vdash a = a : \U_m$ by the reflexivity rule.\\
+
+    \underline{Second case :} We have $\Gamma \vdash \U_m = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$ and
+    $\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1$ with 
+    $\Gamma \vdash v_0 = v_1 : U_k$. Then necessarily : $n_0 = m$ and we have with the right rules :
+    $\Gamma \vdash u_0 = t_m^n(t_k^m(v_0)) : U_n$. Hence, with the rule that simplifies lifting operators,
+    $\Gamma \vdash u_0 = t_k^n(v_0):\U_n$ which is what we wanted as $A_0 = \U_n$.
+
+    \item If $u_0$ is a code for a product type, then by inversion : 
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_0$}
+    \UnaryInfC{$\Gamma \vdash$ $a_0 : \U_{n_0}$}
+    \AxiomC{$\Pi_0'$}
+    \UnaryInfC{$\Gamma, T_{n_0}(a_0) \vdash$ $b_0 : \U_{n_0}$}
+    \BinaryInf$\Gamma \fCenter \Pi^{n_0} \, a_0 \, b_0 : \U_{n_0}$ 
+    \end{prooftree}
+
+    Then $|u_0| = \Pi |a_0| |b_0| = |u_1|$ and so $u_1$ is necessarily a code for
+    a dependent product : $u_1 = \Pi^{n_1} \,a_1 \,b_1$ with $|a_1| = |a_0|$ and $|b_1| = |b_0|$.
+    Moreover, by inversion, the derivation $\Gamma \vdash u_1 : A_1$ is :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_1$}
+    \UnaryInfC{$\Gamma \vdash$ $a_1 : \U_{n_1}$}
+    \AxiomC{$\Pi_1'$}
+    \UnaryInfC{$\Gamma, T_{n_1}(a_1) \vdash$ $b_1 : \U_{n_1}$}
+    \BinaryInf$\Gamma \fCenter \Pi^{n_1} \, a_1 \, b_1 : \U_{n_1}$ 
+    \end{prooftree}
+
+    We have premises $\Gamma \vdash T_{n_0}(a_0) \; \type$ and $\Gamma \vdash T_{n_0}(a_0) \; \type$
+    because of the lemma \ref{Inversion2}. Hence, we apply the induction hypothesis 
+    to get $\Gamma \vdash T_{n_0}(a_0) = T_{n_1}(a_1)$. Hence by lemma \ref{Transform} and the induction hypothesis
+    on $\Pi_0'$ and $\Pi_1'$, as well as on $\Pi_0$ and $\Pi_1$, we get three cases. 
+
+    \underline{First case :} If we have $\Gamma \vdash \U_{n_0} = \U_{n_1}$
+    and $\Gamma \vdash b_0 = b_1 : \U_n$, then  with the induction hypothesis and lemma \ref{Utile}, we easily
+    get $\Gamma \vdash a_0 = a_1$.Thus, we get with the convertibility rule for $Pi^n$ terms, the desired 
+    $\Gamma \vdash u_0 = u_1 : \U_{n_0}$.\\
+
+    % TODO : Il manque une hypothèse $T_n (a)$ dans le contexte, modifier la preuve... c'est plus compliqué que prévu.
+    % => Cf preuve Rocq
+
+    \underline{Second case :} If we have $\Gamma \vdash \U_{n_0} = \U_{n_1}$
+    and $\Gamma \vdash a_0 = a_1 : \U_n$. Then we do an analogous proof as in the first case.\\
+
+    \underline{Third case :} We have $\Gamma \vdash \U_{n_0} = \U_{n_0'}$ and $\Gamma \vdash \U_{n_1} = \U_{n_1'}$,
+    $\Gamma \vdash b_0 = t_{k}^{n_0}(c_0)$ and $\Gamma \vdash b_1 = t_{k}^{n_1}(c_1)$, with $\Gamma \vdash c_0 = c_1 : \U_k$.
+    And also :  $\Gamma \vdash a_0 = t_{l}^{n_0}(d_0)$ and $\Gamma \vdash a_1 = t_{l}^{n_1}(d_1)$, with $\Gamma \vdash d_0 = d_1 : \U_k$.
+
+
+    Then, necessarily $n_0' = n_0$ and $n_1' = n_1$. We take $m = \max(k,l)$, and construct derivations
+    $\Gamma \vdash b_0 = t_{m}^{n_0}(t_k^m(c_0))$ and $\Gamma \vdash b_1 = t_{m}^{n_1}(t_k^m(c_1))$, with $\Gamma \vdash t_k^m(c_0) = t_k^m(c_1) : \U_m$.
+    And also :  $\Gamma \vdash a_0 = t_{m}^{n_0}(t_l^m(d_0))$ and $\Gamma \vdash a_1 = t_{m}^{n_1}(t_l^m(d_1))$, with $\Gamma \vdash t_l^m(d_0) = t_l^m(d_1) : \U_k$.
+    Finally, we use the rule which propagates coercions along $\Pi^{n_1}$ and $\Pi^{n_0}$ to get the second case of our lemma.
+
+    \item If $u_0$ is a code for a universe, then by inversion :
+        
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{}
+    \UnaryInfC{$\Gamma \vdash \U_m^{n_0} : \U_{n_0}$}
+    \end{prooftree}
+
+    Then $|u_0| = \U_m = |u_1|$ so $u_1 = \U_m^{n_1}$ or $u_1 = t_l^{n_1} (\U_m^l)$.\\
+
+    % TODO : Pas vraiment, on peut avoir $u_1 = t_l^{n_1} (t)$ avec t plus compliqué.
+    % => Cf preuve Rocq
+
+    \underline{First case :} We have $u_1 = \U_m^{n_1}$. Then we define $k := \min(n_0, n_1)$ and we have
+    the following derivations : $\Gamma \vdash A_0 = \U_{n_0}$ and $\Gamma \vdash A_1 = \U_{n_1}$, along with
+    $\Gamma \vdash u_0 = t_k^{n_0} (\U_m^k)$ and $\Gamma \vdash u_1 = t_k^{n_1} (\U_m^k)$, with $\Gamma \vdash \U_m^k = \U_m^k : \U_k$.\\
+
+    \underline{Second case :} We have $u_1 = t_l^{n_1} (\U_m^l)$, and we define $k := \min(l,n_0)$. So that we have the following
+    derivations : $\Gamma \vdash A_0 = \U_{n_0}$ and $\Gamma \vdash A_1 = \U_{n_1}$, along with
+    $\Gamma \vdash u_0 = t_k^{n_0} (\U_m^k)$ and $\Gamma \vdash u_1 = t_k^{n_1} (\U_m^k)$, with  $\Gamma \vdash \U_m^k = \U_m^k : \U_k$.
+
+    \item If $u_0$ is $v_0$, then by inversion :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_0$}
+    \UnaryInfC{$\Gamma \vdash B_0$ type}
+    \UnaryInfC{$\Gamma,B_0 \vdash v_0 : B_0\p$}
+    \end{prooftree}
+
+    then $|u_0| = v_0 = |u_1|$ and so necessarily $u_1 = v_0$. Reasoning by inversion, it is necessarily the same
+    rule which is applied last in the derivation $\Gamma \vdash u_1 : A_1$. Hence, because the two contexts are
+    the same, we have $A_1 = B_0\p$ and hence we get trivially : $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$.
+
+    \item If $u_0$ is a non $v_0$ variable, then by inversion : 
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Gamma \vdash v_i : C_0$}
+    \AxiomC{$\Gamma \vdash$ $B_0$ type}
+    \BinaryInf$\Gamma, B_0 \fCenter v_{i+1} : C_0\p$
+    \end{prooftree}
+
+    Then $|u_0| = v_{i+1} = |u_1|$, and necessarily $u_1 = v_{i+1}$. Reasoning by inversion on $\Gamma \vdash u_1 : A_1$, the
+    last rule applied should be :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Gamma \vdash v_i : C_1$}
+    \AxiomC{$\Gamma \vdash$ $B_0$ type}
+    \BinaryInf$\Gamma, B_0 \fCenter v_{i+1} : C_1\p$
+    \end{prooftree}
+
+    But, reasoning by inversion on the derivation $\Gamma \vdash v_i : C_1$, it is also a variable rule
+    which is applied, and hence $\Gamma = \Gamma',C_1$. Thus, we necessarily have $C_0 = C_1$ because 
+    the contexts are the same. Hence, we get trivially $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$. 
+
+    \end{itemize}
+
+    All of this concludes the proof for the second part of the statement, but we also need
+    to prove the first part of the statement as part of the mutual induction. So let's
+    reason on the type $A$.
+
+    \begin{itemize}
+    \item If $A$ is a $\Pi$-type, then by inversion the derivation $\Gamma \vdash A \; \type$ has the form :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Gamma \vdash$ $A_1$ type}
+    \AxiomC{$\Gamma.A_1 \vdash$ $A_2$ type}
+    \BinaryInf$\Gamma \fCenter \Pi \, A_1 \,A_2 \;\; \type$
+    \end{prooftree}
+
+    Then $|A| = \Pi(|A_1|,|A_2|) = |B|$, and $B$ should be a $\Pi$ type :
+    $B = \Pi(B_1,B_2)$ with $|B_1|=|A_1|$ and $|B_2|=|A_2|$. So, by the induction
+    hypothesis we get : $\Gamma \vdash A_1 = B_1$. Then, with the lemma \ref{Transform} and the induction
+    hypothesis, we also have the derivation $\Gamma, A_1 \vdash A_2 = B_2$.
+    Hence with the rule on convertibility of $\Pi$ types, we get the desired : $\Gamma \vdash \Pi(A_1,A_2) = \Pi(B_1,B_2)$.
+
+    \item If $A$ is a decoded type $T_n(a)$, then by inversion :  
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi$}
+    \UnaryInfC{$\Gamma \vdash a : \U_n$}
+    \UnaryInfC{$\Gamma \vdash T_n(a) \;\type$}
+    \end{prooftree}
+
+    Then $|A| = |a| = |B|$ and we reason by case on the last rule of $\Gamma \vdash B \;\type$, and
+    there is only two cases as the erasure of $B$ should be the erasure of a term :\\
+
+    \underline{First case :} The last rule was :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Gamma \vdash$ $B_1$ type}
+    \AxiomC{$\Gamma.B_1 \vdash$ $B_2$ type}
+    \BinaryInf$\Gamma \fCenter \Pi \, B_1 \,B_2 \;\; \type$
+    \end{prooftree}
+
+    Then $|B| = \Pi(|B_1|,|B_2|) = |a|$, and so $a = \Pi^n \, a_1 \, a_2$ necessarily,
+    with $|a_1| = |B_1|$ and $|a_2| = |B_2|$. Hence the derivation $\Gamma \vdash a : \U_n$ is :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi_1$}
+    \UnaryInfC{$\Gamma \vdash$ $a_1 : \U_n$}
+    \AxiomC{$\Pi_2'$}
+    \UnaryInfC{$\Gamma, T_n(a_1) \vdash$ $a_2 : \U_n$}
+    \BinaryInf$\Gamma \fCenter \Pi^n \, a_1 \, a_2 : \U_n$ 
+    \end{prooftree}
+
+    And so by the lemma \ref{Inversion1}, we have premises $\Gamma \vdash T_n(a_1) \; \type$ and 
+    $\Gamma, T_n(a_1) \vdash T_n(a_2) \; \type$. So by the induction hypothesis and the lemma \ref{Transform}
+    we get : $\Gamma \vdash T_n(a_1) = B_1$ and $\Gamma, T_n(a_1) \vdash T_n(a_2) = B_2$.
+    %TODO: Ici c'est pas l'HI, en fait si avec lemme 33 c'est une prémisse mais du coup c'est une
+    % HI sur la dérivation et pas sur la taille de A...l
+
+    We also have : $\Gamma \vdash T_n(\Pi^n \, a_1 \, a_2) = \Pi(T_n(a_1),T_n(a_2))$,
+    and hence we get $\Gamma \vdash T_n(a) = \Pi(B_1,B_2)$ which is the desired $\Gamma \vdash A = B$.\\
+
+    \underline{Second case :} If the last rule was :
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi'$}
+    \UnaryInfC{$\Gamma \vdash b : \U_m$}
+    \UnaryInfC{$\Gamma \vdash T_m(b) \;\type$}
+    \end{prooftree}
+
+    Then $|A| = |a| = |B| = |b|$ and so by the induction hypothesis on $\Pi$ and $\Pi'$, 
+    we get (by the second statement) two cases :
+
+    \begin{itemize}
+        \item If $\Gamma \vdash \U_n = \U_m$ and $\Gamma \vdash a = b : \U_n$. Then $n=m$ by injectivity of universes
+            and so : $\Gamma \vdash T_n(a) = T_n(b)$ i.e $\Gamma \vdash A = B$.
+
+        \item If $\Gamma \vdash \U_n = \U_{n_0}$, $\Gamma \vdash \U_m = \U_{n_1}$ and
+            $\Gamma \vdash a = t_k^{n_0}(v_0) : \U_{n_0}$, $\Gamma \vdash b = t_k^{n_1}(v_1) : \U_{n_1}$
+            with $\Gamma \vdash v_0 = v_1 : \U_k$.
+
+            Then, we have necessarily $n = n_0$, $m = n_1$ and deduce that $\Gamma \vdash T_n(a) = T_n(t_k^n(v_0))$, and
+            $\Gamma \vdash T_m(b) = T_n(t_k^m(v_1))$ which can be simplified as $\Gamma \vdash A = T_k(v_0)$, and
+            $\Gamma \vdash B = T_k(v_1)$. Finally, by using $\Gamma \vdash v_0 = v_1 : \U_k$ we get the desired
+            $\Gamma \vdash A = B$.
+    \end{itemize}
+
+    \item If $A$ is a universe, then by inversion :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash \U_n \;\type$}
+        \end{prooftree}
+
+        Then $|A| = \U_n = |B|$ and so necessarily $B = \U_n$ or $B = T_k(\U_n^k)$, and
+        either way we have a derivation for $\Gamma \vdash A = B$.
+
+    \end{itemize}
+
+    All of  this concludes this proof. 
+\end{proof}
+
+Then, we prove the main equivalence result :
+
+\begin{proof}(Of theorem \ref{equT1T2})\\
+
+    We prove existence and uniqueness of the derivation in $\mathcal{T}_T$.\\
+
+    \underline{Uniqueness :} (up to conversion)
+
+    Let $\Gamma \vdash J$ be a judgment in the system $\mathcal{T}_R$, and assume that there
+    exists $\Gamma_1 \vdash J_1$ and $\Gamma_1' \vdash J_1'$ in $\mathcal{T}_T$ so that :
+    $|\Gamma_1| = \Gamma = |\Gamma_1'|$ and $|J_1| = J = |J_1'|$.
+
+    Then, we directly have with the previous corollary (depending on the kind of judgment),
+    that $\Gamma_1 \vdash J_1 = J_2$.\\
+
+    \underline{Existence :}
+    We show that we can lift the judgment by induction on the derivation $\Gamma \vdash J$ (in $\mathcal{T}_R$).\\
+
+    \begin{itemize}
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A : \U_n$}
+        \UnaryInfC{$\Gamma \vdash A \; \type$}
+        \end{prooftree}
+
+        Then we construct a derivation $\Gamma' \vdash a : B'$ in $\mathcal{T}_T$ by induction hypothesis,
+        such that $|\Gamma' \vdash a : B'| = \Gamma \vdash A : \U_n$. Hence, as $B'$ is a type such 
+        that $|B'| = \U_n$, we have $B' = \U_n$ necessarily. Then, we construct the following
+        derivation :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi'$}
+        \UnaryInfC{$\Gamma' \vdash a : \U_n$}
+        \UnaryInfC{$\Gamma' \vdash T_n(a)\; \type$}
+        \end{prooftree}
+
+        And we have the desired  : $|\Gamma' \vdash T_n(a) \; \type| = \Gamma \vdash A \; \type$ because
+        $|T_n(a)| = |a| = A$.
+
+        \item If the last rule applied is :
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_1$}
+        \UnaryInfC{$\Gamma \vdash A  \, \type$}
+        \AxiomC{$\Pi_2$}
+        \UnaryInfC{$\Gamma,A \vdash B  \, \type$}
+        \BinaryInfC{$\Gamma \vdash \Pi(A,B)  \, \type$}
+        \end{prooftree}
+
+        Then, we get by the induction hypothesis that there exists derivable judgments
+        $\Gamma' \vdash A' \, \type$ and $\Gamma'',A'' \vdash B' \, \type$ such that the erasure correspond to $\Pi_1$ and $\Pi_2$.
+        We have $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$, and thus by uniqueness up to conversion (with the previous lemma), the contexts
+        $\Gamma'$ and $\Gamma''$ are convertible. Thus, we transform the second derivation to get $\Gamma',A' \vdash B' \, \type$.
+        And hence, we construct the derivation in $\mathcal{T}_T$ :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_1'$}
+        \UnaryInfC{$\Gamma' \vdash A'  \, \type$}
+        \AxiomC{$\Pi_2'$}
+        \UnaryInfC{$\Gamma',A' \vdash B'  \, \type$}
+        \BinaryInfC{$\Gamma' \vdash \Pi(A',B')  \, \type$}
+        \end{prooftree}
+
+        \item If the last rule applied is : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_1$}
+        \UnaryInfC{$\Gamma \vdash A : \U_n$}
+        \AxiomC{$\Pi_2$}
+        \UnaryInfC{$\Gamma,A \vdash B : \U_n$}
+        \BinaryInfC{$\Gamma \vdash \Pi(A,B) : \U_n$}
+        \end{prooftree}
+
+        Then, we get by the induction hypothesis that there exists derivable judgments
+        $\Gamma' \vdash a : U$ and $\Gamma'',A' \vdash b : U'$ such that the erasure correspond to $\Pi_1$ and $\Pi_2$.
+        We necessarily have $U = U' = \U_n$ by the same argument as before. Moreover, we have 
+        $|\Gamma'| = |\Gamma''| = \Gamma$, and thus by uniqueness up to conversion (with the previous lemma), the contexts
+        $\Gamma$ and $\Gamma'$ are convertible. Thus, we transform the second derivation to get $\Gamma',A' \vdash b : \U_n$.
+        Also, the equality $|A'| = |a| = A$ gives us two cases to consider: \\
+
+        \underline{First case :} We have $A' = T_n(a)$. Hence, we immediately apply the rule for $\Pi^n$ formation :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_1'$}
+        \UnaryInfC{$\Gamma' \vdash a : \U_n$}
+        \AxiomC{$\Pi_2'$}
+        \UnaryInfC{$\Gamma',T_n(a) \vdash b : \U_n$}
+        \BinaryInfC{$\Gamma' \vdash \Pi^n \; a \; b \; : \U_n$}
+        \end{prooftree}
+
+        \underline{Second case :} We have $A' = \U_m$ and $a = \U_m^n$, then we use the rule $\Gamma' \vdash T_n(\U_m^n) = \U_m$
+        which gives us $\Gamma' \vdash T_n(a) = A'$, which allows us to transform the derivation $\Gamma',A' \vdash b : \U_n$ and
+        do the same thing as in the first case.
+
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \RightLabel{($m<n$)}
+        \UnaryInfC{$\Gamma \vdash \U_m : \U_n$}
+        \end{prooftree}
+
+        Then we produce the following derivation : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{}
+        \RightLabel{($m<n$)}
+        \UnaryInfC{$\Gamma \vdash \U_m^n : \U_n$}
+        \end{prooftree}
+
+    \item If the last rule applied is : 
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A : \U_n$}
+        \RightLabel{($n<p$)}
+        \UnaryInfC{$\Gamma \vdash A : \U_p$}
+        \end{prooftree}
+
+        Then we use the induction hypothesis on $\Pi$, which gives us a derivation $\Gamma' \vdash a : \U_n$ such
+        that its erasure is $\Gamma \vdash A : \U_n$. Hence, we produce the following derivation, which gives us the desired result.
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash a : \U_n$}
+        \RightLabel{($n<p$)}
+        \UnaryInfC{$\Gamma' \vdash t_n^p(a) : \U_p$}
+        \end{prooftree}
+
+        \item If the last rule is : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash A=A' : \U_n$}
+        \UnaryInfC{$\Gamma' \vdash A=A'$}
+        \end{prooftree}
+
+        By the induction hypothesis, we get a derivation $\Gamma' \vdash a=a' : \U_n$,
+        and we produce :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash a=a' : \U_n$}
+        \UnaryInfC{$\Gamma' \vdash T_n(a)=T_n(a')$}
+        \end{prooftree}
+
+        \item If the last rule is : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \RightLabel{($n<p$)}
+        \UnaryInfC{$\Gamma' \vdash A=A' : \U_n$}
+        \UnaryInfC{$\Gamma' \vdash A=A': \U_p$}
+        \end{prooftree}
+
+        By the induction hypothesis, we get a derivation $\Gamma' \vdash a=a' : \U_n$,
+        and we produce :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \RightLabel{($n<p$)}
+        \UnaryInfC{$\Gamma' \vdash a=a' : \U_n$}
+        \UnaryInfC{$\Gamma' \vdash t_n^p(a)=t_n^p(a') : \U_p$}
+        \end{prooftree}
+
+        \item If the rule has a direct corresponding rule in the system $\mathcal{T}_T$, we have a direct proof
+            by using the induction hypothesis and invoking uniqueness up to conversion (for rules with two premises).
+    \end{itemize}
+\end{proof}
+\subsection{$\mathcal{T}_R$ and $\mathcal{T}_P$}
+
+We give the detailed proof for the main results :
+
+\begin{proof} (Of lemma \ref{streichT2T2'})\\
+
+    Here, again we prove the two statements simultaneously, by mutual induction.\\
+
+    First, by induction on  the lexicographical order formed by the term $u_0$ and its derivation : 
+    \begin{itemize}
+        \item If $u_0$ is a product, the the last rule applied is the product rule :
+
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi_1$}
+            \UnaryInfC{$\Gamma \vdash C : \U_n$}
+            \AxiomC{$\Pi_2$}
+            \UnaryInfC{$\Gamma,C \vdash D : \U_n $}
+            \BinaryInfC{$\Gamma \vdash \Pi(C,D) : \U_n$}
+            \end{prooftree}
+
+        Then we have $\strip(u_0) = \Pi \, (x:\strip(C)) \, \strip(D) = \strip(u_1)$, and hence
+        $u_1$ is a product type : $u_1 = \Pi(C',D')$ with the analogous derivation. Thus, we apply
+        the induction hypothesis on the premises, with modifying the context of the second one as usual,
+        and we get : $\Gamma' \vdash C = C' : \U_n$ and $\Gamma',C' \vdash D = D' : \U_n$. Finally, we construct
+        a derivation $\Gamma' \vdash \Pi(C,D) = \Pi(C',D'): \U_n$ in $\mathcal{T}_R$.
+    
+        \item If $u_0 = \U_n$, then $u_1 = \U_n$ necessarily, and we trivially have $\Gamma \vdash A = B$ in $\mathcal{T}_R$.
+
+        \item If $u_0$ is an abstraction, then the last rule applied is : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi_0$}
+        \UnaryInfC{$\Gamma, C_0 \vdash b_0 : B_0$}
+        \UnaryInfC{$\Gamma \vdash \lambda(C_0; B_0, b_0): \Pi (C_0,  B_0)$}
+        \end{prooftree}
+
+        Then, $\strip(u_0) = \lambda \, (x: \strip(C_0)) \, \strip(b_0) = \strip(u_1)$, and
+        so we have $u_1 = \lambda(C_1,B_1,b_1)$ with $\strip(C_0) = \strip(C_1)$ and $\strip(b_0) = \strip(b_1)$,
+        with the analogous derivation $\Pi_1$.\\
+
+        Hence, with an adapted lemma \ref{Inversion2} for $\mathcal{T}_R$ to get premises 
+        $\Gamma \vdash C_0 \, \type$ and $\Gamma \vdash C_1 \, \type$ that gives us with the second statement
+        of the induction hypothesis : $\Gamma \vdash C_0 = C_1$.
+        and thus we transform $\Pi_1$ to a derivation $\Gamma,C_0 \vdash b_1 : B_1$. By applying the 
+        induction hypothesis, we get : $\Gamma \vdash b_0 = b_1 : B_0$ and $\Gamma \vdash B_0 = B_1$. Finally, we 
+        construct : $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$.\\
+
+        Note that here we didn't have the hypothesis $\strip(B_0) = \strip(B_1)$.
+
+        \item The case of application is proved in a similar way, with the help of $\Pi$-injectivity.
+
+        \item The case where $u_0$ is a universe, and so the last rule applied is : 
+
+            \begin{prooftree}
+                \AxiomC{}
+                \RightLabel{($m<n$)}
+                \UnaryInfC{$\Gamma \vdash \U_m : \U_n$}
+            \end{prooftree}
+
+            This case explains why didn't ask for $\Gamma \vdash A_0=A_1$ in the consequences of the first case in our lemma.
+            In fact, here we just have syntactically $u_1 = \U_m$ as they have the same stripping, so
+            we directly have $\Gamma \vdash u_0 = u_1 : \U_m$ but we don't necessarily have $A_0$ and $A_1$
+            convertible, because they can be different universes.
+    \end{itemize}
+
+    Then, by induction on $A$.
+    \begin{itemize}
+        \item If $A$ is a product type and the the last rule applied is the product rule :
+
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi_1$}
+            \UnaryInfC{$\Gamma \vdash C \, \type$}
+            \AxiomC{$\Pi_2$}
+            \UnaryInfC{$\Gamma,C \vdash D \, \type $}
+            \BinaryInfC{$\Gamma \vdash \Pi(C,D) \, \type $}
+            \end{prooftree}
+
+        Then we the same proof as in the first induction, but with type judgments.
+
+        \item If the last rule applied is :
+            \begin{prooftree}
+                \AxiomC{$\Gamma \vdash A : \U_n$}
+                \UnaryInfC{$\Gamma \vdash A \, \type$}
+            \end{prooftree}
+
+            Then, we apply the induction hypothesis for the first statement, and get $\Gamma \vdash A = B : \U_n$, with
+            which we construct : $\Gamma \vdash A = A'$.
+
+        \item We don't detail the other cases. 
+    \end{itemize}
+
+\end{proof}
+
+\begin{proof} (Of theorem \ref{equT2T2'})\\
+
+    By induction on the derivation $\Gamma \vdash J$, with the previous lemma, we construct a derivation in $\mathcal{T}_R$.
+    We only detail the interesting cases, which are abstraction and application.
+
+    \begin{itemize}
+        \item If the last rule applied is :  
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi_1$}
+            \UnaryInfC{$\Gamma \vdash c : \Pi(A,B)$}
+            \AxiomC{$\Pi_2$}
+            \UnaryInfC{$\Gamma \vdash a : A $}
+            \BinaryInfC{$\Gamma \vdash c\; a : B[a]$}
+            \end{prooftree}
+
+            Then, by induction on $\Pi_1$, we get a derivation in $\mathcal{T}_R$ of $\Gamma' \vdash c' : T$ such that
+            $\strip(\Gamma') = \Gamma$, $\strip(c') = c$ and $\strip(T) = \Pi(A,B)$. Hence, necessarily $T$ is
+            a product type $\Pi(A',B')$ such that $\strip(A') = A$ and $\strip(B') = B$.
+
+            By induction on $\Pi_2$, we also get a derivation in $\mathcal{T}_R$ of $\Gamma'' \vdash a' : A''$ with the
+            desired strippings. Hence, because of the previous lemma, and given $\strip(\Gamma') = \strip(\Gamma'')$,
+            the two contexts are necessarily convertible. In the same way, with the previous lemma we get a derivation : $\Gamma' \vdash A' = A''$,
+            and we thus transform the derivation to get $\Gamma' \vdash a': A'$. Finally,
+            we construct : 
+
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi_1$}
+            \UnaryInfC{$\Gamma' \vdash c' : \Pi(A',B')$}
+            \AxiomC{$\Pi_2$}
+            \UnaryInfC{$\Gamma' \vdash a' : A' $}
+            \BinaryInfC{$\Gamma \vdash \app(A',B',c',a') : B'[a']$}
+            \end{prooftree}
+
+            Which satisfies the desired property.
+
+        \item If the last rule applied is :  
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi$}
+            \UnaryInfC{$\Gamma,A \vdash b : B$}
+            \UnaryInfC{$\Gamma \vdash \lambda (x:A) b : \Pi(A,B)$}
+            \end{prooftree}
+
+            Then, by induction on $\Pi$, we get a derivation in $\mathcal{T}_R$ of $\Gamma',A' \vdash b':B'$
+            such that $\strip(\Gamma') = \Gamma$, $\strip(b') = b$, $\strip(A') = A$ and $\strip(B') = B$.
+
+            Hence, we construct the derivation : 
+
+            \begin{prooftree}
+            \def\fCenter{\mbox{\ $\vdash$\ }}
+            \AxiomC{$\Pi'$}
+            \UnaryInfC{$\Gamma',A' \vdash b' : B'$}
+            \UnaryInfC{$\Gamma' \vdash \lambda(A',B',b') : \Pi(A',B')$}
+            \end{prooftree}
+
+            Which satisfies the desired property.
+
+        \item We do not detail the other cases, that can be treated similarly.
+
+
+
+    \end{itemize}
+\end{proof}
+
+\section{Adding Universe Polymorphism}\label{polyeq}
+
+\subsection{The Russell/Tarski equivalence}
+
+We consider the system described in \cite{polymorphism}, with cumulative Tarski universes and level
+constraints. This system can be seen as an extension of the system $\mathcal{T}_T$ and we will refer to it as $\mathcal{T}_T^*$, while
+the analogous theory with Russell universes (also described in \cite{polymorphism}) will be referred to as $\mathcal{T}_R^*$.\\
+
+Let's extend the erasure operation : 
+
+\begin{definition}[Erasure]
+    We define the erasure operation, denoted $|.|$ :
+
+    \noindent
+    \begin{minipage}{0.50\linewidth}
+    \begin{itemize}
+        \item $|\U_l|$ = $\U_l$.
+        \item $|\U_l^m| = \U_m$.
+        \item $|\app(A,B,c,a)| = \app(|A|,|B|,|c|,|a|)$.
+        \item $|\lambda(A,B,b)| = \lambda(|A|,|B|,|b|)$.
+        \item $|<\alpha> a| = <\alpha>|a|$ 
+        \item $|<\psi> a| = <\psi>|a|$ 
+        \item $|v_i| = v_i$.
+    \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+    \begin{itemize}
+        \item $|T_l(a)| = |a|$.
+        \item $|t_l^m(a)| = |a|$.
+        \item $|\Pi(A, B)| = \Pi(|A|, |B|)$.
+        \item $|\Pi^l \, a \, b| = \Pi \; |a| \; |b|$.
+        \item $|[\psi] A| = [\psi]|A|$ 
+    \end{itemize}
+    \end{minipage}
+\end{definition}
+
+We show that this operation indeed preserves derivations.
+
+\begin{lemma}
+    If $\Gamma \vdash J$ in $\mathcal{T}_T^*$, then $|\Gamma| \vdash |J|$ in $\mathcal{T}_R^*$.
+\end{lemma}
+
+\begin{proof}
+    By direct induction.
+\end{proof}
+
+We prove the technical lemmas like in subsection \ref{sectionT1T2}, but we do not give
+details for that. Let's prove one more technical lemma : 
+
+\begin{lemma}\label{invineq}
+    If we have a derivation for a code $\Gamma \vdash \U_l^m$ or $\Gamma \vdash t_l^m(a)$ in $\mathcal{T}_T^*$ then
+    we have a derivation $\Gamma \vdash l \leq m$.
+\end{lemma}
+
+\begin{proof}
+    By inversion, we find directly the derivation in the rules.
+\end{proof}
+
+
+\begin{lemma}
+     Let's assume that : $\Gamma \vdash A_0 = \U_{l_0}$, $\Gamma \vdash A_1 = \U_{l_1}$ and 
+     $\Gamma \vdash u_0 = t_k^{l_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{l_1}(v_1) : A_1$ with
+     $\Gamma \vdash v_0 = v_1 : \U_k$.\\
+
+     Then if $\Gamma \vdash A_0 = A_1$, we have : $\Gamma \vdash u_0 = u_1: A_0$.
+\end{lemma}
+\begin{proof} 
+    Here, injectivity of universes gives us equality in the semi-lattice. 
+    We have $\Gamma \vdash A_0 = A_1$, using the rule for transitivity we have 
+    $\Gamma \vdash \U_{l_0} = \U_{l_1}$ and by injectivity for universes : $l_0 = l_1$ written $n$ in the sup semi-lattice.
+    Then, we conduct exactly the same proof.\\
+
+    Using $\Gamma \vdash u_0 = t_k^{n}(v_0) : A_0$ and $\Gamma \vdash u_1 = t_k^{n}(v_1) : A_1$,
+    we use the rule for type equality that gives us the same derivations with $A_0$ in both. Moreover,
+    we transform the $\Gamma \vdash v_0 = v_1 : \U_k$ derivation to : $\Gamma \vdash t_k^n (v_0) = t_k^n (v_1) : \U_n$, as
+    because of lemma \ref{invineq} we have a derivation $\Gamma \vdash k \leq n$.
+\end{proof}
+
+\begin{lemma}\label{mainuniverse}
+    If $\Gamma \vdash A\; \type$, $\Gamma \vdash B\; \type$ in $\mathcal{T}_T$ and $|A| = |B|$, then $\Gamma \vdash A = B$.\\
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ and $|u_0| = |u_1|$ then
+    \begin{itemize}
+        \item Either $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
+        \item Or $\Gamma \vdash A_0 = \U_{l_0}$, $\Gamma \vdash A_1 = \U_{l_1}$ and 
+            $\Gamma \vdash u_0 = t_k^{l_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{l_1}(v_1) : A_1$ with
+            $\Gamma \vdash v_0 = v_1 : \U_k$.
+    \end{itemize}
+\end{lemma}
+
+\begin{proof}
+    As before, by mutual induction with respect to the lexicographical order on 
+    the term $u_0$ and then on the derivation $\Gamma \vdash u_0: A_0$. We will
+    consider only some cases to show that the proof extends to universe polymorphism.
+    The proof is basically the same, and we just need to make sure that we have
+    the hypothesis $\Gamma \vdash l \leq m$ - provided by lemma \ref{invineq} - to construct our derivations.
+
+    \begin{itemize}
+
+    \item For variables, abstractions and applications, the proof is exactly the same.
+
+    \item If $u_0$ is a lifting function, then by inversion we have : 
+
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{$\Pi$}
+    \UnaryInfC{$\Gamma \vdash a : \U_l$}
+    \AxiomC{}
+    \UnaryInfC{$\Gamma \vdash l \leq m$}
+    \BinaryInfC{$\Gamma \vdash t_l^m(a) : U_m$}
+    \end{prooftree}
+    
+    Then $|u_0| = |a| = |u_1|$, and with the induction hypothesis on $\Gamma \vdash a : \U_l$ and
+    $\Gamma \vdash u_1 : A_1$, we get two cases.\\
+
+    \underline{First case :} We have $\Gamma \vdash \U_l = A_1$ and $\Gamma \vdash a = u_1 : \U_l$.
+    Then immediately we have $\Gamma \vdash A_0 = \U_m$, $\Gamma \vdash A_1 = \U_l$ and
+    $\Gamma \vdash u_0 = t_l^m(a) : A_0$, $\Gamma \vdash u_1 = t_l^l(a) : A_1$ (because we have $l \leq m$) with 
+    $\Gamma \vdash a = a : \U_l$ by the reflexivity rule.\\
+
+    \underline{Second case :} We have $\Gamma \vdash \U_l = \U_{l_0}$, $\Gamma \vdash A_1 = \U_{l_1}$ and
+    $\Gamma \vdash u_0 = t_k^{l_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{l_1}(v_1) : A_1$ with 
+    $\Gamma \vdash v_0 = v_1 : U_k$. Then necessarily : $l_0 = l$ and we have with the right rules :
+    $\Gamma \vdash u_0 = t_l^m(t_k^l(v_0)) : U_m$ which is possible because $k \leq l \leq m$.
+    Hence, with the rule that simplifies lifting operators,
+    $\Gamma \vdash u_0 = t_k^m(v_0):\U_m$ which is what we wanted as $A_0 = \U_m$.
+
+    \item If $u_0$ is a code for a universe, then by inversion :
+        
+    \begin{prooftree}
+    \def\fCenter{\mbox{\ $\vdash$\ }}
+    \AxiomC{}
+    \UnaryInfC{$\Gamma \vdash \U_m^{l_0} : \U_{l_0}$}
+    \end{prooftree}
+
+    Then $|u_0| = \U_m = |u_1|$ so $u_1 = \U_m^{l_1}$ or $u_1 = t_l^{l_1} (\U_m^l)$.\\
+
+    \underline{First case :} We have $u_1 = \U_m^{l_1}$. Then we define $k := \min(l_0, l_1)$ informally, which corresponds
+    to defining $k$ to $l_0$ or $l_1$ depending on if $l_0 < l_1$ or not. Then, we construct  
+    the following derivations : $\Gamma \vdash A_0 = \U_{l_0}$ and $\Gamma \vdash A_1 = \U_{l_1}$, along with
+    $\Gamma \vdash u_0 = t_k^{l_0} (\U_m^k)$ and $\Gamma \vdash u_1 = t_k^{l_1} (\U_m^k)$, with $\Gamma \vdash \U_m^k = \U_m^k : \U_k$.\\
+
+    \underline{Second case :} We have $u_1 = t_l^{l_1} (\U_m^l)$, and we define $k := \min(l,l_0)$ (also informally as before).
+    So that we have the following derivations : $\Gamma \vdash A_0 = \U_{l_0}$ and $\Gamma \vdash A_1 = \U_{l_1}$, along with
+    $\Gamma \vdash u_0 = t_k^{l_0} (\U_m^k)$ and $\Gamma \vdash u_1 = t_k^{l_1} (\U_m^k)$, with  $\Gamma \vdash \U_m^k = \U_m^k : \U_k$.
+
+    \item If $u_0$ is a code for a product type, we do the same proof, adapting it for universe
+        levels by providing the inequality hypothesis. The only difference is in the third case,
+        were we used the $\max$ function, which is replaced by $\lor$.
+
+    \item If $u_0$ is a constrained term or a level abstraction $[\alpha]t$ or $[\psi]t$, the erasure and inversion
+        allow to use the induction hypothesis directly on $t$, and we get the result easily.
+
+    \end{itemize}
+
+    Now, we prove the second item of the lemma by induction on the type $A$.
+
+    \begin{itemize}
+        \item The proofs for the regular types are exactly the same.
+
+        \item If $A$ is a level product or a constrained type, then we directly use the induction hypothesis
+            because of the erasure and the typing premise that we get by inversion.
+    \end{itemize}
+
+    All of  this concludes this proof. 
+\end{proof}
+
+Then, we prove the equivalence result : 
+
+\begin{theorem}
+    If $\Gamma \vdash J$ in the system $\mathcal{T}_R^*$, then there exists a unique, up to conversion judgment
+    $\Gamma_1 \vdash J_1$ in the system $\mathcal{T}_T^*$ such that $|\Gamma_1| = \Gamma$ and $|J_1| = J$.
+\end{theorem}
+
+\begin{proof}
+    Follows from the previous lemma as before, we specify the rules which needs level
+    inequality hypothesis. The rules for levels or constraints are the same in $\mathcal{T}_T^*$ and
+    $\mathcal{T}_R^*$ so the result is obtained immediately.
+
+    \begin{itemize}
+        \item For many rules, the proof is exactly the same as before.
+
+        \item If the last rule applied is :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Gamma \vdash m < n$}
+        \UnaryInfC{$\Gamma \vdash \U_m : \U_n$}
+        \end{prooftree}
+
+        Then we produce the following derivation : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Gamma \vdash m < n$}
+        \UnaryInfC{$\Gamma \vdash \U_m^n : \U_n$}
+        \end{prooftree}
+
+    \item If the last rule applied is : 
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma \vdash A : \U_n$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash n < p$}
+        \BinaryInfC{$\Gamma \vdash A : \U_p$}
+        \end{prooftree}
+
+        Then we use the induction hypothesis on $\Pi$, which gives us a derivation $\Gamma' \vdash a : \U_n$ such
+        that its erasure is $\Gamma \vdash A : \U_n$. Hence, we produce the following derivation, which gives us the desired result.
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash a : \U_n$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash n < p$}
+        \BinaryInfC{$\Gamma' \vdash t_n^p(a) : \U_p$}
+        \end{prooftree}
+
+        \item If the last rule is : 
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash A=A' : \U_n$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash n < p$}
+        \BinaryInfC{$\Gamma' \vdash A=A': \U_p$}
+        \end{prooftree}
+
+        By the induction hypothesis, we get a derivation $\Gamma' \vdash a=a' : \U_n$,
+        and we produce :
+
+        \begin{prooftree}
+        \def\fCenter{\mbox{\ $\vdash$\ }}
+        \AxiomC{$\Pi$}
+        \UnaryInfC{$\Gamma' \vdash a=a' : \U_n$}
+        \AxiomC{}
+        \UnaryInfC{$\Gamma \vdash n < p$}
+        \BinaryInfC{$\Gamma' \vdash t_n^p(a)=t_n^p(a') : \U_p$}
+        \end{prooftree}
+
+        \item If the rule has a direct corresponding rule in the system $\mathcal{T}_T^*$, we have a direct proof
+            by using the induction hypothesis and invoking uniqueness up to conversion (for rules with two premises).
+            This is true in particular for rules on levels and constraints which do not differ between the Russell
+            and Tarski presentations.
+    \end{itemize}
+\end{proof}
+
+Finally, we extended our result for a theory with universe polymorphism : the two
+theories $\mathcal{T}_T^*$ and $\mathcal{T}_R^*$ are equivalent. This means that the Russell presentation
+is also initial to the notion of model for universe polymorphic theories. This notion
+of model will be specified in a forthcoming paper and we believe that proving normalisation
+by adapting the gluing technique should be possible.
+
+
+\end{document}
