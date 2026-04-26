@@ -1,16 +1,42 @@
-\documentclass{amsart}
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{fullpage}
 \usepackage{ebproof}
 \usepackage{ebproof-rules}
 \usepackage{mathpartir}
 \usepackage{verbatim}
 \usepackage{float}
 \usepackage{circuitikz}
-\usepackage{natbib}
+\usepackage[square,numbers]{natbib}
 \bibliographystyle{unsrtnat}
 
+\usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
-\usepackage{xcolor}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=Red,
+    filecolor=magenta,      
+    urlcolor=Blue,
+    citecolor=Green
+}
+
 \usepackage{tikz-cd}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb} 
+
+%%% Theorem-like environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark} % italic head, upright text, no extra space above or below
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
 
 % Formatted letters
 \newcommand{\bC}{\mathbb{C}}
@@ -65,54 +91,29 @@
 \DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}}}
 \DeclareDocumentCommand{\formfile}{O{blob/main/} m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2}{\coqlogo}}
-
-% Arguments: optional = root folder, mandatory = file (including subfolder), then line number,
-% finally definition name
+  
 \DeclareDocumentCommand{\formline}{O{blob/main/} m m m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2\#L#3}{\coqlogo}}
 
-%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
-%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+\title{From Tarski to Russell: Bridging Explicit and Implicit Presentations of Type Theory}
 
-%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
-
-\title{Cummulative hierarchies of universes and their equivalence in dependent type theory}
-
-\author{Rapha\"el Sterbac}
-\email{raphael.sterbac@ens-paris-saclay.fr}
-\orcid{0009-0001-6779-8323}
-\affiliation{%
-  \institution{ENS Paris-Saclay --- Université Paris-Saclay}
-  \city{Gif-sur-Yvette}
-  \country{France}
-}
-
-\author{Thierry Coquand}
-\email{Thierry.Coquand@cse.gu.se}
-\orcid{0000-0002-5429-5153}
-\affiliation{%
-  \institution{University of Gothenburg}
-  \city{Gothenburg}
-  \country{Sweden}
-}
+\author{Thierry Coquand, Rapha\"el Sterbac}
+\date{}
 
 \begin{document}
+
+\maketitle
 
 \begin{abstract}
     In this paper, we present a modular and algorithmic proof for the equivalence of different
     presentations of type theory, notably relating Russell and Tarski presentations for a cumulative
-    hierarchy of universes. More generally, we relate generalised algebraic and pure type system formulations. Crucial lemmas are injectivity of type formers,
-    and "no-confusion", which we get by proving normalization for the Tarski-style theory via an adaptation of the gluing
-    technique. Our work can be seen as an extension of initiality results to more informal
-    presentations of type theory.
+    hierarchy of universes. More generally, we relate generalised algebraic and pure type system formulations, bridging
+    the gap between the type theory used to prove metatheoretical results, and the one used by practicioners.
+    Our work can also be seen as an extension of initiality results to more informal presentations of type theory.
 \end{abstract}
-
-\maketitle
 
 
 \section{Introduction}
-
-\subsection{Motivation}
 
 In type theory, universes allow to manipulate types as terms, and to avoid Girard's paradox, one often introduces a \textit{hierarchy} of universes:
 \[
@@ -120,14 +121,14 @@ In type theory, universes allow to manipulate types as terms, and to avoid Girar
 \]
 
 One can ask those universes to be \textit{cumulative}, asking for inclusions between them. Concretely, this means that if we have
-a term $a : \U_n$, then we should be able to "lift" it to $\U_m$ for $m > n$. This can be done implicitely, such that $a: \U_m$ as well, 
+a term $a : \U_n$, then we should be able to "lift" it to $\U_m$ for $m > n$. This can be done implicitly, such that $a: \U_m$ as well, 
 or with an explicit coercion operation  $t_n^m(a) : \U_m$. 
 
 There are two different ways to formulate the notion of universe in type theory. Martin-Löf’s
 first versions \cite{MARTINLOF75, MARTINLOF82} were formulated à la Russell, where a universe is seen as a type of types. Later, an alternative version à la Tarski \cite{MARTINLOF84}, where a universe is seen as a type of codes along with a decoding function, was also introduced. Usually, Russell universes are regarded as an informal notation of the latter, as \cite{Luo} suggested.
 
 When presenting Type Theory as a Generalised Algebraic Theory, Tarski universes are mandatory, and one can show that the system à la Tarski presents the initial model of such a theory.
-This initial model has been constructed explictely in \cite{bcde2026}, following the method presented in \cite{Streicher} and formalised in \cite{Brunerie}. 
+This initial model has been constructed explicitly in \cite{bcde2026}, following the method presented in \cite{Streicher} and formalised in \cite{Brunerie}. 
 However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
 extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
 To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for large class of theories.
@@ -163,14 +164,14 @@ depending on the encoding of application in the ambient set theory.
 Therefore, we believe that such a sub-typing relation is not desirable for our considerations.
 
 Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
-assistant. Notably, it simplifies greatly the use of algebraic hierachies \cite{subtyping}.
+assistant. Notably, it simplifies greatly the use of algebraic hierarchies \cite{subtyping}.
 The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
 equations to solve the issues mentioned above.  \\
 
-\textit{\textbf{Contibutions.}} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
+\textit{\textbf{Contributions.}} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
 for Martin Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
 Our proof also adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
-More generally, we relate the Generalised Algebraic persentation of type theory to the implicit, and unannotated presentation
+More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
 inherited from Pure Type Systems.
 
 The main argument is as follows: there is a natural forgetful map from the Tarski to the
@@ -180,27 +181,25 @@ to a Tarski judgement. This work is done in section \ref{equivalence}.
 We rely on basic (and known) properties like no confusion and injectivity of type constructors for the generalised algebraic theory. Those 
 properties will propagate along our equivalence results, allowing us to prove them only once.
 Notably, they are a direct consequence of normalisation, which can be proven easily for the GAT, by an adaptation of the gluing argument \cite{Coq19},
-we sketch this proof in section \ref{normalisation}.
+of which we detail the construction for universes in section \ref{normalisation}.
 
 Those properties seem to be strongly related to conversion \cite{meven}. In fact, our equivalence result itself is to be
 related to the elaboration in proof assistants, as we exhibit a translation from implicit user syntax to an explicit core syntax.
-% TODO : développer plus sur l'élaboration avec les remarques de Meven
 
 Our proof is elementary and provides an algorithm to translate from one presentation to the other. Notably,
 we only rely on the basic induction principles for the syntax, and not on stronger induction principles given
-by normalisation. In addition, we formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}, by taking the basic properties of the syntax (injectivity and no confusion) as axioms.
-
-% TODO : plan of the paper
+by normalisation. In addition, we formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation},
+by taking the basic properties of the syntax (injectivity and no confusion) as axioms. Throughout the paper, we provide links to the corresponding definitions and theorems
+in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}
 
 \section{Syntax and theories}
 
-\subsection{The generalised algebraic theory}
+\subsection{The generalised algebraic theory}\label{GAT}
 
 In this section, we define the theory with Tarski-style universes as a generalized algebraic theory, which both
 presents the syntax in an algebraic way, and provides a canonical notion of model in categories with families (CwF). Those
-were originally described in \cite{Cartmell}, and extended with dependent products and universes by \cite{CWF-CCD}.
-
-% TODO : cite BCDE and complete this discussion
+were originally described by \citet{Cartmell}, and extended with dependent products and universes by \citet{CWF-CCD}. The GAT
+described here is really close to the one of \citet{bcde2026}.
 
 Our Generalised Algebraic Theory of Categories with families has four sorts: contexts, substitutions, types, and elements: 
 \begin{align*}
@@ -219,16 +218,16 @@ It also has operations making $\ctx$ a category (of contexts) which acts on type
         \Theta, \Delta, \Gamma : \ctx, \sigma : \Delta \rightarrow \Gamma, \delta : \Theta \rightarrow \Delta &\vdash \sigma\delta : \Theta \rightarrow \Gamma
     \end{align*}
 
-    which satisfies the following equations (we ommit the contexts for the sake of simplicity) :
+    which satisfies the following equations (we omit the contexts for the sake of simplicity) :
 
     \vspace{1em}
 
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.40\linewidth}
         \centering
         $\sigma \, \Id_\Gamma = \Id_\Gamma \, \sigma = \sigma$
     \end{minipage}
     \hfill
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.40\linewidth}
         \centering
         $(\theta \sigma)\delta = \theta (\sigma \delta)$
     \end{minipage}
@@ -327,8 +326,9 @@ Now, we can add logical structure by requiring type connectives in our theory, s
      \end{align*}
 
     Those should be functorial and satisfy the $\beta$ and $\eta$ rules, given by the following equations.
+
     \noindent
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.40\linewidth}
         \begin{gather*}
             \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)\\
             \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^+,b\sigma^+)\\
@@ -336,7 +336,7 @@ Now, we can add logical structure by requiring type connectives in our theory, s
         \end{gather*}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.40\linewidth}
         \begin{gather*}
             c = \lambda(A,B, \app(A\p,B\p^+,c\p,\q))\\
             \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^+,c\sigma,a\sigma)
@@ -345,9 +345,9 @@ Now, we can add logical structure by requiring type connectives in our theory, s
 
 \end{definition}
 
-We now add cumulative universes to our theory, by requiring a countable hierarchy of universes $\U_0, \U_1,...$,
-along with explicit codes, lifts and decoding operations. This presentation of universes is usually referred to as Tarski-Style universes.
-This explicit system is the most way to present type theory with cumulative universes  in a (generalised) algebraic way.
+We now add cumulative universes to our theory, by requiring a countable hierarchy of universes $\U_0, \U_1,...$
+along with explicit codes, lifts and decoding operations. This presentation of universes is referred to as \textit{à la Tarski}.
+This explicit system is the standard way to present type theory with cumulative universes in a (generalised) algebraic way.
 
 \begin{definition}[À la Tarski universes]
     In our Generalised Algebraic Theory, we add a countable list of universes $\U_n$ with a decoding operation $T_n(a)$
@@ -370,7 +370,7 @@ This explicit system is the most way to present type theory with cumulative univ
     The decoding and lifting maps must be strict and natural:
 
     \noindent
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.45\linewidth}
         \begin{gather*}
             T_l(t_n^l(X)) = T_n(X) \text{ for } l \leq n \\
             T_n(\Pi^n \; X \; Y) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
@@ -378,11 +378,11 @@ This explicit system is the most way to present type theory with cumulative univ
         \end{gather*}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.50\linewidth}
+    \begin{minipage}{0.40\linewidth}
         \begin{gather*}
-            t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m < n < p \\
-            t_n^p(\Pi^n \; X \; Y) = \Pi^p \; t_n^p(X) \; t_n^p(Y) \text{ for } n < p \\
-            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n < p
+            t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m \leq n \leq p \\
+            t_n^p(\Pi^n \; X \; Y) = \Pi^p \; t_n^p(X) \; t_n^p(Y) \text{ for } n \leq p \\
+            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n \leq p
         \end{gather*}
     \end{minipage}
 \end{definition}
@@ -391,9 +391,8 @@ It is important to note that those equations have been carefully chosen so that 
 In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire},
 where they are described as requiring "\textit{full reflection}".
 
-All of this defines a Generalised Alebraic Theory of Categories with Families like with dependent products and a hierarchy of universes.
-We can then construct the initial model of this theory, which correspond to the syntax of the corresponding type theory.
-% TODO : citer BCDE ici
+All of this defines a Generalised Algebraic Theory of Categories with Families like with dependent products and a hierarchy of universes.
+We can then construct the initial model of this theory \cite{bcde2026}, which correspond to the syntax of the corresponding type theory.
 This initial system
 will be called $\mathcal{T}_G$, and can be presented with more usual inference rules, while keeping substitution explicit.
 We also consider the identical system $\mathcal{T}_T$, but with implicit substitutions.
@@ -505,7 +504,7 @@ $\mathcal{T}_T$. Namely, we need codes for products and universes, lifts and dec
   \and
   \ebrule{
     \hypo{\Gamma \vdash a: \U_n}
-    \infer1[($n<p$)]{\Gamma \vdash t_m^n(a): \U_p}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_m^n(a): \U_p}
   }
 \end{mathpar}
 \end{minipage}%
@@ -543,17 +542,17 @@ The precise rules are the following ones.
   \and
   \ebrule{
     \hypo{}
-    \infer1[($n<p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
   }
   \and
   \ebrule{
     \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($n<m$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
+    \infer1[($m\leq n$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
   }
   \and
   \ebrule{
     \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($m<n<p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
   }
 \end{mathpar}
 \end{minipage}%
@@ -613,23 +612,99 @@ and lambda abstraction from $\mathcal{T}_R$. Thus, $\app(A,B,c,a)$ and $\lambda(
 This system is closer to the practical syntax of type theory, inherited from the lambda calculus,
 and often referred to as the "pure type system" presentation (PTS).
 
-% TODO : user syntax in proof assistants, elaboration...
 
 % TODO : pas vraiment, on veut enlever les règles de foramtion avec type mais garder A : U_n => A type ?
-In $\mathcal{T}_P$, we can also remove the jugement $\Gamma \vdash A\; \type$ to manipulate only universes,
+In $\mathcal{T}_P$, we can also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
 in a completely Russellian style. In such a system, there is no top-level of types and a types is simply a term
 of a certain universe.
 
-For a full description of all the systems with the structural rules and congruence equations, please refer to appendix \ref{Rules}. Now,
-we relate those theories by exhibiting forgetful translations from the more explicit ones to the less explicit.
+For a full and extensive description of the systems, please refer to appendix \ref{Rules}.
 
-%TODO : rename erasure maps uniformely as |.|_T, |.|_R etc ?
+\subsection{Forgetful maps}
 
-In the next sections, we will prove the equivalence of those systems. The links 
-between them are summarized in the following figure, where the strong arrows are the known
+Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones.
+
+First, we define a morphism of theories between $\mathcal{T}_G$ and $\mathcal{T}_T$ that makes the substitutions implicit.
+For this, we map substitutions in $\mathcal{T}_G$ to a list of "elementary"
+substitutions in $\mathcal{T}_T$, as there is no composition in this system. Then, when translating the application of a substitution
+to a term or a type, we can fold that list to get a type formed by applying all those substitutions successively.
+
+\begin{definition}
+    We define $\proj(.)$ inductively by: 
+
+    \noindent
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        \proj(\q) &= v_0\\
+        \proj([a]) &= [\proj(a)]\\
+        \proj(A \sigma) &= (...(\proj(A)\sigma_1)...)...\sigma_n\\
+        \proj(a \sigma) &= (...(\proj(a)\sigma_1)...)...\sigma_n\\ 
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        \proj(\p) &= \p\\
+        \proj(\Id) &= \\ 
+        \proj(\sigma\delta) &= \proj(\sigma)::\proj(\delta)\\
+        \proj(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+Then, we define the following erasure operation, which erases the lift and decoding operation of 
+Tarski-style universes, and sends codes to the corresponding type formers.
+
+\begin{definition}[\formline{Erasure.v}{7}{Erasurefunction} Erasure]
+    We define the erasure operation $|.|$ inductively by:
+
+    \noindent
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        |\U_n| &= U_n\\
+        |\U_m^n| &= \U_m\\
+        |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
+        |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
+        |v_i| &= v_i\\
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        |T_n(a)| &= |a|\\
+        |t_m^n(a)| &= |a|\\
+        |\Pi^n \, a \, b| &= \Pi(|a|, |b|)\\
+        |\Pi(A, B)| &= \Pi(|A|, |B|)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+Finally, we define the $\strip$ function, which erases type annotations from a term of the system $\mathcal{T}_R$, and gives a term of $\mathcal{T}_P$.
+This function is analogous to the one defined by \citet{Streicher}.
+
+\begin{definition}
+    We define $\strip$ defined inductively by :
+    \begin{align*}
+        \strip(\lambda (A,B,b)) &= \lambda \; (A, \strip(b))\\ 
+        \strip(\app (A,B,c,a)) &= \strip(c) \; \strip(a)\\
+        \strip(\Pi(A,B)) &= \Pi(\strip(A), \strip(B))\\
+        \strip(\U_n) &= \U_n
+    \end{align*}
+\end{definition}
+
+As mentioned in the introduction, our work somehow relates to elaboration in proof assistants. In fact, we will prove results of the following form:\\
+
+\textbf{Lemma.} If $\Gamma \vdash t,t' : A$ in $\mathcal{T}$ with $|t| = |t'|$ in $\mathcal{T}'$, then we have : $\Gamma \vdash t = t' : A$ in $\mathcal{T}$.\\
+
+Concretely, this means that if two terms are syntactically the same in the implicit user syntax, then they should have the same
+computational behaviour in the core system, and thus should be convertible.
+
+In the next sections, we will prove such lemmas for our different theories. With those, we will be able
+to construct uniquely a derivation in an explicit theory such that it erases to a given judgement in the implicit system.
+
+The situation is summarized in the following figure, where the strong arrows are the known
 forgetful maps, and the dotted arrows are the sections we will be constructing.
 
-% TODO : définir toutes les forgetful map ici ?
 
 \vspace{1em}
 
@@ -659,55 +734,35 @@ forgetful maps, and the dotted arrows are the sections we will be constructing.
 }%
 
 \label{fig:my_label}
-\caption{The hierarchy of our systems (from left to right)}
+\caption{The hierarchy of theories}
 \end{figure}
 
-% TODO : Expliquer qu'on va devoir avoir l'injectivité, mais seulement pour T_G et que cela se propage vers la droite 
+To prove our equivalence result, we rely on basic properties of the syntax of the explicit system. Therefore,
+we prove normalisation of the Generalised Algebraic Theory, to deduce those properties in $\mathcal{T}_G$. Then,
+we propagate them along our equivalence results, such that we only have to prove them once.
 
-\section{Normalisation}\label{normalisation}
+\section{Normalisation and properties of the syntax}\label{normalisation}
 
-In this section, we show that the system on top of our hierarchy ($\mathcal{T}_G$) normalises.
-To prove normalisation for this theory, we apply the gluing technique
+In this section, we present the normalisation construction for the system on top of our hierarchy $\mathcal{T}_G$.
+To prove normalisation for this (generalised algebraic) theory, we can apply the gluing technique
 presented in \cite{Coq19}, which can be seen as a proof-relevant
 formulation of the usual Tait's normalisation proof. This proof
 is adapted here to a system with Tarski-style universes, by only presenting the corresponding
 construction for universes.
 
-Let $M$ be an arbitrary model. In the following, we write $\Type_M$ and $\Elem_M$ for
-its types and elements.
+From this, we deduce the already well-known syntactic properties of the system : injectivity and no-confusion 
+of type formers. It is important to note that other techniques could be used to prove those properties,
+which have already been studied extensively, here we sketch normalisation for completeness of our arguments.
+Notably, we choose to take advantage of the presentation of $\mathcal{T}_G$ as a GAT to provide an algebraic proof, given by the gluing technique. 
 
-\subsection{Presheaf models}
+\subsection{Normalisation for universes}
 
-In the following, we will construct and work with a presheaf model of type theory, which is a category with families
-constructed as the category of Set-valued functors over a special base category. The latter will be the category
-of telescopes.
-
-\begin{definition}[Telescopes]
-    A telescope $X$ is a finite list of types $A_0, A_1, ..., A_{n-1}$ with $A_0$ in
-    $\Type_M ()$, $A_1$ in $\Type_M(().A_0)$ and so on.
-    We define its interpretation $\langle X \rangle = ().A_0. \, ... \, .A_{n-1}$ which is
-    a context of $M$.
-
-    Maps $\alpha : Y \rightarrow_S X$ between two telescopes are syntactic objects,
-    constructed inductively in the natural way, with syntactic versions of $()$, $\p$ and $.^+$.
-    We also have an interpretation $\langle \alpha \rangle$ of a map as a substitution, and hence such a map
-    $\alpha$ can be seen as a witness that the telescope $Y$ extends $X$.
-
-    We also define an identity map  $\Id_S : X \rightarrow_S X$, a composition operation $\alpha\beta$,
-    and a syntactic projection $\p_S$ such that $\langle\p_S\rangle = \p$. 
-\end{definition}
-
-This defines the category $\mathcal{C}$ of telescopes on which we define a presheaf category
-$\widehat{\mathcal{C}}$ which objects are functors $F : \mathcal{C}^{\text{op}} \rightarrow \Set$.
-
-Such a presheaf category defines a model of type theory in the sense of category with families, as
-shown in \cite{Hofmann1997}. In this model we assume to have a cumulative sequence of universes $\mathcal{U}_n$.
-
-We now introduce the sets $\Elem_N(X,A)$ of normal terms, $\Type_N(X)$ of normal types, and $\Neut(X,A)$ of neutral terms,
-along with their interpretation $\langle.\rangle$. Those definitions are analogous to the proof by reducibility candidates.
+Let $M$ be an arbitrary model of the GAT described in \ref{GAT}. In the following, we write $\Type_M$ and $\Elem_M$ for
+its types and elements. We introduce the sets $\Elem_N(X,A)$ of normal terms, $\Type_N(X)$ of normal types, and $\Neut(X,A)$ of neutral terms,
+along with their interpretation $\langle.\rangle$. 
 
 \begin{definition}[Neutral and Normal terms]
-    We define $\Elem_N(X,A)$, $\Type_N(X)$ and $\Neut(X,A)$ for $X$ a telescope and $A$ in $\Type_M(\langle X \rangle)$, simultaneously 
+    We define $\Elem_N(X,A)$, $\Type_N(X)$ and $\Neut(X,A)$ for $X$ a telescope (syntactic context), and $A$ in $\Type_M(\langle X \rangle)$, simultaneously 
     by induction, along with their interpretation $\langle . \rangle$ :
     \begin{align*}
         \U_n &\in \Type_N(X) \text{ for } n \geq 0.\\
@@ -725,29 +780,23 @@ along with their interpretation $\langle.\rangle$. Those definitions are analogo
         t_m^n k &\in \Elem_N(X, \U_n) \text{ if } k \in \Neut(X,\U_m).\\
         k &\in \Elem_N(X,\U_n) \text{ and } t \in \Elem_N(X,\langle T_n k\rangle), \text{ if } k \in \Neut(X,\U_n) \text{ and } t \in \Neut(X,\langle T_n k \rangle).\\
     \end{align*}
-
 \end{definition}
+
+With this, we add some notations.
 
 \begin{definition}[Normal forms syntax]
     If $A$ is in $\Type_M(\langle X \rangle)$, we write $\Type_N(X)|A$ for the subset of normal types $K$ such
     that $\langle K \rangle = A$.
-
-    If $a$ is in $\Elem_M(\langle X \rangle, A)$, we write $\Elem_N(X,A)|a$ for the subset of normal terms 
+    Likewise, for a term $a$ in $\Elem_M(\langle X \rangle, A)$, we write $\Elem_N(X,A)|a$ for the subset of normal terms 
     such that $\langle k \rangle = u$.
 \end{definition}
 
 The interpretation $\langle . \rangle$ from $\Elem_N$ and $\Type_N$ to $\Elem_M$ and $\Type_M$ can be seen as quotient maps : from syntactical
 normal terms and types, we associate the corresponding term or type, quotiented up to conversion.
-Therefore, normalisation amounts to showing that those quotient maps are isomorphisms. 
-
-\subsection{Normalisation model}
-
-Now, we define the normalisation model, internally to the presheaf topos.
-This is described in the following definition.
+Therefore, normalisation amounts to showing that those quotient maps are isomorphisms. To prove this, we
+construct a normalisation model, which equips each type with a reducibility structure.
 
 \begin{definition}[Reducibility candidates]\label{struct}
-    This definition is internal to the model $\widehat{\mathcal{C}}$.
-
     For $T$ in $\Type_M$, we define $\Type'(T)$ the set of $4$-tuples  $(T',K,\q_T,\r_T)$ with :
     \begin{itemize}
         \item $T'$ in $\Elem_M(T) \rightarrow \text{Set}$
@@ -757,239 +806,49 @@ This is described in the following definition.
     \end{itemize}
 \end{definition}
 
-We then define a left-exact morphism from $M$ to $\widehat{\mathcal{C}}$ i.e a morphism of models being strict
-on the category structure, but weak on context extensions.
+Here, we only detail the constructions related to universes à la Tarski, which is the core of
+our matter. In fact, we need to normalise lifts and decoding operations with the equations of \ref{GAT}.
+Therefore, we need to embed the normal form of the decoding and lifitng of a code inside the reducibility structure of
+the universe. The remaining details of the proof are the same as in \citet{Coq19}.
 
-\begin{definition}[Morphism from M to $\widehat{\mathcal{C}}$]
-    To a context $\Gamma$ in $M$, we associate a presheaf $|\Gamma|$ in $\widehat{\mathcal{C}}$
-    by taking $|\Gamma|(X)$ to be the set of substitutions $\langle X \rangle \rightarrow \Gamma$ with
-    restriction maps $\rho \mapsto \rho \alpha = \rho  \langle\alpha\rangle$ for $\alpha : Y \rightarrow_S X$.
-
-    Each type $A$ in $\Type_M(\Gamma)$ in the model $M$ defines a presheaf map $|A| :
-    |\Gamma| \rightarrow \Type_M$ by $\rho \mapsto A \rho$ (formally, $|A|$ is a presheaf from
-    the category of elements $\smallint(\Gamma)$, and this is indeed a type in the presheaf model, see \cite{Hofmann1997}). 
-
-    Each element $a$
-    in $\Elem_M(\Gamma,A)$ in $M$ defines a global element $|a| : \Pi_{\rho:|\Gamma|} \,\Elem_M(|A|\rho)$.
-\end{definition}
-
-For any $A$ in $\Type_M(\Gamma)$ in $M$, we have a constant in the presheaf model :
-\[
-    \mk : \Pi_{\rho : |\Gamma|} \, |A|\rho \rightarrow |\Gamma.A|
-\]
-
-with projections $\fst : |\Gamma.A| \rightarrow |\Gamma|$ and $\snd : \Pi_{\nu : |\Gamma.A|} \, |A| (\fst \, \nu)$
-which gives an inverse to the canonical arrow $\langle|\p|, |\q|\rangle : |\Gamma.A| \rightarrow |\Gamma|.|A|$. This makes
-our map $|.| : M \rightarrow \widehat{\mathcal{C}}$ a left-exact morphism : we have $|\Gamma.A| \cong |\Gamma|.|A|$ (but not equal!).
-
-In fact, this morphism corresponds directly to the Yoneda embedding : we map the context $\Gamma$ (object)
-to its representing presheaf. 
-
- With those operations, we define the normalisation model $M^*$. This model can be seen as the gluing model along the 
- left-exact morphism $|.|$, with the construction for universes and dependent products
- described in \cite{Sattler}. In the following definition, we describe the model explicitly, and add the
- appropriate definitions for Tarski universes.
-
-\begin{definition}[Normalisation model]
-    A context in $M^*$ is a pair $\Gamma,\Gamma'$ where $\Gamma$ is a context of $M$
-    and $\Gamma'$ is a dependent family over $|\Gamma|$ in the presheaf model.
-
-    \begin{itemize}
-        \item We define $()'$ to be the constant presheaf $\{0\}$
-
-        \item We define the extension operation by $(\Gamma,\Gamma').(A,\overline{A}) = \Gamma.A,(\Gamma.A)'$,
-            where $(\Gamma.A)'(\rho,u)$ is defined as the set of pairs $\rho',u'$ with $\rho'$ in $\Gamma'(\rho)$ and
-            $u'$ in $\overline{A}\rho\rho'.1(u)$.
-
-        \item We define $\Type^*(\Gamma,\Gamma')$ (types of $M^*$) as the set of pairs $A,\overline{A}$ where $A$ is
-        in $\Type_M(\Gamma)$ and $\overline{A}$ is a global element of :
-            \[\Pi_{\rho:|\Gamma|} \,\Gamma'(\rho)\rightarrow \Type'(|A|\rho)\]
-        Such that $\overline{A} \rho \rho'$ is a proof of reducibility for $A$. Hence, every type is equipped with its reducibility proof.
-
-        \item We define $\Elem^*(\Gamma,(A,\overline{A}))$ (elements of $M^*$) as the set of pairs $a,\overline{a}$ where $a$ is in
-        $\Elem_M(\Gamma,A)$ and $\overline{a}$ is an element of :
-            \[\Pi_{\rho:|\Gamma|} \,\Pi_{\rho':\Gamma'(\rho)} \overline{A}\rho\rho'.1(|a|\rho)\]
-        Such that $\overline{a} \rho \rho'$ is a proof of reducibility for $a$. Hence, every term is equipped with its reducibility proof.
-    \end{itemize}
-\end{definition}
-
-Now we can add the constructions related to universes. The existing proof of normalisation by gluing
-such as the ones in \cite{Coq19, Coq21} work on a theory with a stratified type sort $\Type_n$ and a
-sort equation $\Elem(\U_n) = \Type_n$. To our knowledge, a rigorous proof of normalisation by gluing of
-a Tarksi-style theory has not been written down properly.\\
-
-In fact, the proof is not completely identical. For instance, one needs to embed the normal form of the decoding and
-lift  of a code inside its computability structure.
-
-\begin{theorem}[Construction for universes]
+\begin{definition}[Construction for universes]
     The following describes the operations related to universes in the normalisation model, including
     lifts, codes and decoding.
     
-    \begin{itemize}
-        % TODO: check what is presheaf and what is not in all the following, make sure there is |.| and rho in the right places 
-        % TODO: Make sure identity coercions are handled 
+    The reducibility predicate of a universe is $\U_n'$ where $\U_n' a$ is the set of $5$-tuples $(a',a_0,A_N,a_l,\q_a,\r_a)$ such that :
+                    \begin{align*}
+                        a' &: \Elem_M(T_n(a)) \rightarrow \mathcal{U}_n\\
+                        a_0 &: \Elem_N(\U_n)|a\\
+                        A_N &: \Type_N|T_n(a)\\
+                        a_l &: \Pi_{m \geq n} \Elem_N(\U_m)|t_n^m(a)\\
+                        \q_a \, u \, u' &: \Elem_N(T_n(a)) | u \text{ for } u : \Elem_M(T_n(a)) \text{ and } u' : a' u\\
+                        \r_a k &: a' \, k \text{ for } k: \Neut(T_n(a))
+                    \end{align*}
 
-        \item We define $\U_n^* = \U_n, \overline{\U_n}$, with $\overline{\U_n} \rho \rho'= \U_n', \U_n,\q_{\U_n},\r_{\U_n}$ defined by the following :
-            \begin{itemize}
-                \item $\U_n'$ where $\U_n' a$ is the set of $5$-tuples $(a',a_0,A_N,a_l,\q_a,\r_a)$ such that :
+    Now the normalisation structure of $\U_n$ is given by: 
+        \begin{align*}
+                \q_{\U_n} \, a \, (a',a_0,\q_a,\r_a) &= a_0\\
+                \r_{\U_n} K &= (\Neut(K)|u,\ K, \ \lambda \, u \, u' \mapsto u', \ \lambda \, k \mapsto k)
+        \end{align*}
 
-                    \begin{itemize}
-                        \item $a' : \Elem_M(T_n(a)) \rightarrow \mathcal{U}_n$
-                        \item $a_0: \Elem_N(\U_n)|a$
-                        \item $A_N : \Type_N|T_n(a)$,
-                        \item $a_l : \Pi_{m \geq n} \Elem_N(\U_m)|t_n^m(a)$,
-                        \item $\q_a \, u \, u' : \Elem_N(T_n(a)) | u$ for $u : \Elem_M(T_n(a))$ and $u' : a' u$
-                        \item $\r_a k : a' \, k$ for $k: \Neut(T_n(a))$.
-                    \end{itemize}
+     We can recover the normalisation structure of the decoding $T_n(a)$ for $a$ in $\Elem_M(X,\U_n)$, given the one for the code $a$ : $(a', a_0, A_N, a_l, q_a, r_a)$. 
+     \[
+         T_n'(a) = (a', A_N, \q_a, r_a)  
+     \]
+    
+     Likewise, we recover the normalisation structure of the lifting $t_n^m(a)$ for $a$ in $\Elem_M(X,\U_n)$, given $ (a', a_0, A_N, a_l, q_a, r_a)$.
+     \[ (t_n^m)'(a) = (a', \ a_l \, m, A_N, q_a, r_a)\]
 
-                \item $\U_n$ is the normal form.
-
-                \item $\q_{\U_n} \, a \, (a',a_0,\q_a,\r_a) = a_0$.
-
-                \item $\r_{\U_n} K = (K',K,\q_K,\r_K)$ where $K'u$ is $\Neut(K)|u$ and $\q_K \, u \, u' = u'$, and $\r_K \, k = k$.
-            \end{itemize}
-
-        \item We define $T_n(a)^* = T_n(a), \overline{T_n(a)}$ for $a$ in $\Elem_M(X,\U_n)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, a_l, q_a, r_a)$. Then we can define :
-            \begin{itemize}
-                \item $R' = a'$
-                \item $L = A_N$
-                \item $\q_R = \q_a$
-                \item $\r_R = \r_a$
-            \end{itemize}
-
-        \item We define $t_n^m(a)^* = t_n^m(a), \overline{t_n^m(a)}$ for $a$ in $\Elem_M(X,\U_n)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, a_l, q_a, r_a)$.
-            Then we can define $\overline{t_n^m(a)} \rho \rho' = (b',b_0, B_N, q_b, r_b)$ :
-            \begin{itemize}
-                \item $b' = a'$, which is well-defined because $\mathcal{U}_n \subset \mathcal{U}_m$ 
-                \item $b_0 = a_l \, m$ 
-                \item $B_N = A_N$ 
-                \item $q_b = q_a$ 
-                \item $r_b = r_a$ 
-            \end{itemize}
-
-        \item We define $(\U_n^m)^* = \U_n^m, \overline{\U_n^m}$
-            writing $\overline{\U_n^m} \rho \rho' = (a',a_0, A_N, q_a, r_a)$ :
-            \begin{itemize}
-                \item $a' u = Elem_N(\U_n)|u$ 
-                \item $a_0 = \U_n^m$ 
-                \item $A_N = \U_n$ 
-                \item $q_a u u'= u' $
-                \item $r_a k = (k',k_0,K_N,q_k,r_k)$ where : 
-                    \[
-                        (k' u = Neut(T_n(u)), \ k_0 = k, \ K_N = T_n(k_0), \ k_l \, m' = t_m^{m'} (k_0), \ q_k u u' = u', \ r_k k' = k')
-                    \]
-                    % TODO: Ici ajouter la coercion identité dans le k_l 
-            \end{itemize}
-
-        \item We define $(\Pi^n \; a \; b)^* = \Pi^n \; a \; b, \overline{\Pi^n \; a \; b}$
-             for $a$ in $\Elem_M(X,\U_n)$ and $b$ in $\Elem_M(|T_n a| \rho)$, let's write $\overline{a}\rho \rho' = (a', a_0, A_N, q_a, r_a)$
-             and $\overline{b} (\mk \, \rho \, u) (\rho',u') = (b' u u', b_0 u u', B_N u u', q_b u u', r_b u u')$ for every $u \in \Elem_M(|T_n| \rho)$ and $u' \in a'(u)$.
-             Writing $\overline{\Pi^n \; a \; b} = (c',c_0,C_N,q_c,r_c)$ we define:
-            \begin{itemize}
-                \item $c' w = \Pi_{u : \Elem_M(|T_n(a)| \rho)} \Pi_{u': a'(u)} b' u u' (w u)$ 
-                \item $c_0 = \Pi^n \; a_0 \; b_0$
-                \item $C_N = \Pi \; A_N \; B_N$ 
-                \item $c_l = \Pi \; c_l \; b_l$
-                \item $q_c w w' = \lambda_S \, g$ % TODO: Double check 
-                \item $(r_c k) u u' = \r_b u u' (\app_S \, a_0 \, G \, k \, (q_a u u')$ % TODO: Idem 
-            \end{itemize}
-
-            Where $G$ is the function $G \, k = B_N \langle k \rangle (\r_a \, k)$, and $g$ the one
-            which maps $g \, k = \q_b \langle k \rangle(\r_a k)(w \, \langle k \rangle)(w' \langle k \rangle (r_a \, k))$.
-
-
-
-    \end{itemize}
-\end{theorem}
-\begin{proof}
-    The only thing to check is that our construction is well-defined and satisfies
-    the equations required for it to be a model of type theory.
-\end{proof}
-
-We now instantiate this construction to the term model $M_0$, which is the initial model, so that
-we get an initial map $M_0 \rightarrow M_0^*$ which is a section of the projection map $M_0^* \rightarrow M_0$.
-Moreover, as the term model $M_0$ is the syntactical model, here contexts are the same as telescopes : we have
-$\langle X \rangle = X$.
-
-Hence, from a context $\Gamma$ of $M_0$, we use this section to compute $\Gamma'$, a context of $M_0^*$. This $\Gamma'$ is internally
-a dependent family over presheafs $|\Gamma|$, but can be seen externally as a family $\Gamma'(\Delta,\rho)$
-over $\Delta$ and $\rho : \Delta \rightarrow \Gamma$, along with restriction maps $\rho' \mapsto \rho'\alpha$ 
-for $\alpha : \Theta \rightarrow_S \Delta$.
-
-To conclude, we construct $\Id'_\Gamma$ in $\Gamma'(\Gamma,\Id)$.
-This is also analogous to Tait's proof, where we also need to instantiate the result using the identity substitution,
-along with the reducibility candidate for neutral terms, here replaced by $\r_A$.
-
-\begin{lemma}
-    By induction : 
-
-    \begin{itemize}
-        \item For $\Gamma = ()$, we take $\Id'_\Gamma = 0$ (as we defined $()' = {0}$, there is no choice).
-        \item If $\Delta = \Gamma.A$, we define $\rho' = \Id'_\Gamma \p_S$ in $\Gamma'(\Delta,\p)$,
-            and then $\Id'_\Delta = \rho', \r_A(\Delta,\p) \rho' v_0$ which is an element of $\Delta'(\rho,\p)$
-            because $\r_A(\Delta,\p) \rho' v_0$ is an element of $A'(\Delta,\p) \rho' \langle v_0 \rangle$, which is what we wanted.
-    \end{itemize}
-\end{lemma}
-
-In the next section, we will conclude by defining a normalisation by evaluation function.
-
-\subsection{Consequences of normalisation}
-
-We have the normalisation model instantiated to the term model $M_0$, along with a projection map $M_0^* \rightarrow M$
-and its section $M_0 \rightarrow M_0^*$. With this, we define a normalisation by evaluation function 
-$\nf : \Elem_M(\Gamma,A) \rightarrow \Elem_N(\Gamma,A)$, which is described in the following. \\
-
-\begin{definition}
-    For $A$ in $\Type_M(\Gamma)$ and $a$ is in $\Elem_M(\Gamma,A)$ we define :
-
-    \noindent
-    \begin{minipage}{0.50\linewidth}
-    \[
-        \nf(A) := (\overline{A}\, \Id\, \Id').2
-    \]
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.50\linewidth}
-    \[
-        \nf(a) := ((\q_A \, \Id \, \Id') \, a \, (\overline{a} \, \Id \, \Id')).1
-    \]
-    \end{minipage}
 \end{definition}
 
-Finally, we get normalisation, by showing that the quotient maps in $\Elem_N$ and $\Type_N$ are split by $\nf$ :
+By instantiating this construction to the term model, which correspond to our initial theory $\mathcal{T}_G$, we can define a normalisation by evaluation function 
+$\nf : \Elem_M(\Gamma,A) \rightarrow \Elem_N(\Gamma,A)$.
 
 \begin{theorem}[Normalisation]
-    For a context $\Gamma$, the quotient maps $k \mapsto \langle k \rangle$ and $K \mapsto \langle K \rangle$ (for
-    types and terms) have sections given by $\nf$. 
+    For a context $\Gamma$, the quotient maps $k \mapsto \langle k \rangle$ and $K \mapsto \langle K \rangle$ have sections given by $\nf$. 
 \end{theorem}
 
-\begin{proof}
-    We have $\langle \nf(A) \rangle = \langle K \rangle = A$ as $K$ is in $\Norm(A)|K$.\\
-
-    We also have : 
-    \[ \langle \nf(a) \rangle = \langle \q_A \, \Id \, \Id' \, a \, (\overline{a} \, \Id \, \Id').1 \rangle = a\] 
-
-    as $q_A \, \Id \, \Id'$
-    is in $\Pi_{u:\Elem_M(|A|\rho)} A'\,\Id \,\Id' \, u \rightarrow \Elem_N(A\rho)|u$, and $(\overline{a} \, \Id \, \Id').1$ is
-    indeed in $A' \, \Id \, \Id' \, a$.
-\end{proof}
-
-It is important to note that this function $\nf$ is well defined and can be effectively computed because of the 
-section of the projection $M_0 \rightarrow M_0^*$, which comes from the initiality of the term
-model. We have the following corollary :
-
-\begin{corollary}
-    Equality in $M_0$ is decidable.
-\end{corollary}
- 
-\begin{proof}
-    If $a$ and $b$ are in $\Elem_M(\Gamma,A$, we can compute $\nf(a)$ and $\nf(b)$ in $\Elem_N(\Gamma,A)$,
-    and then check syntactically if $\nf(a) = \nf(b)$ or not.
-
-    Then, as $\nf(a) = \nf(b)$ if and only if $a=b$, we can decide if $a=b$ or not.
-\end{proof}
-
-\subsection{Injectivity of type formers}
+\subsection{Injectivity and No-Confusion}\label{properties}
 
 In this section we show the injectivity of dependent product (in the term model), 
 using a semantic argument in the normalisation model. First we need the following
@@ -999,27 +858,14 @@ essential lemma.
     $\nf$ commutes with the dependent product operation.
 \end{lemma}
 
-\begin{proof}
-    We use the definitions: 
-    $
-        \nf(\Pi(A, B))  = \Pi_S \, K \,G 
-                        = \Pi \, K \, (G \, \p_S \, v_0)
-                        = \Pi \, K \, (F_0 \, \langle v_0 \rangle \, (\r_T \, v_0))
-    $.\\
-
-    Where $\overline{A} \, \Id \, \Id' = (T',K,\q_T,\r_T)$ and $(F' v_0 v_0',F_0 v_0 v_0', \q_F v_0 v_0', \r_F v_0 v_0') = \overline{B}(\mk \, \Id \, v_0)(\Id',v_0')$.\\
-
-    So our calculation gives the desired : $\nf(\Pi(A,B)) = \Pi \,\nf(A) \,\nf(B)$.
-\end{proof}
-
-From this, we deduce $\Pi$-injectivity really easily :
+From this, we deduce $\Pi$-injectivity :
 
 \begin{theorem}[Injectivity of dependent product]
-    The dependent product (in $M_0$) is injective.
+    The dependent product is injective in $\mathcal{T}_G$.
 \end{theorem}
 
 \begin{proof}
-    Let's assume that $\Pi \; A \; B = \Pi \; A' \; B'$ in $M_0$. Then, we have 
+    Let's assume that $\Pi \; A \; B = \Pi \; A' \; B'$ in $\mathcal{T}_G$. Then, we have 
     \[\nf (\Pi \; A \; B) = \nf (\Pi \; A' \; B')\] i.e 
     \[\Pi (\nf \; A) (\nf \; B) = \Pi (\nf \; A') (\nf \; B')\]
 
@@ -1028,103 +874,62 @@ From this, we deduce $\Pi$-injectivity really easily :
     $A = [\nf(A)] = [\nf(A')] = A'$. Likewise, we also have  $B = B'$.
 \end{proof}
 
-To prove our equivalence results in the next section, we will also need a injectivity for universes, which
+To prove our equivalence results in the next section, we will also need the injectivity of universes, which
 is stated by the following theorem.
 
-\begin{theorem}[Injectivity of universes]
-    If we have $\U_{n_0} = \U_{n_1}$ in $M_0$, then $n_0 = n_1$. 
+\begin{theorem}[Injectivity of universes]\label{univ-inj}
+    If we have $\U_{n_0} = \U_{n_1}$ in $\mathcal{T}_G$, then $n_0 = n_1$. 
 \end{theorem}
 
 \begin{proof}
-    We have $\U_{n_0} = \U_{n_1}$ in $M_0$, so $\nf(\U_{n_0}) = \nf(\U_{n_1})$ in the normalisation
-    model $M^*$, which corresponds to $\U_{n_0} = \U_{n_1}$ in $M^*$, and as this equality is syntactic we get $n_0 = n_1$.
+    Let's assume that $\U_{n_0} = \U_{n_1}$. We can normalise this equation to $\nf(\U_{n_0}) = \nf(\U_{n_1})$,
+    which corresponds to $\U_{n_0} = \U_{n_1}$ syntactically. Hence, we get directly: $n_0 = n_1$.
+\end{proof}
+
+We also get the "no-confusion" lemmas, which are a counterpart of injectivity of type formers.
+
+\begin{theorem}[No-Confusion]\label{no-confusion}
+    The following judgement is not derivable in $\mathcal{T}_G$: $\Gamma \vdash \Pi A B = \U_n$, for any types $A$ and $B$, and any level $n$. 
+\end{theorem}
+\begin{proof}
+    If such a judgement existed, we would have $\nf(\Pi(A,B)) = \nf(\U_n)$, which is impossible syntactically.
 \end{proof}
 
 Subject reduction for $\beta$-conversion also follows from $\Pi$-injectivity.
 
-\subsection{Subject reduction}
-We are going to show an essential property of type theory : subject reduction. It corresponds
-to a form of "type correctness", and to the static specification of a program that has to be
-stable by execution (which corresponds here to reduction).
-
+%TODO : do we really need subject-reduction ?
 \begin{theorem}
     If $\Gamma \vdash a  =  b : A$ and $\Gamma \vdash a : A$ then we have a derivation
     $\Gamma \vdash b : A$.
 \end{theorem}
 
-\begin{proof}
-    We show the property by induction on the term $a$. We will only consider the 
-    interesting case where $a$ is a $\beta$-redex i.e $a = (\lambda (x: A_1).t)u : A$ and 
-    $b = t[u]$.
-
-    Then by inverting the derivation, we necessarily have types $B_1$, $B_2$, $A_2$
-    and derivations $\Gamma, x:A_1 \vdash t: B_1$, $\Gamma \vdash u : A_2$, 
-    $\Gamma \vdash B_2 [u]  =  A$ and $\Gamma \vdash \Pi (x:A_1) B_1 = 
-    \Pi (x:A_2) B_2$.
-
-    By $\Pi$-injectivity we thus have $\Gamma \vdash A_2 = A_1$ and $\Gamma, x:A_1 \vdash
-    B_1 = B_2$. Finally, by combining the derivations, we obtain 
-    $\Gamma, x: A_1 \vdash t: B_2$ and $\Gamma \vdash u : A_1$, and hence : $\Gamma \vdash t[u] : B_2[u]$.
-
-    We then conclude with $B_2[u] = A$ that gives us the desired $\Gamma \vdash t[u] : A$
-\end{proof}
-
-
 With all of those result, we will be able to show that the equivalence of all our systems. 
 
-\section{Equivalence results}\label{equivalence}
+\section{Relating our different presentations : equivalence results}\label{equivalence}
 
 In this section, we show that all the systems $\mathcal{T}_G$, $\mathcal{T}_T$, $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent. In particular,
-we show that Tarski-style and Russell-style universes are equivalent.
+we show the equivalence result between Tarski-style and Russell-style universes.
 
 \subsection{Equivalence of $\mathcal{T}_G$ and $\mathcal{T}_T$ : explicit and implicit substitutions}
 
-We show by an elementary proof that $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent, and thus, 
-$\mathcal{T}_T$ can be rigorously interpreted as a CWF.
-
-First, we would have to show that we can remove context annotations from the substitutions in
+We show by an elementary proof that $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent.
+First, we would have to show that we can remove context annotations from the operations of 
 $\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes, and the main point is that the contexts and
 types can be inferred from the derivation. We will not detail this proof here. 
 
-Then, we define a from $\mathcal{T}_G$ to $\mathcal{T}_T$ that creates a judgment in $\mathcal{T}_T$ with
-implicit substitutions. For this, we map substitutions in $\mathcal{T}_G$ to a list of "elementary"
-substitutions in $\mathcal{T}_T$, as there is no composition in this system. Then, when translating the application of a substitution
-to a term or a type, we can fold that list to get a type formed by applying all those substitutions successively.
 
-\begin{definition}
-    We define  $\proj(.)$ by induction:
-
-    \noindent
-    \begin{minipage}{0.50\linewidth}
-    \begin{align*}
-        \proj(\Gamma \vdash J) &= \proj(\Gamma) \vdash \proj(J)\\
-        \proj(\sigma : \Gamma \rightarrow \Delta) &=\; \vdash\\ 
-        \proj([a]) &= [\proj(a)]\\
-        \proj(A \sigma) &= (...(\proj(A)\sigma_1)...)...\sigma_n\\
-        \proj(a \sigma) &= (...(\proj(a)\sigma_1)...)...\sigma_n\\ 
-    \end{align*}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.50\linewidth}
-    \begin{align*}
-        \proj(\q) &= v_0\\
-        \proj(\p) &= \p\\
-        \proj(\Id) &= \\ 
-        \proj(\sigma\delta) &= \proj(\sigma)::\proj(\delta)\\
-        \proj(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)\\
-    \end{align*}
-    \end{minipage}
-\end{definition}
-
+\begin{lemma}[Well-formed definition of $\proj$]
+    The forgetful map $\proj$ is well-defined.
+\end{lemma}
 \begin{proof}
-    We check that this definition gives types and term in $\mathcal{T}_T$, which is
-    not completely clear with what is going on in the cases $A\sigma$ and $a \sigma$.
+    We check that $\proj$ produces types and term in $\mathcal{T}_T$. This is
+    not completely clear, because of the cases $A\sigma$ and $a \sigma$.
 
-    In fact, we check that $\proj(\sigma)$ gives a list of substitutions which are
-    valid syntactically in $\mathcal{T}_T$. This can be done easily by induction, but we ommit the details here.
+    In fact, we check that $\proj(\sigma)$ indeed gives a list of well-formed elementary substitutions.
+    Then, the successive application of those substitutions gives a syntactically valid type or term in $\mathcal{T}_T$.
 \end{proof}
 
-For the equivalence result, we need the usual subsitution lemma in $\mathcal{T}_T$:
+For the equivalence result, we need the usual substitution lemma in $\mathcal{T}_T$:
 
 \begin{lemma}[Substitution lemma]\label{Substitution}
     If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
@@ -1132,7 +937,7 @@ For the equivalence result, we need the usual subsitution lemma in $\mathcal{T}_
 \end{lemma}
 
 \begin{proof}
-    By direct induction.
+    By induction.
 \end{proof}
 
 With all of this, we show the following admissibility result :
@@ -1141,10 +946,8 @@ With all of this, we show the following admissibility result :
     The erasure of rules in $\mathcal{T}_G$ are admissible in $\mathcal{T}_T$.
 \end{lemma}
 \begin{proof}
-    Direct with the substitution lemma, which we iterate when we unfold the list
-    of "elementary" substitutions created by erase. For example for the rule :
-
-    For example for the rule :
+    The only two interesting rules are the one defining the action of substitution on types and terms.
+    To prove admissibility, we iterate the substitution lemma when we unfold the list of "elementary" substitutions created by $\proj$:
 
 \begin{mathpar}
   \ebrule{
@@ -1153,7 +956,7 @@ With all of this, we show the following admissibility result :
     \infer2{\Delta \vdash A \sigma \, \type}
   }
   \and
-  \text{the erasure is just :}
+  \text{erases to:}
   \and
   \ebrule{
     \hypo{\Gamma \vdash \proj(A) \, \type}
@@ -1164,16 +967,16 @@ With all of this, we show the following admissibility result :
 \vspace{0.5em}
 
 Where $\proj(\sigma) = (\sigma_1, ..., \sigma_n)$, and this derivation is admissible with
-$n$ applications of the substitution lemma.
+$n$ applications of the substitution lemma. We do the same thing for the action of substitution on terms. 
 \end{proof}
 
 Consequently, we get the following correction result : 
 
-\begin{theorem}
-    If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\proj(\Gamma \vdash J)$ is derivable in $\mathcal{T}_T$.
+\begin{theorem}[Correction of $\proj$]
+    If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\proj(\Gamma) \vdash \proj(J)$ is derivable in $\mathcal{T}_T$.
 \end{theorem}
 \begin{proof}
-    By direct induction with the lemma, we replace the rules by the admissible ones. 
+    By induction, we replace the rules of $\mathcal{T}_G$ by the admissible ones in $\mathcal{T}_T$ using the previous lemma. 
 \end{proof}
 
 Finally, we deduce that the two systems are equivalent :
@@ -1189,139 +992,226 @@ Finally, we deduce that the two systems are equivalent :
     on types and terms without substitution, we get our equivalence result.
 \end{proof}
 
-Hence, we can use implicit substitutions freely with the system "à la Tarski", while still being able
-to give a rigorous interpretation in a CWF model. This proves the equivalence of $\mathcal{T}_T$
-and the GAT presentation of type theory (here $\mathcal{T}_G$).
-An alternative approach could use the initiality result of \cite{Brunerie}
-for contextual categories, which may be adapted to interpret $\mathcal{T}_T$ as a CWF. 
+This proves the equivalence of $\mathcal{T}_T$ with the generalised algebraic presentation of type theory given by $\mathcal{T}_G$.
+An alternative approach could use the initiality result of \cite{Brunerie} for contextual categories, which may be adapted to interpret $\mathcal{T}_T$
+directly as a model of the GAT.
 
 \subsection{Equivalence of $\mathcal{T}_T$ and $\mathcal{T}_R$ : Tarski and Russell universes}\label{sectionT1T2}
 
-With the essential properties of $\mathcal{T}_T$ shown in section 4, we prove the equivalence
-of Tarski-style and Russell-style universes. First, we need to consider both theories with type
-annotations the derivation rules are those corresponding to the equational theory in section $2$.
+We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of $\mathcal{T}_T$ and $\mathcal{T}_R$.
+All the results of this section have been completely formalised in Rocq.
+In the mechanized proof, we take the results of section \ref{properties} as Axioms, as the proof of 
+normalisation is not the subject of this paper.
 
-For that we consider the following erasure operation, which forms a forgetful map from
-Tarski universes to Russell ones. 
-
-\begin{definition}[\formline{Erasure.v}{7}{Erasurefunction} Erasure]
-    We define the erasure operation, denoted $|.|$ :
-
-    \noindent
-    \begin{minipage}{0.50\linewidth}
-    \begin{align*}
-        |\U_n| &= U_n\\
-        |\U_m^n| &= \U_m\\
-        |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
-        |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
-        |v_i| &= v_i\\
-    \end{align*}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.50\linewidth}
-    \begin{align*}
-        |T_n(a)| &= |a|\\
-        |t_m^n(a)| &= |a|\\
-        |\Pi^n \, a \, b| &= \Pi(|a|, |b|)\\
-        |\Pi(A, B)| &= \Pi(|A|, |B|)\\
-    \end{align*}
-    \end{minipage}
-\end{definition}
-
-We now show that this operation indeed preserves derivations.
+First, we show that the erasure operation $|.|$ preserves derivations.
 
 \begin{lemma}[\formline{Erasure.v}{64}{Erasurecorrection} Correction of erasure]
     If $\Gamma \vdash J$ in $\mathcal{T}_T$, then $|\Gamma| \vdash |J|$ in $\mathcal{T}_R$.
 \end{lemma}
 
 \begin{proof}
-    By direct induction.
+    By mutual induction, we prove the statement for our five different kinds of judgements : well-formation of contexts and types,
+    typing, and conversion between types and terms. The proof is mostly direct, and amounts at showing that the
+    erasure of each rule of $\mathcal{T}_T$ corresponds to an admissible rule of $\mathcal{T}_R$.
 \end{proof}
 
 Then, we want to show that this forgetful map has an inverse, hence proving the equivalence
-of the two systems. For this, we first show a useful theorem.
+of the two systems. For this, we will need some technical lemmas, which we all prove simultaneously by a mutual
+induction on the derivation.
 
-For this we will need some technical lemmas.
-
-
-\begin{lemma}
+\begin{lemma}[\formline{Utils.v}{171}{Hypothesis} Hypothesis inversion]
     If we have a derivation $\Gamma, A \vdash J$, where $J$ is an arbitrary judgment,
     then we necessarily have a derivation $\Gamma \vdash A \; \type$.
 \end{lemma}
 
-\begin{proof}
-    We prove the result by induction on the derivation $\Gamma, A \vdash J$.
-\end{proof}
+\begin{lemma}[\formline{Utils.v}{168}{Hypothesis} Typing and conversion inversion]
 
-And similarly, we have the other lemma :
-
-\begin{lemma}
-    If we have a derivation $\Gamma \vdash a : A$ then we necessarily have a derivation $\Gamma \vdash A \; \type$.
+    If we have a derivation $\Gamma \vdash a : A$ or $\Gamma \vdash a = b :A$ then we necessarily have a derivation $\Gamma \vdash A \; \type$.
 \end{lemma}
 
-\begin{proof}
-   By induction on $\Gamma \vdash a : A$. It is important to note that the obtained derivation is not necessarily 
-   a sub-derivation of $\Gamma \vdash a: A$ (if $A$ is a universe for example).
-\end{proof}
+Those two lemmas allow us to reason by inversion on given judgements, as Rocq's inversion
+tactic would be stuck with rules such as :
+\begin{mathpar}
+  \ebrule{
+    \hypo{\Gamma \vdash a : A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a : B}
+  }
+\end{mathpar}
 
-Those two lemmas allow us to consider rules in $\mathcal{T}_T$ with a premise $\Gamma \vdash A \,\type$ for all
-rules that require it. Indeed, it will be essential for us to apply the induction hypothesis in the proof
-of equivalence. Everything is condensed in the following lemma : 
+We also need the following lemma, which will allow us to modify derivations given a conversion judgement.
 
-\begin{lemma}\label{Inversion1}\label{Inversion2}
-    We can remove the typing premises to the application, abstraction and $\Pi^n$ rule. This
-    new system is equivalent to the previous one. 
-
-    In the following proof of proposition \ref{mainuniverse}, we will use freely that we have the
-    typing hypothesises in the rule, but we will use the new rules to simplify the notations.
-\end{lemma}
-
-We also need the following lemma to modify derivations when we have a conversion judgment.
-
-\begin{lemma}\label{Transform}
+\begin{lemma}\label{Transform}[\formline{Utils.v}{182}{Hypothesis}]
     If we have a derivation $\Gamma, A \vdash J$ and a convertibility derivation $\Gamma \vdash A = B$,
-    then we construct a derivation $\Gamma, B \vdash J$.
+    then we can construct a derivation $\Gamma, B \vdash J$.
 \end{lemma}
-\begin{proof}
-    It results from the fact that $=$ is a congruence, and of the rule that gives $a:B$ when $a:A$ and $A=B$. Then,
-    it is shown by direct induction.
-\end{proof} 
 
-We also need this lemma that will be useful in the proof of the main lemma.
+Now, we would want to state the main result, by adapting the arguments of \citet{Streicher}. We could try to prove the
+following statement:\\
+
+\textbf{Lemma.} If we have $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ such that $|u_0| = |u_1|$
+in $\mathcal{T}_R$, then necessarily they are convertible i.e. $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$\\
+
+However, this fails when $u_0$ and $u_1$ are codes in different universes. For instance, we have $\Gamma \vdash \U_m^n : \U_n$ and $\Gamma \vdash \U_m^l$
+which have the same erasure $|\U_m^n| = |\U_m^l| = \U_m$, but are not convertible (at least if $n \neq l$). Therefore,
+we need to prove a more general statement that properly deals with the case when $A_0$ and $A_1$ are universes. In this case, we should 
+be able to find a lower universe, and two convertible terms in that lower universe, which lifts to $u_0$ and $u_1$ respectively. This correspond to the 
+following figure:
+
+\begin{figure}[H]
+\centering
+\resizebox{0.42\textwidth}{!}{%
+    
+    
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Ellipse [id:dp4815941303797192] 
+\draw   (103.67,84.33) .. controls (103.67,73.29) and (119.34,64.33) .. (138.67,64.33) .. controls (158,64.33) and (173.67,73.29) .. (173.67,84.33) .. controls (173.67,95.38) and (158,104.33) .. (138.67,104.33) .. controls (119.34,104.33) and (103.67,95.38) .. (103.67,84.33) -- cycle ;
+%Shape: Ellipse [id:dp17791572333330286] 
+\draw   (219.67,85) .. controls (219.67,73.95) and (235.34,65) .. (254.67,65) .. controls (274,65) and (289.67,73.95) .. (289.67,85) .. controls (289.67,96.05) and (274,105) .. (254.67,105) .. controls (235.34,105) and (219.67,96.05) .. (219.67,85) -- cycle ;
+%Shape: Ellipse [id:dp467313711776734] 
+\draw   (137,143.67) .. controls (137,127.83) and (163.12,115) .. (195.33,115) .. controls (227.55,115) and (253.67,127.83) .. (253.67,143.67) .. controls (253.67,159.5) and (227.55,172.33) .. (195.33,172.33) .. controls (163.12,172.33) and (137,159.5) .. (137,143.67) -- cycle ;
+%Straight Lines [id:da3638554959651593] 
+\draw    (172,139.5) .. controls (169.67,139.16) and (168.67,137.82) .. (169.01,135.49) .. controls (169.35,133.16) and (168.35,131.82) .. (166.02,131.48) .. controls (163.69,131.14) and (162.69,129.8) .. (163.04,127.47) .. controls (163.38,125.14) and (162.38,123.8) .. (160.05,123.46) .. controls (157.72,123.13) and (156.72,121.79) .. (157.06,119.46) .. controls (157.4,117.13) and (156.4,115.79) .. (154.07,115.45) .. controls (151.74,115.11) and (150.74,113.77) .. (151.08,111.44) .. controls (151.42,109.11) and (150.42,107.77) .. (148.09,107.43) .. controls (145.76,107.09) and (144.76,105.75) .. (145.11,103.42) -- (144.31,102.35) -- (139.53,95.94) ;
+\draw [shift={(138.33,94.33)}, rotate = 53.3] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da2882231844046552] 
+\draw    (218.5,140) .. controls (218.12,137.67) and (219.09,136.32) .. (221.42,135.94) .. controls (223.75,135.56) and (224.72,134.21) .. (224.34,131.88) .. controls (223.96,129.55) and (224.93,128.2) .. (227.26,127.83) .. controls (229.59,127.45) and (230.56,126.1) .. (230.18,123.77) .. controls (229.81,121.44) and (230.78,120.09) .. (233.11,119.71) .. controls (235.44,119.33) and (236.41,117.98) .. (236.03,115.65) .. controls (235.65,113.32) and (236.62,111.97) .. (238.95,111.59) .. controls (241.28,111.22) and (242.25,109.87) .. (241.87,107.54) .. controls (241.49,105.21) and (242.46,103.86) .. (244.79,103.48) -- (246.49,101.12) -- (251.16,94.62) ;
+\draw [shift={(252.33,93)}, rotate = 125.75] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (128.83,81.4) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$u_{0}$};
+% Text Node
+\draw (70.67,65.73) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$U_{n_{0}}$};
+% Text Node
+\draw (246.67,81.57) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$u_{1}$};
+% Text Node
+\draw (297.33,65.73) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$U_{n_{1}}$};
+% Text Node
+\draw (170.67,138.23) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$v_{0}$};
+% Text Node
+\draw (204.33,138.73) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$v_{1}$};
+% Text Node
+\draw (113.83,147.73) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$U_{k}$};
+% Text Node
+\draw (122.67,107.07) node [anchor=north west][inner sep=0.75pt]  [font=\small]  {$t_{k}^{n_{0}}$};
+% Text Node
+\draw (245.33,109.73) node [anchor=north west][inner sep=0.75pt]  [font=\small]  {$t_{k}^{n_{1}}$};
+% Text Node
+\draw (188.5,140.4) node [anchor=north west][inner sep=0.75pt]  [font=\large]  {$=$};
+
+
+\end{tikzpicture}
+
+
+}%
+
+\label{fig:my_label}
+\end{figure}
+
+Thus, we shall prove the following lemma, which is the most technical result of this paper. One of 
+the reason for this, is that we want to keep the proof elementary, and only on basic syntactic arguments. We could also
+have used stronger arguments such as normalisation, but this would make the proof less modular and algorithmic.
+Still, we sketch such a proof at the end of the section.
+
+\begin{lemma}[\formline{Equivalence.v}{809}{eraseinjty}] \label{mainuniverse}
+    If we have two types $\Gamma \vdash A\; \type$ and $\Gamma \vdash B\; \type$ in $\mathcal{T}_T$ with the same erasure $|A| = |B|$, then they are convertible $\Gamma \vdash A = B$.\\
+    If we have two terms $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ with the same erasure $|u_0| = |u_1|$, then we have two cases:
+    \begin{itemize}
+        \item Either they are convertible $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
+        \item Or they are codes in universes, such that $\Gamma \vdash A_0 = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$, and 
+            there exists two convertible terms $\Gamma \vdash v_0 = v_1 : \U_k$ in a lower universe, which
+            lifts to $u_0$ and $u_1$ in the following way: 
+            \[\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0\]
+            \[\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1\]
+    \end{itemize}
+
+    % TODO : add erase_decode_inv, which was crucial for the formalisation in the end ! 
+\end{lemma}
+
+\begin{proof}
+    We prove the property by mutual induction on $A$ and $u_0$, proving both statements at the same time, as when $A$ is a decoded type $T_n(a)$ : 
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\Gamma \vdash a : \U_n}
+        \infer1{\Gamma \vdash T_n(a) \, \type}
+      }
+    \end{mathpar}
+    we will require the induction hypothesis on a term to prove the property for a type. For each of the cases of
+    the induction, we need a "catch-up" lemma which inverts the erasure hypothesis. Concretely the issue is that we cannot 
+    deduce from $|u_1| = \Pi(A,B)$ that $u_1$ is a dependent product, as it could well be the decoding of a code $T_n(\Pi^n \; a \; b)$, or
+    even a decoding of a lift $T_n(t_m^n(a))$. To solve this, we need to do another induction on $u_1$ for each case.
+
+    We now present some of the key cases to demonstrate the proof technique.\\
+
+    \textit{Lambda abstraction.} If $u_0 = \lambda(C_0,B_0,b_0)$, then we necessarily have $A_0 = \Pi(C_0,B_0)$,
+        and by inversion, the derivation $\Gamma \vdash u_0 : A_0$ looks like :
+
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\Gamma.C_0 \vdash b_0 : B_0}
+        \infer1{\Gamma \vdash \lambda(C_0,B_0,b_0) : \Pi(C_0,B_0)}
+      }
+    \end{mathpar}
+
+    Then $|u_0| = \lambda(|C_0|, |B_0|, |b_0|) = |u_1|$ and so $u_1$ is necessarily
+    an abstraction or a lift. Now let's prove the property by induction on $u_1$.
+
+    \begin{itemize}
+        \item \underline{First case:} $u_1 = \lambda(C_1, B_1, b_1)$ with $|C_1| = |C_0|$, $|B_1| = |B_0|$, $|b_1| = |b_0|$.
+    Also, by inversion $\Gamma \vdash u_1 : A_1$ is necessarily :
+
+    \begin{mathpar}
+      \ebrule{
+        \hypo{\Gamma.C_1 \vdash b_1 : B_1}
+        \infer1{\Gamma \vdash \lambda(C_1,B_1,b_1) : \Pi(C_1,B_1)}
+      }
+    \end{mathpar}
+
+    Using the induction hypothesis on $C_0$ with $C_1$, we get $\Gamma \vdash C_0 = C_1$.
+    Then, we can modify the derivation $\Pi_1$ using lemma \ref{Transform} to get a derivation
+    $\Gamma,C_0 \vdash b_1 : B_1$. Now that the two terms live in the same context,
+    we apply the induction hypothesis on $b_0$ with $b_1$, and get two cases. 
+    
+    In the first case, we get directly derivations $\Gamma \vdash b_1 = b_0 : B_0$ and $\Gamma \vdash B_0 = B_1$,
+    and using congruence equations we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$.
+    
+    In the second case, we get $\Gamma \vdash A_0 = \U_{n_0}$, from which we deduce $\Gamma \vdash \Pi(C_0,B_0) = \U_{n_0}$,
+    which is a contradiction by lemma \ref{no-confusion}.
+
+    \item \underline{Second case:} $u_1 = t_n^m(a)$, and we will show that this case is not possible.
+        Indeed, we thus have $A_1 = \U_m$ and $|u_1| = |a| = |u_0|$ and we can apply the induction hypothesis
+        on $a$, and in each case we obtain either $\Gamma \vdash A_0 = \U_m$ or $\Gamma \vdash A_0 = \U_{n_0}$, which
+        are absurd because of lemma \ref{no-confusion}.
+    \end{itemize}
+
+    The case of lambda abstraction illustrated the main arguments used, and how no-confusion plays an 
+    essential role to our arguments. However, in more complicated cases, we cannot always eliminate lifting
+    cases, and we need to 
+
+
+\end{proof}
+
+
 
 \begin{lemma}[\formline{Equivalence.v}{8}{simplifyinduction}]\label{Utile}
      Let's assume that : $\Gamma \vdash A_0 = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$ and 
      $\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1$ with
      $\Gamma \vdash v_0 = v_1 : \U_k$.
 
-     Then if $\Gamma \vdash A_0 = A_1$, we have : $\Gamma \vdash u_0 = u_1: A_0$.
+     Then if we additionally have  $\Gamma \vdash A_0 = A_1$, we get : $\Gamma \vdash u_0 = u_1: A_0$.
 \end{lemma}
-
 \begin{proof}
-    Mostly direct using the conversion rules for lifts in $\mathcal{T}_T$. See the detailed proof in appendix \ref{proofmainuniverse}. 
+    By transitivity, we get $\Gamma \vdash \U_{n_0} = \U_{n_1}$ from which we can deduce $n_0 = n_1$ using
+    injectivity of universes \ref{univ-inj}. Hence, $u_0$ and $u_1$ are codes living in the same universe.
+    Using congruence of the lifting operation on the equation $\Gamma \vdash v_0 = v_1 : \U_k$, we get:
+    \[\Gamma \vdash t_k^{n_0}(v_0) = t_k^{n_0}(v_1)\]
+    from which we deduce $\Gamma \vdash u_0 = u_1 : A_0$ by transitivity.
 \end{proof}
 
-Now we state the main result, which is adapted from chapter 4 of \cite{Streicher},
-where he proves metatheoretical results.
-
-\begin{proposition}[\formline{Equivalence.v}{809}{eraseinjty}] \label{mainuniverse}
-    If $\Gamma \vdash A\; \type$, $\Gamma \vdash B\; \type$ in $\mathcal{T}_T$ and $|A| = |B|$, then $\Gamma \vdash A = B$.\\
-    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ and $|u_0| = |u_1|$ then
-    \begin{itemize}
-        \item Either $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
-        \item Or $\Gamma \vdash A_0 = \U_{n_0}$, $\Gamma \vdash A_1 = \U_{n_1}$ and 
-            $\Gamma \vdash u_0 = t_k^{n_0}(v_0) : A_0$, $\Gamma \vdash u_1 = t_k^{n_1}(v_1) : A_1$ with
-            $\Gamma \vdash v_0 = v_1 : \U_k$.
-    \end{itemize}
-\end{proposition}
-
-\begin{proof}
-    We prove the property by mutual induction, proving both statements at the same time. One of the key
-    property used is the injectivity of type formers. For instance, when treating the $\app$ case, we
-    get an equality of $\Pi$-types by induction hypothesis, and need to deduce the convertibility of the two
-    composing types. The proof also makes an extensive use of lemma \ref{Transform} to construct derivation
-    with the appropriate contexts when we have two premises. See appendix \ref{proofmainuniverse} for the detailed proof.
-\end{proof}
 
 Hence, we deduce the following corollary, which states that if we have two judgments
 in $\mathcal{T}_T$ which are syntactically equal in $\mathcal{T}_R$ (when removing coercions, lifts...), then
@@ -1333,9 +1223,12 @@ the Russell one.
     with the additional hypothesis $|A_0| = |A_1|$, then : $\Gamma \vdash A_0 = A_1$ and 
     $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{corollary}
+%TODO : formulation avec les fibrations ? 
 
 \begin{proof}
-    This is a direct application of the two previous lemmas.
+    We apply lemma \ref{mainuniverse} on the equality $|A_0| = |A_1|$ to get $\Gamma \vdash A_0 = A_1$, and on
+    $|u_0| = |u_1|$ to get the two cases. In the first one, we directly have $\Gamma \vdash u_0 = u_1 : A_0$,
+    and in the second one, we use lemma \ref{Utile} to get the derivation.
 \end{proof}
 
 Now we prove the following theorem, stating the formal equivalence between the two systems:
@@ -1349,27 +1242,25 @@ Now we prove the following theorem, stating the formal equivalence between the t
     Uniqueness up to conversion follows directly from the previous lemma. We prove existence
     by induction, by making an extensive use of the previous lemma for rules with two premises. Indeed,
     when using the induction hypothesis on two premises, we need to make sure that the same types have 
-    the same translations. See detailed proof in appendix.
+    the same translations.
+    % TODO : detail
 \end{proof}
 
-Hence, we showed the equivalence of the two systems, and thus we can give categorial semantics rigorously
-to the system $\mathcal{T}_R$ "à la Russell", with CWFs.
+% TODO : other proof using normalisation ?
 
-\subsection{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : finally GAT and PTS}
+To prove this equivalence result, we could have relied on normalisation to simplify the proofs, at
+the cost of relying on less elementary properties of the theory. In fact, if we proved normalisation for
+$\mathcal{T}_R$ as well, we could construct the derivation of \ref{equT1T2} by an induction on normal forms, which would
+simplify the discussions in the proof. Then, by showing that the erasure map $|.|$ commutes with $\nf(.)$, 
+we would obtain the equivalence result.
 
-We define the $\strip$ function, which erases type annotations from a term of the system $\mathcal{T}_R$, and gives a term of $\mathcal{T}_P$.
-This function is analogous to the one defined in \cite{Streicher}.
+However, we chose to not rely on such results as we believe that one should not use stronger
+properties if they are not needed. Notably, this makes our proof more modular, as it does not depend
+on a normalisation by evaluation function which would have to be constructed for each theory
+we would want to consider.
 
-\begin{definition}
-    $\strip$ is defined inductively by :
+\subsection{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : unannotated syntax}
 
-    \begin{itemize}
-        \item $\strip(\lambda (A,B,b)) = \lambda \; (A, \strip(b))$ 
-        \item $\strip(\app (A,B,c,a)) = \strip(c) \; \strip(a)$.
-        \item $\strip(\Pi(A,B)) = \Pi(\strip(A), \strip(B))$.
-        \item $\strip(\U_n) = \U_n$
-    \end{itemize}
-\end{definition}
 
 We have quite easily : 
 
@@ -1398,7 +1289,7 @@ Hence, like in \cite{Streicher}, we prove the following lemma.
 
 \begin{proof}    
     Here, again we prove the two statements simultaneously, by mutual induction. The proof is similar to the
-    one of proposition \ref{mainuniverse}. See appendix for the detailed proof.
+    one of proposition \ref{mainuniverse}. 
 \end{proof}
 
 And we show the following theorem :
@@ -1410,7 +1301,7 @@ And we show the following theorem :
 \begin{proof}
     By induction on the derivation $\Gamma \vdash J$, with the previous lemma, we construct a derivation in $\mathcal{T}_R$.
     The main point is that the typing annotations can be inferred from the derivation, and that the previous lemma gives
-    us uniqueness for rules with two premises. See appendix for the detailed proof.
+    us uniqueness for rules with two premises. 
 \end{proof}
 
 We can also relax the rules of our system $\mathcal{T}_P$ to remove "$A \; \type$" judgments. 
@@ -1448,6 +1339,7 @@ Hence, we remove those rules in the system $\mathcal{T}_R$, and get a system wit
 "well-formed type" judgments ("$A$ type"). We can also consider named variables
 instead of de Bruijn indices. Hence, we get a theory really close to a pure type
 system, with the additional rule for cumulativity :
+% TODO : make all of this precise
 
 \begin{mathpar}
   \ebrule{
@@ -1456,7 +1348,11 @@ system, with the additional rule for cumulativity :
   }
 \end{mathpar}
 
+% TODO : Add removal of variable annotation in lambda
+
 \section{Extending the results}
+
+% TODO : reformuler complètement cette section, merge avec la conclusion ? 
 
 One thing to mention, is that in the system with Russell universes, typing is not closed under
 $\eta$ reduction, as shown in the following :
@@ -1490,6 +1386,9 @@ still get the equivalence result for such a system, which is close to the one us
 
 \subsection{Universe polymorphism}
 
+% TODO : attention dans la discussion, dire  "notre travail est orthogonal au polymorphisme d'univers...",
+% on peut faire la preuve pour des niveaux internes et ensuite ajouter tout ce qu'on veut tant que c'est injectif en gros
+
 We want to extend the equivalence result to a theory with universe polymorphism.
 In fact, one often wants to prove theorems uniformly  for arbitrary universes. 
 Thus, we need a way to describe universe levels and constraints explicitly,
@@ -1502,8 +1401,10 @@ from Bezem et al.\\
 If we assume that such a proof holds, we get injectivity of type formers,
 and we adapt our equivalence proof to a system with universe polymorphism.
 In fact, we just have to look at the rules closely to make sure that the inductions 
-will still work. This work is done in appendix \ref{polyeq}. 
+will still work. 
+
 \section{Conclusion}
+% TODO : Vraie conclusion, future work etc...
 
 To conclude, we proved that the GAT and PTS presentations of type theory are equivalent, and
 that the latter is also initial as CWF models. Notably, Tarski and Russell 
@@ -1518,6 +1419,8 @@ that it could be adapted to many extensions of the theory presented in this pape
 
 \appendix
 \section{Appendix : Type systems}\label{Rules}
+
+% TODO : Check all rules !!
 
 \subsection{The system $\mathcal{T}_T$ : Tarski universes}
 
@@ -1588,7 +1491,7 @@ We start with the typing judgments $a : A$ and the well-formed type judgment $A 
   \and
   \ebrule{
     \hypo{\Gamma \vdash a: \U_n}
-    \infer1[($n<p$)]{\Gamma \vdash t_m^n(a): \U_p}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_m^n(a): \U_p}
   }
   \and
   \ebrule{
@@ -1659,7 +1562,7 @@ We also have the following conversion rules :
   \and
   \ebrule{
     \hypo{\Gamma \vdash a = a': \U_n}
-    \infer1[($n<p$)]{\Gamma \vdash t_n^p(a) = t_n^p(a'): \U_p}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(a) = t_n^p(a'): \U_p}
   }
 \end{mathpar}
 
@@ -1673,7 +1576,7 @@ We also have the following conversion rules :
   \ebrule{
     \hypo{\Gamma \vdash a: \U_n}
     \hypo{\Gamma,T_n(a) \vdash b: \U_n}
-    \infer2[($n<p$)]{t_n^p(\Pi^n \, a \, b) = \Pi^p(t_n^p(a),t_n^p(b))}
+    \infer2[($n\leq p$)]{t_n^p(\Pi^n \, a \, b) = \Pi^p(t_n^p(a),t_n^p(b))}
   }
 \end{mathpar}
 
@@ -1685,22 +1588,23 @@ We also have the following conversion rules :
   \and
   \ebrule{
     \hypo{}
-    \infer1[($n<p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
   }
 \end{mathpar}
 
 \begin{mathpar}
   \ebrule{
     \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($n<m$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
+    \infer1[($m \leq n$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
   }
   \and
   \ebrule{
     \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($m<n<p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
   }
 \end{mathpar}
 
+% TODO : add congruence rules
 We also require the rules that makes $=$ a congruence, even if we don't precise them all.
 
 \subsection{The system $\mathcal{T}_G$ : explicit substitutions}
