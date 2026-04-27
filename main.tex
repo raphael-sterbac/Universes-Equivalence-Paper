@@ -89,10 +89,10 @@
 % Rocq links
 
 \DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}}}
-\DeclareDocumentCommand{\formfile}{O{blob/main/} m}{%
+\DeclareDocumentCommand{\formfile}{O{blob/7fcdac8ad76d6ef920e03688b8d1cc5753ba4fa7/} m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2}{\coqlogo}}
-  
-\DeclareDocumentCommand{\formline}{O{blob/main/} m m m}{%
+
+\DeclareDocumentCommand{\formline}{O{blob/7fcdac8ad76d6ef920e03688b8d1cc5753ba4fa7/} m m m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2\#L#3}{\coqlogo}}
 
 \title{From Tarski to Russell: Bridging Explicit and Implicit Presentations of Type Theory}
@@ -571,7 +571,7 @@ the intuition is that whenever $\Gamma \vdash A \; \type$ then we should have  :
 
 Instead of having codes for each of the type formers, we now close $\U_n$ under the type connectives. Note that, as we
 consider \textit{cumulative} universes, we do not take the suprema of levels for the dependent product. Cumulativity itself
-is expressed by stating the proper inclusion of universes : if $\Gamma \vdash A : \U_n$ then $\Gamma \vdash A : \U_p$ for $p > n$. 
+is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash A : \U_n$ then $\Gamma \vdash A : \U_p$ for $p > n$. 
 
 \begin{figure}[H]
     \centering
@@ -616,9 +616,6 @@ and lambda abstraction from $\mathcal{T}_R$. Thus, $\app(A,B,c,a)$ and $\lambda(
 This system is closer to the practical syntax of type theory, inherited from the lambda calculus,
 and often referred to as the "pure type system" presentation (PTS).
 
-In $\mathcal{T}_P$, we can also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
-in a completely Russellian style. In such a system, there is no top-level of types and a types is simply a term
-of a certain universe.
 
 For a full and extensive description of the systems, please refer to appendix \ref{Rules}.
 
@@ -702,13 +699,13 @@ In section \ref{equivalence}, we will be proving lemmas  of the following form:\
 This is exactly the shape of the lemma proven by \citet{Streicher} in his book for the counterpart
 of $\strip$ in his setting.  
 
-As mentioned in the introduction, this relates to elaboration in proof assistants. 
+\begin{remark}As mentioned in the introduction, this relates to elaboration in proof assistants. 
 Concretely, this lemma means that if two terms are syntactically the same in the implicit user syntax, then they should have the same
 computational behaviour in the core system, and thus should be convertible.
+\end{remark}
 
 In the next sections, we will prove such lemmas for our different theories. With those, we will be able
-to construct uniquely a derivation in an explicit theory such that it erases to a given judgement in the implicit system.
-
+to lift uniquely a derivation from an implicit theory to an explicit one, such that it erases back to the derivation we started with.
 The situation is summarized in the following figure, where the strong arrows are the known
 forgetful maps, and the dotted arrows are the sections we will be constructing.
 
@@ -874,7 +871,7 @@ essential lemma.
 
 From this, we deduce $\Pi$-injectivity :
 
-\begin{theorem}[Injectivity of dependent product]\label{pi-inj}
+\begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
     The dependent product is injective in $\mathcal{T}_G$.
 \end{theorem}
 
@@ -1299,6 +1296,7 @@ Now we prove the following theorem, stating the formal equivalence between the t
 This finally proves that any judgement in Russell-Style can be lifted uniquely to a judgement in Tarski-Style, proving
 the equivalence between $\mathcal{T}_T$ and $\mathcal{T}_R$ by exhibiting a section of the forgetful map.
 
+\begin{remark}
 To prove this equivalence result, we could have relied on normalisation to simplify the proofs, at
 the cost of relying on less elementary properties of the theory. In fact, if we proved normalisation for
 $\mathcal{T}_R$ as well, we could construct the derivation of \ref{equT1T2} by an induction on normal forms.
@@ -1308,6 +1306,7 @@ However, we chose to not rely on such results as they are stronger and not neede
 Notably, this makes our proof more modular, as it does not depend
 on a normalisation by evaluation map, which would have to be constructed for each theory
 to be considered.
+\end{remark}
 
 \subsection{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : unannotated syntax}
 
@@ -1341,16 +1340,20 @@ the following counter-example.
     $\Gamma \vdash \lambda(\U_n,\U_n,v_0) = \lambda(\U_n,\U_p,v_0)$ if $n<p$.
 \end{example}
 
-Nevertheless, we would still get $u_0 \leq u_1$ where $\leq$ is the same relation as $\Gamma \vdash \cdot = \cdot$ but
-only asks for a sub-typing relation on annotations for the congruence equations. % TODO: make this more precise
-Therefore, we shall prove the following lemma.
+Nevertheless, we would still get $u_0 \leq u_1$ where $\leq$ is the relation which acts as cumulativity on annotations, and as conversion on proper terms. If we additionally ask
+for the hypothesis $\strip(A_0) = \strip(A_1)$, then we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$, which is what we wanted. In fact, this is sufficient to prove
+that $\strip$ admits a section, and that $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent.
+
+However, if we ask for the full hypothesis $\strip(A_0) = \strip(A_1)$, we would get stuck in the application case to apply the induction hypothesis
+on $\Gamma \vdash f : \Pi(C_0,B_0)$, as we would only have $\strip(B_0) = \strip(B_1)$. Thus, we will consider the weaker hypothesis $\strip'(A_0) = \strip'(A_1)$,
+where $\strip'$ is defined by $\strip'(\Pi(A,B)) := \strip'(B)$, and just like $\strip$ for the other cases. Therefore, we shall prove the following lemma.
 
 \begin{lemma}\label{streichT2T2'}
 
     We have :
     \begin{itemize}
         \item If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
-            with $\strip(u_0) = \strip(u_1)$ in $\mathcal{T}_P$, then $u_0 \leq u_1$ and $A_0 \leq A_1$.
+            with $\strip(u_0) = \strip(u_1)$ and $\strip'(A_0) = \strip'(A_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$. 
 
         \item If $\Gamma \vdash A \; \type$ and $\Gamma \vdash B \; \type$ with $\strip(A) = \strip(B)$, then we have
             $\Gamma \vdash A = B$.
@@ -1375,9 +1378,11 @@ Therefore, we shall prove the following lemma.
         Then, $\strip(u_0) = \strip(f_0) \; \strip(a_0) = \strip(u_1)$, and
         thus necessarily $u_1$ is also an application $\app(C_1,B_1,f_1,a_1)$ with $\strip(f_0) = \strip(f_1)$, and $\strip(a_0) = \strip(a_1)$.
         By inversion, we also have the analogous derivation $\Gamma \vdash \app(C_1,B_1,f_1,a_1) : B_1[a_1]$.
-
-        Then, using the induction hypothesis we get $a_0 \leq a_1$ and $f_0 \leq f_1$ with $\Pi(C_0,B_0) \leq \Pi(C_1,B_1)$, 
-        from which we deduce $C_0 \leq C_1$ and $B_0 \leq B_1$. We conclude by using the (weak) congruence equation for $\leq$.\\
+        Given $\strip'(B_0[a_0]) = \strip'(B_1[a_1])$, we deduce that $\strip'(B_0) = \strip'(B_1)$, giving rise to \[\strip'(\Pi(C_0,B_0)) = \strip'(\Pi(C_1,B_1)),\] on which we can apply the 
+        induction hypothesis to obtain conversions $\Gamma \vdash f_0 = f_1 : \Pi(C_0,B_0)$ and $\Gamma \vdash \Pi(C_0,B_0) = \Pi(C_1,B_1)$. By applying $\Pi$-injectivity (lemma \ref{Pi-inj}),
+        we deduce that $\Gamma \vdash C_0 = C_1$ and $\Gamma \vdash B_0 = B_1$. Finally, by applying the induction hypothesis on $\strip(a_0) = \strip(a_1)$, we also get
+        $\Gamma \vdash a_0 = a_1 : C_0$, and we  
+        construct the derivation $\Gamma \vdash u_0 = u_1 : A_0$ using the congruence equations of $\app$.\\
 
     \textit{Lambda Abstraction.} If $u_0$ is an abstraction, then the last rule applied is : 
 
@@ -1390,38 +1395,28 @@ Therefore, we shall prove the following lemma.
 
         Then, $\strip(u_0) = \lambda (\strip(C_0)), \strip(b_0)) = \strip(u_1)$, and
         thus necessarily $u_1$ is a lambda abstraction $\lambda(C_1,B_1,b_1)$ with $\strip(C_0) = \strip(C_1)$ and $\strip(b_0) = \strip(b_1)$,
-        along with the analogous derivation $\Gamma \vdash \lambda(C_1,B_1,b_1) : \Pi(C_1,B_1)$.
+        along with the analogous derivation $\Pi_1$ of $\Gamma \vdash \lambda(C_1,B_1,b_1) : \Pi(C_1,B_1)$.
 
         We can prove lemma \ref{hyp-inv} for $\mathcal{T}_R$, and thus get 
         $\Gamma \vdash C_0 \; \type$ and $\Gamma \vdash C_1 \; \type$, on which we can apply 
         the induction hypothesis and get: $\Gamma \vdash C_0 = C_1$.
-        Now, we transform $\Pi_1$ to a derivation $\Gamma,C_0 \vdash b_1 : B_1$, and apply the 
-        induction hypothesis to obtain $b_0 \leq b_1$ and $B_0 \leq B_1$. We conclude using the congruence  $\leq$ to get $u_0 \leq u_1$ and $\Pi(C_0,B_0) \leq \Pi(C_1,B_1)$.\\
+        Now, we transform $\Pi_1$ to a derivation $\Gamma,C_0 \vdash b_1 : B_1$, and given that \[\strip'(\Pi(C_0,B_0)) = \strip(B_0) = \strip(B_1) = \strip'(C_1,B_1),\] we can apply the 
+        induction hypothesis to obtain $\Gamma \vdash b_0 = b_1 : B_0$ and $\Gamma \vdash B_0 = B_1$. Finally, we  
+        construct the derivation $\Gamma \vdash u_0 = u_1 : A_0$  using congruence of $\lambda$.\\
 \end{proof}
 
-Now we want to prove that if we ask
-for the additional hypothesis $\strip(A_0) = \strip(A_1)$, then we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$, which is what we wanted. In fact, this will allow us to prove
-that $\strip$ admits a section, and that $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent.
-
+From this lemma, we deduce the following direct corollary, analogous to the lemma \ref{uniqueness} of the previous section. 
 \begin{lemma}
-         If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
-            with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$.
+       If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
+            with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$. 
 \end{lemma}
 \begin{proof}
-    We directly get $\Gamma \vdash A_0 = A_1$ by applying lemma \ref{streichT2T2'} on $\strip(A_0) = \strip(A_1)$.
-    Likewise, we also get $u_0 \leq u_1$ by applying it on $\strip(u_0) = \strip(u_1)$. Now, we will show that we can reconstruct a derivation $\Gamma \vdash u_0 = u_1 : A_0$ by
-    induction on the derivation of $u_0 \leq u_1$. The only interesting cases are the congruence cases, for which we have to show that we have a proper conversion for the annotations.\\
-
-    \textit{Function application.} If $u_0 = \app(C_0,B_0,b_0)$ and $u_1 = \app(C_1,B_1,b_1)$ are lambda abstractions, then by inversion $A_0$ and $A_1$ are dependent products $\Pi(C_0,B_0)$ and $\Pi(C_1,B_1)$. Hence,  
-    the equation $\Gamma \vdash A_0 = A_1$ is a conversion between the products, on which we can apply $\Pi$-injectivity (lemma \ref{pi-inj}) to get $\Gamma \vdash C_0 = C_1$ and
-    $\Gamma \vdash B_0 = B_1$.
-    By the induction hypothesis we also get $\Gamma \vdash b_0 = b_1 : C_0$ and we conclude using congruence equations.\\
-
-    \textit{Lambda abstraction.} If $u_0 = \lambda(C_0,B_0,b_0)$ and $u_1 = \lambda(C_1,B_1,b_1)$ are lambda abstractions, then by inversion $A_0$ and $A_1$ are dependent products $\Pi(C_0,B_0)$ and $\Pi(C_1,B_1)$. Hence,  
-    the equation $\Gamma \vdash A_0 = A_1$ is a conversion between the product, on which we can apply $\Pi$-injectivity (lemma \ref{pi-inj}) to get $\Gamma \vdash C_0 = C_1$ and
-    $\Gamma \vdash B_0 = B_1$.
-    By the induction hypothesis we also get $\Gamma \vdash b_0 = b_1 : C_0$ and we conclude using congruence equations.
+    We note that if $\strip(A_0) = \strip(A_1)$, then necessarily $\strip'(A_0) = \strip'(A_1)$.
+    Then, this corollary follows by a direct application of the previous lemma \ref{streichT2T2'}.
 \end{proof}
+
+Finally, we can show the following theorem, which exhibits the section of the forgetful map $\strip$, showing the equivalence
+of $\mathcal{T}_R$ and $\mathcal{T}_P$.
 
 \begin{theorem}\label{equT2T2'}
     If $\Gamma \vdash J$ in $\mathcal{T}_P$, then we have a unique up to conversion judgment 
@@ -1433,42 +1428,12 @@ that $\strip$ admits a section, and that $\mathcal{T}_R$ and $\mathcal{T}_P$ are
     us uniqueness for rules with two premises. 
 \end{proof}
 
-We can also relax the rules of our system $\mathcal{T}_P$ to remove "$A \; \type$" judgments, to obtain a
-fully Rusellian presentation of type theory, with no top-level judgment of types. 
-To do this, we observe that the following rules are redundant.
-
-\begin{lemma}\label{ruleuniverse}
-    The rules for $\Gamma \vdash \U_n \; \type$ and $\Gamma \vdash \Pi(A,B) \; \type$ are redundant
-    because of the following rule :
-    \begin{mathpar}
-      \ebrule{
-        \hypo{\Gamma \vdash A : \U_n}
-        \infer1{\Gamma \vdash A \;\type}
-      }
-    \end{mathpar}
-    % TODO : make this statement more precise, less handwavy i.e. proper translation
-\end{lemma}
-
-\begin{proof}
-        For the rule :
-        \begin{mathpar}
-          \ebrule{
-            \hypo{\Pi_1}
-            \infer1{\Gamma \vdash C \; \type}
-            \hypo{\Pi_2}
-            \infer1{\Gamma,C \vdash D \; \type}
-            \infer2{\Gamma \vdash \Pi(C,D) \;\type}
-          }
-        \end{mathpar}
-
-        When we translate the premises, we get $\Gamma \vdash C : \U_{n_1}$ and $\Gamma,C \vdash D :\U_{n_2}$, with
-        not necessarily $n_1 = n_2$. By taking $n := \max(n_1,n_2)$, and replacing the premises with
-        the appropriate rules for cumulativity, we get  $\Gamma \vdash \Pi \;C \;D : \U_n$.
-\end{proof}
-
-Hence, we remove those rules in the system $\mathcal{T}_R$, and get rid of the judgement $\Gamma \vdash A \; \type$. 
-We can also consider named variables instead of de Bruijn indices, to get a theory presented as a pure type
+In $\mathcal{T}_P$, we could also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
+in a completely Russellian style. In such a system, there is no top-level of types and a types is simply a term
+of a certain universe.
+We can also consider named variables instead of de Bruijn indices, to get a theory presented exacly like a pure type
 system, with the additional rule for cumulativity.
+
 
 If we wanted to go even further, we could also remove the annotation of the variable from the lambda abstraction, again
 following \citet{Streicher}. However to do so, we curcially need to rely on the full normalisation result,
@@ -1574,17 +1539,30 @@ levels internal to the \textit{type} of universe levels.
 
 \section{Conclusion and Future Work}
 
-To conclude, we proved that the GAT and PTS presentations of type theory are equivalent, and
-that the latter is also initial as CWF models. Notably, Tarski and Russell 
-presentations of cumulative universes are equivalent for a theory with $\beta\eta$
-judgmental conversion and common inductive types, and this work extend with universe polymorphism.
+To conclude, we proved that the Generalised Algebraic Theory and Pure Type System
+presentations of Martin Löf's Type Theory are equivalent. More specifically, we related 
+\textit{Tarski} and \textit{Russell} presentations of cumulative universe hierarchies. We also extended
+our equivalence result to theories with data types or universe polymorphism.
 
-Those equivalence result are fundamental to justify the common but informal practice of using implicit syntax
-and Russell universes in type theory. Notably, this result allow to present 
+Those equivalence results are fundamental to justify the common, but informal, practice of using implicit syntax
+and Russell universes for practitioners of type theory. Notably, our result rigorously legitimates the interpretation of
+implicit presentations in the usual models of type theory, which usually applies to annotated syntax. Our
+result also shows that Russellian systems can be used as well to present this initial models of type theory, thus
+extending initiality results to more realistic syntaxes.
+
 Our proof relies on basic properties of the syntax of type theory, which are usually proven using normalisation,
-but that we believe to be weaker. Indeed, our proof is completely elementary and modular. We believe
-that it could be adapted to many extensions of the theory presented in this paper.
-% TODO : proper conclusion
+but that we believe to be weaker. Indeed, our proof is completely elementary and modular, such
+that it should be adaptable to many extensions of the theories presented in this paper.\\
+
+\textbf{\textit{Future work.}} In this paper, we did not consider cumulativity with a structural sub-typing relation,
+as we believe this to be orthogonal to the considerations of our work. 
+Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
+assistant. The issues mentioned for sub-typing of the introduction can be seen as a kind of anomaly of the syntax, and 
+as a lack of proper equations. The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
+equations to solve this issue, and we believe that the results of this paper could be extended to this setting.\\
+
+\textbf{\textit{Acknowledgement.}} Many thanks to Meven Lennon-Bertrand for his useful feedback on the first drafts
+of this work, and for his comments on the mechanized proof.
 
 \bibliography{main}\footnote{\textcolor{red}{RS : Peut-être qu'il y a d'autres papiers qui devraient être cités}}
 
