@@ -1340,12 +1340,9 @@ the following counter-example.
     $\Gamma \vdash \lambda(\U_n,\U_n,v_0) = \lambda(\U_n,\U_p,v_0)$ if $n<p$.
 \end{example}
 
-Nevertheless, we would still get $u_0 \leq u_1$ where $\leq$ is the relation which acts as cumulativity on annotations, and as conversion on proper terms. If we additionally ask
-for the hypothesis $\strip(A_0) = \strip(A_1)$, then we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$, which is what we wanted. In fact, this is sufficient to prove
-that $\strip$ admits a section, and that $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent.
-
-However, if we ask for the full hypothesis $\strip(A_0) = \strip(A_1)$, we would get stuck in the application case to apply the induction hypothesis
-on $\Gamma \vdash f : \Pi(C_0,B_0)$, as we would only have $\strip(B_0) = \strip(B_1)$. Thus, we will consider the weaker hypothesis $\strip'(A_0) = \strip'(A_1)$,
+Nevertheless, we would still get $u_0 \leq u_1$ where $\leq$ is the relation which acts as cumulativity on annotations, and as conversion on proper terms. 
+To solve this issue, we could add the hypothesis $\strip(A_0) = \strip(A_1)$, but we would get stuck in the proof for the application case, where we cannot apply the induction hypothesis
+on $\Gamma \vdash f : \Pi(C_0,B_0)$, as we do not have $\strip(C_0) = \strip(C_1)$. Thus, we will consider the weaker hypothesis $\strip'(A_0) = \strip'(A_1)$,
 where $\strip'$ is defined by $\strip'(\Pi(A,B)) := \strip'(B)$, and just like $\strip$ for the other cases. Therefore, we shall prove the following lemma.
 
 \begin{lemma}\label{streichT2T2'}
