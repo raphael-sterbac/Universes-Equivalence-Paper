@@ -927,19 +927,18 @@ types can be inferred from the derivation. We will not detail this proof here.
 \begin{proof}
     We check that $\fold$ produces types and term in $\mathcal{T}_T$. This is
     not completely clear, because of the cases $A\sigma$ and $a \sigma$.
-
     In fact, we check that $\fold(\sigma)$ indeed gives a list of well-formed elementary substitutions.
     Then, the successive application of those substitutions gives a syntactically valid type or term in $\mathcal{T}_T$.
 \end{proof}
 
-For the equivalence result, we need the usual substitution lemma in $\mathcal{T}_T$:
+For the equivalence result, we need the usual substitution lemma in $\mathcal{T}_T$.
 
 \begin{lemma}[Substitution lemma]\label{Substitution}
     If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
     then we have a derivation : $\Gamma \vdash J\alpha$.
 \end{lemma}
 
-With all of this, we show the following admissibility result :
+With all of this, we show the following admissibility result.
 
 \begin{lemma}
     The erasure of rules in $\mathcal{T}_G$ are admissible in $\mathcal{T}_T$.
@@ -969,7 +968,7 @@ Where $\fold(\sigma) = (\sigma_1, ..., \sigma_n)$, and this derivation is admiss
 $n$ applications of the substitution lemma. We do the same thing for the action of substitution on terms. 
 \end{proof}
 
-Consequently, we get the following correction result : 
+Consequently, we get the following correction result as a rather direct corollary of the previous lemma. 
 
 \begin{theorem}[Correction of $\fold$]
     If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\fold(\Gamma) \vdash \fold(J)$ is derivable in $\mathcal{T}_T$.
@@ -978,7 +977,7 @@ Consequently, we get the following correction result :
     By induction, we replace the rules of $\mathcal{T}_G$ by the admissible ones in $\mathcal{T}_T$ using the previous lemma. 
 \end{proof}
 
-Finally, we deduce that the two systems are equivalent :
+Finally, we deduce that the two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are equivalent, relating implicit and explicit subsitutions. 
 
 \begin{theorem}
     The two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are equivalent.
@@ -992,8 +991,6 @@ Finally, we deduce that the two systems are equivalent :
 \end{proof}
 
 This proves the equivalence of $\mathcal{T}_T$ with the generalised algebraic presentation of type theory given by $\mathcal{T}_G$.
-An alternative approach could use the initiality result of \cite{Brunerie} for contextual categories, which may be adapted to interpret $\mathcal{T}_T$
-directly as a model of the GAT.
 
 \subsection{Equivalence of $\mathcal{T}_T$ and $\mathcal{T}_R$ : Tarski and Russell universes}\label{sectionT1T2}
 
