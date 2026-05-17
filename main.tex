@@ -1,14 +1,63 @@
-\documentclass[10pt,a4paper]{article}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate, screen]{lipics-v2021}
 
-\usepackage{fullpage}
+\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{From Tarski to Russell : Bridging Explicit and Implicit presentations of Type Theory}
+
+%\titlerunning{Dummy short title} 
+
+\author{Thierry Coquand}{Chalmers University of Technology -- University of Gothenburg, Sweden}{coquand@chalmers.se}{https://orcid.org/0000-0002-5429-5153}{}
+
+\author{Raphaël Sterbac}{ENS Paris-Saclay -- Université Paris-Saclay, France}{raphael.sterbac@ens-paris-saclay.fr}{https://orcid.org/0009-0001-6779-8323}{}
+
+\authorrunning{T. Coquand and R. Sterbac} 
+
+\Copyright{Thierry Coquand and Raphaël Sterbac} 
+
+\ccsdesc[500]{Theory of computation~Type theory}
+
+\keywords{Type theory, Universes, Cumulativity} 
+
+\category{} %optional, e.g. invited paper
+
+\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+
+\nolinenumbers %uncomment to disable line numbering
+
+
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \usepackage{ebproof}
 \usepackage{ebproof-rules}
 \usepackage{mathpartir}
 \usepackage{verbatim}
 \usepackage{float}
 \usepackage{circuitikz}
-\usepackage[square,numbers]{natbib}
-\bibliographystyle{unsrtnat}
 
 \usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
@@ -24,19 +73,6 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amssymb} 
-
-%%% Theorem-like environments
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-
-\theoremstyle{remark} % italic head, upright text, no extra space above or below
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{example}[theorem]{Example}
 
 % Formatted letters
 \newcommand{\bC}{\mathbb{C}}
@@ -60,8 +96,8 @@
 \newcommand{\Var}{\mathsf{Var}}
 \newcommand{\Norm}{\mathsf{Norm}}
 \newcommand{\Neut}{\mathsf{Neut}}
-\newcommand{\Elem}{\mathsf{Elem}}
-\newcommand{\Type}{\mathsf{Type}}
+\newcommand{\Elem}{\mathsf{Tm}}
+\newcommand{\Type}{\mathsf{Ty}}
 \newcommand{\Term}{\mathsf{Term}}
 \newcommand{\type}{\mathsf{type}}
 \newcommand{\Set}{\mathsf{Set}}
@@ -86,6 +122,8 @@
 \newcommand{\N}{\mathsf{N}}
 \newcommand{\NA}{\mathsf{NA}}
 
+\usepackage[square,numbers]{natbib}
+
 % Rocq links
 
 \DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}}}
@@ -95,40 +133,30 @@
 \DeclareDocumentCommand{\formline}{O{blob/7fcdac8ad76d6ef920e03688b8d1cc5753ba4fa7/} m m m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2\#L#3}{\coqlogo}}
 
-\title{From Tarski to Russell: Bridging Explicit and Implicit Presentations of Type Theory}
-
-\author{Thierry Coquand\footnote{Chalmers University of Technology and University of Gothenburg, Sweden, \href{mailto:Thierry.Coquand@cse.gu.se}{Thierry.Coquand@cse.gu.se}}, Rapha\"el Sterbac\footnote{ENS Paris-Saclay -- Université Paris-Saclay, France, \href{mailto:raphael.sterbac@ens-paris-saclay.fr}{raphael.sterbac@ens-paris-saclay.fr}}}
-\date{}
-
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
     In this paper, we present a modular and algorithmic proof for the equivalence of different
-    presentations of type theory, notably relating Russell and Tarski presentations for a cumulative
-    hierarchy of universes. More generally, we relate generalised algebraic and pure type system formulations, bridging
-    the gap between the type theory used to prove metatheoretical results, and the one used by practicioners.
-    Our work can also be seen as an extension of initiality results to more informal presentations of type theory.
+    presentations of type theory, notably relating Russell and Tarski presentations of cumulative
+    universe hierarchies. More generally, we relate generalised algebraic and pure type system formulations of the syntax, bridging
+    the gap between the type theory used to prove metatheoretical results, and the one often used in practice.
+    Our work can also be seen as an effort to extend initiality results to implicit presentations of type theory.
 \end{abstract}
 
 
 \section{Introduction}
 
-In type theory, universes allow to manipulate types as terms, and to avoid Girard's paradox, one often introduces a \textit{hierarchy} of universes:
-\[
-    \U_0, \U_1, \U_2, ...
-\]
-
-One can ask those universes to be \textit{cumulative}, asking for inclusions between them. Concretely, this means that if we have
-a term $a : \U_n$, then we should be able to "lift" it to $\U_m$ for $m > n$. This can be done implicitly, such that $a: \U_m$ as well, 
-or with an explicit coercion operation  $t_n^m(a) : \U_m$. 
+In type theory, universes allow to manipulate types as terms while avoiding Girard's paradox, and one often introduces a \textit{hierarchy} of universes:
+$\U_0, \U_1, \U_2, ...$
+Those universes are often assumed to be \textit{cumulative} in practical systems, asking for inclusions between them.
 
 There are two different ways to formulate the notion of universe in type theory. Martin-Löf’s
 first versions \cite{MARTINLOF75, MARTINLOF82} were formulated à la Russell, where a universe is seen as a type of types. Later, an alternative version à la Tarski \cite{MARTINLOF84}, where a universe is seen as a type of codes along with a decoding function, was also introduced. Usually, Russell universes are regarded as an informal notation of the latter, as \cite{Luo} suggested.
 
-When presenting Type Theory as a Generalised Algebraic Theory, Tarski universes are mandatory, and one can show that the system à la Tarski presents the initial model of such a theory.
-This initial model has been constructed explicitly in \cite{bcde2026}, following the method presented in \cite{Streicher} and formalised in \cite{Brunerie}. 
+When presenting Type Theory in an algebraic fashion, Tarski universes are essential, at least if we do not want to introduce sort equations, and one can show that the system à la Tarski presents the initial model of such a theory.
+This initial model has been constructed explicitly in \citet{bcde2026}, following the method presented in \citet{Streicher} and formalised in \citet{Brunerie}. 
 However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
 extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
 To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for large class of theories.
@@ -140,29 +168,24 @@ way, and to prove initiality rather easily \cite{noteGAT, Brunerie},
 thus solving the first part of the problem. However, GATs give rise to a fully explicit and annotated presentation of type theory, which is inconvenient to work in.
 Therefore, it would be essential to extend Streicher's equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
 with Russell universes and unannotated syntax.  This would justify rigorously the common practice of using informal syntax and Russell universes, as proposed by \citet{Luo},
-and would legitimate interpreting such syntax in usual models of type theory.
+and would legitimate interpreting such syntax in the usual models of type theory.
+Therefore, we shall here show that Streicher’s technique can be extended to show the equivalence of the Russell and Tarski formulations of a hierarchy of universes.\\
 
-We shall here show that Streicher’s technique can be extended to show the equivalence of the Russell and Tarski formulations of a hierarchy of universes.\\
-
-\textit{\textbf{Related work.}} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentation of universes for the Calculus
-of Constructions with $\beta$ as an external reduction. Unfortunately, their arguments do not apply to
+\textbf{Related work.} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentation of universes for the Calculus
+of Constructions with $\beta$ as an external reduction. Nevertheless, it appeared that their proof was 
+incorrect, and a new proof using the same technique was finally published by \citet{tiago-fscd}. Unfortunately, their arguments do not apply to
 formulations of type theory with judgemental equality, and do not extend to $\eta$-equivalence. 
 
 Therefore, their proofs and results do not apply directly to our setting, and cannot be adapted easily, legitimating
 the study of a new proof technique. Still, the work of Assaf \cite{assaf}
-provides an extensive study of the syntax, and lists the structural equations necessary to achieve the equivalence, by achieving what 
+provides an extensive study of the syntax, and lists the structural equations necessary to achieve the equivalence, with what 
 he calls \textit{full reflection}. 
 
-Cumulativity with a structural sub-typing judgement $A \leq B$ \cite{assaf,thire,Luo}
-can lead to discrepancy between Russell and Tarski universes in a more general setting, as pointed out by Luo \cite{Luo}.
-In fact, when adding inductive types such as a the type of lists $\lst(.)$, the sub-typing relation propagates
-along the new type constructor: \[A \leq B \implies \lst(A) \leq \lst(B)\]
-Concretely, when $\leq$ is the cumulativity relation, this means that we get $\lst(\U_0) \leq \lst(\U_1)$. This already breaks
-canonicity as we can coerce $\mathsf{nil}_{\U_0} : \lst(\U_1)$, but we do not have $\mathsf{nil}_{\U_0} = \mathsf{nil}_{\U_1}$,
-unless we manually add the equation.
-Moreover, sub-typing does not hold for $\Pi$-types in the Set model, or it is at least unclear
+In the present paper, we will not consider cumulativity with a structural sub-typing judgement $A \leq B$ \cite{assaf,thire,Luo, subtyping},
+as it can lead to discrepancy between Russell and Tarski universes in a more general setting, as pointed out by Luo \cite{Luo}.
+For instance, sub-typing breaks canonicity when adding inductive types, and does not hold for $\Pi$-types in the Set model, or it is at least unclear
 depending on the encoding of application in the ambient set theory. 
-Therefore, we believe that such a sub-typing relation is not desirable for our considerations.
+Therefore, here we will study the simplest form of cumulativity that is possible.
 
 Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
 assistant. Notably, it simplifies greatly the use of algebraic hierarchies \cite{subtyping}.
@@ -170,35 +193,43 @@ The recent work of \citet{AdapTT} presents a general framework which would provi
 equations to solve the issues mentioned above. In any case, we believe that our work is orthogonal to such considerations,
 and that our proof should extend to any system that handles structural sub-typing in a correct way.\\
 
-\textit{\textbf{Contributions.}} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
+\textbf{Contributions.} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
 for Martin Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
-Our proof also adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
+Our proof is modular and adapts to more complicated type systems. For instance, it adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
 More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
 inherited from Pure Type Systems. In particular, our resulte judtifies the practice of working in implicit
-syntax, while legitimating the interpretation of, unannotated, à la Russell, implicit systems in usual models
-of type theory, such as in Categories with Families.
+syntax, while legitimating the interpretation of implicit systems in usual models of type theory, such as in Categories with Families.
+More precisely, our result proves that those two presentations have the same models.
 
 The main argument is as follows: there is a natural forgetful map from the Tarski to the
-Russell presentation, and one can show that any Russell judgement can be lifted in a unique way
-to a Tarski judgement. This work is done in section \ref{equivalence}.
-
-We rely on basic (and known) properties like no confusion and injectivity of type constructors for the generalised algebraic theory. Those 
-properties will propagate along our equivalence results, allowing us to prove them only once.
-Notably, they are a direct consequence of normalisation, which can be proven easily for the GAT, by an adaptation of the gluing argument \cite{Coq19},
-of which we detail the construction for universes in section \ref{normalisation}.
-
+Russell presentation. We show that any Russell judgement can be lifted in a unique way
+to a Tarski judgement, proving the syntacitc equivalence of the two theories.
+This work is done in section \ref{sectionT2T2'}.
+We rely on basic (and known) properties of the syntax : no-confusion and injectivity of type formers. We only
+need them at the level of the generalised algebraic theory, and they will propagate along our equivalence results.
 Those properties seem to be strongly related to conversion \cite{meven}. In fact, our equivalence result itself is to be
-related to the elaboration in proof assistants, as we exhibit a translation from implicit user syntax to an explicit core syntax.
+related to the elaboration in proof assistants, as we exhibit a translation from the implicit user syntax to an explicit core syntax.
+
+% TODO : add analysis of logical strength
+\begin{comment}
+What makes injectivity attractive is that despite its importance it does not imply logical
+consistency – although no-confusion implies equational consistency: not all equations hold.
+Consequently, and in contrast with normalisation and its Gödelian limitations, it can be
+proven in a meta-theory weaker than the object theory [49, 45, 17].
+\end{comment}
 
 Our proof is elementary and provides an algorithm to translate from one presentation to the other. Notably,
 we only rely on the basic induction principles for the syntax, and not on stronger induction principles given
-by normalisation. In addition, we formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}.
+by normalisation. In fact, the proof is purely syntactic and can be done internal to a weak metatheory such as primitive recursive
+arithmetic, whereas normalisation relies on a stronger metatheory \cite{Coq19} such as the constructive set theory of \citet{aczel}.
+
+In addition, we formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}.
 Throughout the paper, we provide links to the corresponding definitions and theorems
 in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}.
 
-\section{Syntax and theories}
+% TODO : outline of the paper
 
-\subsection{The generalised algebraic theory}\label{GAT}
+\section{The generalised algebraic theory}\label{GAT}
 
 In this section, we define the theory with Tarski-style universes as a generalized algebraic theory, which both
 presents the syntax in an algebraic way, and provides a canonical notion of model in categories with families (CwF). Those
@@ -332,7 +363,7 @@ Now, we can add logical structure by requiring type connectives in our theory, s
     Those should be functorial and satisfy the $\beta$ and $\eta$ rules, given by the following equations.
 
     \noindent
-    \begin{minipage}{0.40\linewidth}
+    \begin{minipage}{0.30\linewidth}
         \begin{gather*}
             \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)\\
             \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^+,b\sigma^+)\\
@@ -340,7 +371,7 @@ Now, we can add logical structure by requiring type connectives in our theory, s
         \end{gather*}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.40\linewidth}
+    \begin{minipage}{0.50\linewidth}
         \begin{gather*}
             c = \lambda(A,B, \app(A\p,B\p^+,c\p,\q))\\
             \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^+,c\sigma,a\sigma)
@@ -374,7 +405,7 @@ This explicit system is the standard way to present type theory with cumulative 
     The decoding and lifting maps must be strict and natural:
 
     \noindent
-    \begin{minipage}{0.45\linewidth}
+    \begin{minipage}{0.35\linewidth}
         \begin{gather*}
             T_l(t_n^l(X)) = T_n(X) \text{ for } l \leq n \\
             T_n(\Pi^n \; X \; Y) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
@@ -382,7 +413,7 @@ This explicit system is the standard way to present type theory with cumulative 
         \end{gather*}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.40\linewidth}
+    \begin{minipage}{0.50\linewidth}
         \begin{gather*}
             t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m \leq n \leq p \\
             t_n^p(\Pi^n \; X \; Y) = \Pi^p \; t_n^p(X) \; t_n^p(Y) \text{ for } n \leq p \\
@@ -395,22 +426,47 @@ It is important to note that those equations have been carefully chosen so that 
 In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire},
 where they are described as requiring "\textit{full reflection}".
 
-All of this defines a Generalised Algebraic Theory of Categories with Families like with dependent products and a hierarchy of universes.
+All of this defines a Generalised Algebraic Theory of Categories with Families with dependent products and a hierarchy of universes.
 We can then construct the initial model of this theory \cite{bcde2026}, which correspond to the syntax of the corresponding type theory.
-This initial system
-will be called $\mathcal{T}_G$, and can be presented with more usual inference rules, while keeping substitution explicit.
-We also consider the identical system $\mathcal{T}_T$, but with implicit substitutions.
+This initial system will be denoted with $\mathcal{T}_G$, and can be presented with more usual inference rules, while keeping substitution explicit.
 
-\subsection{Other presentations}
+For our equivalence results, we will rely on well-known syntactic properties of this theory : injectivity and no-confusion 
+of type formers. Those properties are usually proven using logical relations or as corollaries of normalisation, and
+have already been studied extensively in the context of practical implementations of type theory \cite{meven}. 
+Another approach to prove those properties would be to use interpretation in finite domains of \citet{Adequacy}.
+Therefore, we do not rely on normalisation, but on weaker properties of the syntax, making our proof more modular.
+Notably, one can take advantage of the presentation of $\mathcal{T}_G$ as a GAT to provide an algebraic proof,
+given by the gluing technique \cite{Coq19}. 
+
+\begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
+    The dependent product is injective in $\mathcal{T}_G$.
+\end{theorem}
+
+To prove our equivalence results, we will also need the injectivity of universes, which
+is stated by the following theorem.
+
+\begin{theorem}[Injectivity of universes]\label{univ-inj}
+    % TODO : Rocq link
+    If we have $\U_{n_0} = \U_{n_1}$ in $\mathcal{T}_G$, then $n_0 = n_1$. 
+\end{theorem}
+
+We also get the "no-confusion" lemmas, which are a counterpart of injectivity of type formers.
+
+\begin{theorem}[No-Confusion]\label{no-confusion}
+    % TODO : Rocq link
+    For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in $\mathcal{T}_G$: $\Gamma \vdash \Pi(A,B) = \U_n$. 
+\end{theorem}
+
+\section{Other presentations}
 
 Now, we introduce the other presentations of which we will prove $\mathcal{T}_G$ to be equivalent.
-First, we detail the rules of the theory $\mathcal{T}_T$, which has implicit substitutions and exactly the same rules as the GAT 
+First, we detail the rules of another theory, called $\mathcal{T}_T$, which has implicit substitutions and exactly the same rules as the GAT 
 of section $2$. 
 
 The main goal of this paper is to relate $\mathcal{T}_T$ to the implicit formulation \textit{à la Russell} of cumulative universes,
 which forms a theory that we denote with $\mathcal{T}_R$.
-This presentation conflates types and terms, it has universes $\U_m : \U_n$ for $m<n$, and enables to deduce
-$A:\U_m$ from $A: \U_n$ if $n<m$, with no codes or lifts involved. 
+This presentation conflates types and terms, such that universes live in the next ones $\U_m : \U_n$ for $m<n$,
+and has cumulativity as a simple inclusion : $A:\U_n$ implies $A: \U_n$ if $n<m$. 
 
 This system cannot be formulated as a GAT, as terms of a universe should be elements of the sort of types as well. This
 could be done by adding a sort equation and a stratification of the sort of types $\Type_n$, but then cumulativity would
@@ -661,7 +717,7 @@ forgets about all the explicit coercions given by the presentation à la Tarski,
     \noindent
     \begin{minipage}{0.40\linewidth}
     \begin{align*}
-        |\U_n| &= U_n\\
+        |\U_n| &= \U_n\\
         |\U_m^n| &= \U_m\\
         |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
         |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
@@ -745,180 +801,19 @@ To prove our equivalence result, we rely on basic properties of the syntax of th
 we prove normalisation of the Generalised Algebraic Theory, to deduce those properties in $\mathcal{T}_G$. Then,
 we propagate them along our equivalence results, such that we only have to prove them once.
 
-\section{Normalisation and properties of the syntax}\label{normalisation}
-\footnote{\color{red} RS: Au final, j'ai choisi d'inclure quand même une courte section qui presente la normalisation et comment on obtient les propriétés, je ne sais pas si c'est pertinent ou si on devrait simplement l'enlever}
-
-In this section, we present the normalisation construction for the system on top of our hierarchy $\mathcal{T}_G$.
-To prove normalisation for this generalised algebraic theory, we can apply the gluing technique
-presented in \cite{Coq19}, which can be seen as a proof-relevant
-formulation of the usual Tait's normalisation proof. This proof
-is adapted here to a system with Tarski-style universes, by only presenting the corresponding
-construction for universes.
-
-From this, we deduce the already well-known syntactic properties of the system : injectivity and no-confusion 
-of type formers. It is important to note that other techniques could be used to prove those properties,
-which have already been studied extensively in the context of practical implementations of type theory \cite{meven}. 
-
-A different approach would be to use interpretation in finite domains of \citet{Adequacy} to prove injectivity
-and no-confusion without even needing to prove normalisation. \footnote{\color{red}RS : Je ne savais pas exactement comment discuter de ça, puisque le papier est encore nouveau pour moi}
-Therefore, we do not rely on normalisation, but on weaker properties of the syntax, and here we
-only sketch normalisation for the sake of completeness.
-Notably, we choose to take advantage of the presentation of $\mathcal{T}_G$ as a GAT
-to provide an algebraic proof, given by the gluing technique. 
-
-\subsection{Normalisation for universes}
-
-Let $M$ be an arbitrary model of the GAT described in \ref{GAT}. In the following, we write $\Type_M$ and $\Elem_M$ for
-its types and elements. We introduce the sets $\Elem_N(X,A)$ of normal terms, $\Type_N(X)$ of normal types, and $\Neut(X,A)$ of neutral terms,
-along with their interpretation $\langle.\rangle$. 
-
-\begin{definition}[Neutral and Normal terms]
-    We define $\Elem_N(X,A)$, $\Type_N(X)$ and $\Neut(X,A)$ for $X$ a telescope (syntactic context), and $A$ in $\Type_M(\langle X \rangle)$, simultaneously 
-    by induction, along with their interpretation $\langle . \rangle$ :
-    \begin{align*}
-        \U_n &\in \Type_N(X) \text{ for } n \geq 0.\\
-        \Pi \; K \; L &\in \Type_N(X) \text{ if } K \in \Type_N(X) \text{ and } L \in \Type_N(X.\langle K \rangle).\\
-        T_n k &\in \Type_N(X) \text{ if } k \in \Neut(X,\U_n).\\
-        v_0 &\in \Neut(X.A,A\p) \text{, and } v_{n+1} \in \Neut(X.A,B\p) \text{ if } v_n \in \Neut(X,B).\\
-        \app \; K \; L \; k \; t &\in \Neut(X,\langle L \rangle[\langle t \rangle]) \text{ if } K \in
-            \Type_N(X), \  L \in \Type_N(X.\langle K \rangle), \  k \in \Neut(X,\langle \Pi \; K \; L \rangle),\\
-                                 &\text{ and } t \in \Elem_N(X,\langle K \rangle).\\
-        \lambda \; K \; L \; t &\in \Elem_N(X,\langle \Pi \; K \; L \rangle[\langle t \rangle]) \text{ if } K
-            \in \Type_N(X), L \in \Type_N(X.\langle K \rangle),
-            \text{ and } t \in \Elem_N(X,\langle K \rangle).\\
-        \Pi^n \; k \; l &\in \Elem_N(X,\U_n) \text{ if } k \in \Elem_N(X,\U_n) \text{ and } l \in \Elem_N(X.\langle T_n k \rangle, \U_n).\\
-        \U_m^n &\in \Elem_N(X, \U_n).\\
-        t_m^n k &\in \Elem_N(X, \U_n) \text{ if } k \in \Neut(X,\U_m).\\
-        k &\in \Elem_N(X,\U_n) \text{ and } t \in \Elem_N(X,\langle T_n k\rangle), \text{ if } k \in \Neut(X,\U_n) \text{ and } t \in \Neut(X,\langle T_n k \rangle).\\
-    \end{align*}
-\end{definition}
-
-With this, we add some notations.
-
-\begin{definition}[Normal forms syntax]
-    If $A$ is in $\Type_M(\langle X \rangle)$, we write $\Type_N(X)|A$ for the subset of normal types $K$ such
-    that $\langle K \rangle = A$.
-    Likewise, for a term $a$ in $\Elem_M(\langle X \rangle, A)$, we write $\Elem_N(X,A)|a$ for the subset of normal terms 
-    such that $\langle k \rangle = u$.
-\end{definition}
-
-The interpretation $\langle . \rangle$ from $\Elem_N$ and $\Type_N$ to $\Elem_M$ and $\Type_M$ can be seen as quotient maps : from syntactical
-normal terms and types, we associate the corresponding term or type, quotiented up to conversion.
-Therefore, normalisation amounts to showing that those quotient maps are isomorphisms. To prove this, we
-construct a normalisation model, which equips each type with a reducibility structure.
-
-\begin{definition}[Reducibility candidates]\label{struct}
-    For $T$ in $\Type_M$, we define $\Type'(T)$ the set of $4$-tuples  $(T',K,\q_T,\r_T)$ with :
-    \begin{itemize}
-        \item $T'$ in $\Elem_M(T) \rightarrow \text{Set}$
-        \item $K$ is in $\Type_N | T$. 
-        \item $\q_T$ is in $\Pi_{u:\Elem_M(T)} \; T'\; u \rightarrow \Elem_N(T)|u$. 
-        \item $\r_T$ is in $\Pi_{k:\Neut(T)} \; T' \; \langle k \rangle$. 
-    \end{itemize}
-\end{definition}
-
-Here, we only detail the constructions related to universes à la Tarski, which is the core of
-our matter. In fact, we need to normalise lifts and decoding operations with the equations of \ref{GAT}.
-Therefore, we need to embed the normal form of the decoding and lifting of a code inside the reducibility structure of
-the universe. The remaining details of the proof are the same as in \citet{Coq19}.
-
-\begin{definition}[Construction for universes]
-    The following describes the operations related to universes in the normalisation model, including
-    lifts, codes and decoding.
-    
-    The reducibility predicate of a universe is $\U_n'$ where $\U_n' a$ is the set of $5$-tuples $(a',a_0,A_N,a_l,\q_a,\r_a)$ such that :
-                    \begin{align*}
-                        a' &: \Elem_M(T_n(a)) \rightarrow \mathcal{U}_n\\
-                        a_0 &: \Elem_N(\U_n)|a\\
-                        A_N &: \Type_N|T_n(a)\\
-                        a_l &: \Pi_{m \geq n} \Elem_N(\U_m)|t_n^m(a)\\
-                        \q_a \; u \; u' &: \Elem_N(T_n(a)) | u \text{ for } u : \Elem_M(T_n(a)) \text{ and } u' : a' u\\
-                        \r_a k &: a' \; k \text{ for } k: \Neut(T_n(a))
-                    \end{align*}
-
-    Now the normalisation structure of $\U_n$ is given by: 
-        \begin{align*}
-                \q_{\U_n} \; a \; (a',a_0,\q_a,\r_a) &= a_0\\
-                \r_{\U_n} K &= (\Neut(K)|u,\ K, \ \lambda \; u \; u' \mapsto u', \ \lambda \; k \mapsto k)
-        \end{align*}
-
-     We can recover the normalisation structure of the decoding $T_n(a)$ for $a$ in $\Elem_M(X,\U_n)$, given the one for the code $a$ : $(a', a_0, A_N, a_l, q_a, r_a)$. 
-     \[
-         T_n'(a) = (a', A_N, \q_a, r_a)  
-     \]
-    
-     Likewise, we recover the normalisation structure of the lifting $t_n^m(a)$ for $a$ in $\Elem_M(X,\U_n)$, given $ (a', a_0, A_N, a_l, q_a, r_a)$.
-     \[ (t_n^m)'(a) = (a', \ a_l \; m, A_N, q_a, r_a)\]
-
-\end{definition}
-
-By instantiating this construction to the term model, which correspond to our initial theory $\mathcal{T}_G$, we can define a normalisation by evaluation function 
-$\nf : \Elem_M(\Gamma,A) \rightarrow \Elem_N(\Gamma,A)$.
-
-\begin{theorem}[Normalisation]
-    For a context $\Gamma$, the quotient maps $k \mapsto \langle k \rangle$ and $K \mapsto \langle K \rangle$ have sections given by $\nf$. 
-\end{theorem}
-
-\subsection{Injectivity and No-Confusion}\label{properties}
-
-In this section we show the injectivity of dependent product (in the term model), 
-using a semantic argument in the normalisation model. First we need the following
-essential lemma.
-
-\begin{lemma}
-    $\nf$ commutes with the dependent product operation.
-\end{lemma}
-
-From this, we deduce $\Pi$-injectivity :
-
-\begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
-    The dependent product is injective in $\mathcal{T}_G$.
-\end{theorem}
-
-\begin{proof}
-    Let's assume that $\Pi \; A \; B = \Pi \; A' \; B'$ in $\mathcal{T}_G$. Then, we have 
-    \[\nf (\Pi \; A \; B) = \nf (\Pi \; A' \; B')\] i.e 
-    \[\Pi (\nf \; A) (\nf \; B) = \Pi (\nf \; A') (\nf \; B')\]
-
-    Thus, as $\Pi$ is injective in $\Type_N$ (it is a syntactic operation),
-    we get : $\nf(A) = \nf(A')$ and $\nf(B) = \nf(B')$, and so
-    $A = [\nf(A)] = [\nf(A')] = A'$. Likewise, we also have  $B = B'$.
-\end{proof}
-
-To prove our equivalence results in the next section, we will also need the injectivity of universes, which
-is stated by the following theorem.
-
-\begin{theorem}[Injectivity of universes]\label{univ-inj}
-    If we have $\U_{n_0} = \U_{n_1}$ in $\mathcal{T}_G$, then $n_0 = n_1$. 
-\end{theorem}
-
-\begin{proof}
-    Let's assume that $\U_{n_0} = \U_{n_1}$. We can normalise this equation to $\nf(\U_{n_0}) = \nf(\U_{n_1})$,
-    which corresponds to $\U_{n_0} = \U_{n_1}$ syntactically. Hence, we get directly: $n_0 = n_1$.
-\end{proof}
-
-We also get the "no-confusion" lemmas, which are a counterpart of injectivity of type formers.
-
-\begin{theorem}[No-Confusion]\label{no-confusion}
-    The following judgement is not derivable in $\mathcal{T}_G$: $\Gamma \vdash \Pi A B = \U_n$, for any types $A$ and $B$, and any level $n$. 
-\end{theorem}
-\begin{proof}
-    If such a judgement existed, we would have $\nf(\Pi(A,B)) = \nf(\U_n)$, which is impossible syntactically.
-\end{proof}
-
-With all of those result, we will be able to show that the equivalence of all our systems. 
-
-\section{Relating our different presentations : equivalence results}\label{equivalence}
-
 In this section, we show that all the systems $\mathcal{T}_G$, $\mathcal{T}_T$, $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent. In particular,
 we show the equivalence result between Tarski-style and Russell-style universes.
 
-\subsection{Equivalence of $\mathcal{T}_G$ and $\mathcal{T}_T$ : explicit and implicit substitutions}
+\section{Equivalence of $\mathcal{T}_G$ and $\mathcal{T}_T$ : explicit and implicit substitutions}
 
-We show by an elementary proof that $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent.
-First, we would have to show that we can remove context annotations from the operations of 
-$\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes, and the main point is that the contexts and
-types can be inferred from the derivation. We will not detail this proof here. 
+We now show $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent, thus relating the presentation with
+an explicit substitution calculus, to the presentation where substitutions are defined as a meta operation,
+by induction on the syntax.
+
+If we were to be completely precise, we would have to show that we can remove context annotations from the operations of 
+$\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes,
+that we will develop later. The main point is that the contexts and types can be inferred from the derivation, but for the
+sake of simplicity we will not detail this proof here. \footnote{\color{red} Rendre ça précis (?)}
 
 
 \begin{lemma}[Well-formed definition of $\fold$]
@@ -934,6 +829,7 @@ types can be inferred from the derivation. We will not detail this proof here.
 For the equivalence result, we need the usual substitution lemma in $\mathcal{T}_T$.
 
 \begin{lemma}[Substitution lemma]\label{Substitution}
+    % TODO : Rocq link
     If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
     then we have a derivation : $\Gamma \vdash J\alpha$.
 \end{lemma}
@@ -992,7 +888,7 @@ Finally, we deduce that the two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are 
 
 This proves the equivalence of $\mathcal{T}_T$ with the generalised algebraic presentation of type theory given by $\mathcal{T}_G$.
 
-\subsection{Equivalence of $\mathcal{T}_T$ and $\mathcal{T}_R$ : Tarski and Russell universes}\label{sectionT1T2}
+\section{Equivalence of $\mathcal{T}_T$ and $\mathcal{T}_R$ : Tarski and Russell universes}\label{sectionT1T2}
 
 We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of $\mathcal{T}_T$ and $\mathcal{T}_R$.
 All the results of this section have been completely formalised in Rocq.
@@ -1305,7 +1201,7 @@ on a normalisation by evaluation map, which would have to be constructed for eac
 to be considered.
 \end{remark}
 
-\subsection{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : unannotated syntax}
+\section{Equivalence of $\mathcal{T}_R$ and $\mathcal{T}_P$ : unannotated syntax}\label{sectionT2T2'}
 
 Finally, we prove our last equivalence result between $\mathcal{T}_R$ and $\mathcal{T}_P$, relating
 annotated and unannotated syntax. Concretely, the target theory $\mathcal{T}_P$ is the closest we can
@@ -1342,15 +1238,16 @@ To solve this issue, we could add the hypothesis $\strip(A_0) = \strip(A_1)$, bu
 on $\Gamma \vdash f : \Pi(C_0,B_0)$, as we do not have $\strip(C_0) = \strip(C_1)$. Thus, we will consider the weaker hypothesis $\strip'(A_0) = \strip'(A_1)$,
 where $\strip'$ is defined by $\strip'(\Pi(A,B)) := \strip'(B)$, and just like $\strip$ for the other cases. Therefore, we shall prove the following lemma.
 
+% TODO: double check that /!\
+
 \begin{lemma}\label{streichT2T2'}
 
     We have :
     \begin{itemize}
-        \item If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
-            with $\strip(u_0) = \strip(u_1)$ and $\strip'(A_0) = \strip'(A_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$. 
-
         \item If $\Gamma \vdash A \; \type$ and $\Gamma \vdash B \; \type$ with $\strip(A) = \strip(B)$, then we have
             $\Gamma \vdash A = B$.
+        \item If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$,
+            with $\strip(u_0) = \strip(u_1)$ and $\strip'(A_0) = \strip'(A_1)$ in $\mathcal{T}_P$, then $\Gamma \vdash u_0 = u_1 : A_0$ and $\Gamma \vdash A_0 = A_1$. 
     \end{itemize}
 \end{lemma}
 
@@ -1431,11 +1328,11 @@ system, with the additional rule for cumulativity.
 
 If we wanted to go even further, we could also remove the annotation of the variable from the lambda abstraction, again
 following \citet{Streicher}. However to do so, we curcially need to rely on the full normalisation result,
-as removing this annotation can lead to multiple non-convertible derivations for the same judgment, as shown by the following example.
+as removing this annotation can lead to multiple non-convertible derivations for the same judgement, as shown by the following example.
     
 \begin{example}
         We have two derivations : $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_p)$, which are not convertible when $n<p$.
-        Then we can construct the same derivation from thowe two premises: \[t :\U_n \vdash (\lambda \,y.t) \; (\lambda \,x.x) : \U_n\]
+        Then we can construct the same derivation from those two premises: \[t :\U_n \vdash (\lambda \,y.t) \; (\lambda \,x.x) : \U_n\]
 \end{example}
 
 \section{Extending the equivalence}
@@ -1449,6 +1346,7 @@ we propose two extensions by adding data types to our theory and considering uni
 
 We can extend the proof of normalisation to a theory with data types, from which we can still
 deduce the  key properties of the syntax : injectivity and no confusion of type formers, just as in section \ref{properties}.
+\footnote{\textcolor{red}{RS: je n'étais pas sûr d'inclure cette section, c'est un peu "handwavy" en quelque sorte, mais ça me paraissait important de donner une idée de comment la preuve s'étend}}
 
 Concretely, let's assume that we have a datatype whose formation rule is the following. 
 \begin{mathpar}
@@ -1503,7 +1401,7 @@ we need to prove the corresponding catch-up lemma for $\textcolor{Blue}{\textbf{
         can apply the induction hypothesis. We then conclude using the congruence of lifts.
 \end{proof}
 
-Using this lemma, the other results of section \ref{equivalence} hold and we can prove all the equivalence results between the corresponding theories.
+Using this lemma, the other results of section \ref{equT1T2} hold and we can prove all the equivalence results between the corresponding theories.
 Specialising this result to common inductive types, we notably get the equivalence result for Martin Löf's type theory with natural numbers, lists or identity types. 
 
 \subsection{Universe level judgements and Polymorphism}
@@ -1512,13 +1410,13 @@ We want to extend the equivalence result to a theory where universes are indexed
 defined by a judgement $\Gamma \vdash i\; \mathsf{level}$ with a successor operation and a binary supremum operation, making
 this new sort a sup-semilattice with an inflationary endomorphism \cite{polymorphism}.
 
-Concretely, when we look closely at what was needed in section \ref{equivalence}, we observe that the only
+Concretely, when we look closely at what was needed in section \ref{sectionT1T2}, we observe that the only
 thing that was necessary is to be able to take suprema and infima. In fact, the lower universe $\U_k$ of lemma \ref{mainuniverse}
 is given by $\min(n_0,n_1)$ in the base cases. To reconstruct this operation, we observe that for any level $\Gamma \vdash n_0 \; \mathsf{level}$
 and $\Gamma \vdash n_1 \; \mathsf{level}$, we either have $\Gamma \vdash n_0 < n_1$ or $\Gamma \vdash n_1 < n_0^+$. From this, $\min(n_0,n_1)$ can be obtained
 from the internal universe levels by mapping it to $n_0$ or $n_1$ whether we are in the first or the second case.
 
-Therefore, we can do \textit{exactly} the same proof as in section \ref{equivalence} by just
+Therefore, we can do \textit{exactly} the same proof as in section \ref{sectionT1T2} by just
 making the reasoning on universe levels internal, and we get the equivalence results.
 In fact, we can even extend our proof to the full theory with universe polymorphism
 described in \cite{polymorphism}, if we assume the basic properties of the syntax, as
@@ -1533,7 +1431,7 @@ levels internal to the \textit{type} of universe levels.
 
 \section{Conclusion and Future Work}
 
-To conclude, we proved that the Generalised Algebraic Theory and Pure Type System
+We proved that the Generalised Algebraic Theory and Pure Type System
 presentations of Martin Löf's Type Theory are equivalent. More specifically, we related 
 \textit{Tarski} and \textit{Russell} presentations of cumulative universe hierarchies. We also extended
 our equivalence result to theories with data types or universe polymorphism.
@@ -1549,7 +1447,16 @@ but that we believe to be weaker. Indeed, our proof is completely elementary and
 that it should be adaptable to many extensions of the theories presented in this paper.\\
 
 \textbf{\textit{Future work.}} In this paper, we did not consider cumulativity with a structural sub-typing relation,
-as we believe this to be orthogonal to the considerations of our work. 
+as we believe this to be orthogonal to the considerations of our work, and could lead to issues with general inductive types as pointed
+out by \citet{Luo}.
+% TODO : changer ce paragraphe, c'est pas vraiment orthogonal malheureusement... Plutôt le placer vraiment comme future work.
+
+In fact, when adding inductive types such as a the type of lists $\lst(.)$, the sub-typing relation propagates
+along the new type constructor: \[A \leq B \implies \lst(A) \leq \lst(B)\]
+Concretely, when $\leq$ is the cumulativity relation, this means that we get $\lst(\U_0) \leq \lst(\U_1)$. This already breaks
+canonicity as we can coerce $\mathsf{nil}_{\U_0} : \lst(\U_1)$, but we do not have $\mathsf{nil}_{\U_0} = \mathsf{nil}_{\U_1}$,
+unless we manually add the equation.
+
 Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
 assistant. The issues mentioned for sub-typing of the introduction can be seen as a kind of anomaly of the syntax, and 
 as a lack of proper equations. The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
@@ -1567,8 +1474,8 @@ of this work, and for his comments on the mechanized proof.
 
 \subsection{The system $\mathcal{T}_T$ : Tarski universes}
 
-We specify the system $\mathcal{T}_T$ with derivation rules, which directly translates the equations
-of section $2$. This formulation with rules will be useful to prove properties by induction.
+We specify the system $\mathcal{T}_T$ with derivation rules.
+This formulation with rules will be useful to prove properties by induction.
 We start with the typing judgments $a : A$ and the well-formed type judgment $A \;\type$ :
 
 \begin{mathpar}
