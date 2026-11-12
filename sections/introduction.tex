@@ -1,23 +1,18 @@
 \section{Introduction}
 
 In type theory, universes allow manipulating types as terms.
-To avoid Girard's paradox, it is routine to introduce a \textit{hierarchy} of universes: $\U_0, \U_1, \U_2, ...$.
-In practical systems, those are often assumed to be \textit{cumulative}, requiring proper inclusions between them.
+To avoid Girard's paradox, Martin-Löf \citet{Martin-Lof-1972, MARTINLOF75} introduced a \textit{hierarchy} of universes: $\U_0, \U_1, \U_2, ...$.
+Those can be assumed to be \textit{cumulative}, requiring proper inclusions between them.
 There are two different ways to formulate the notion of universe in type theory. Martin-Löf’s
 first versions \cite{MARTINLOF75, MARTINLOF82} were formulated à la Russell, where a universe is seen as a type of types. Later, an alternative version à la Tarski \cite{MARTINLOF84}, where a universe is seen as a type of codes along with a decoding function, was also introduced. Usually, Russell universes are regarded as an informal notation of the latter, as \cite{Luo} suggested.
 
 When presenting Type Theory in an algebraic fashion, Tarski universes are essential, at least if we do not want to introduce sort equations, and one can show that the system à la Tarski presents the initial model of such a theory.
-This initial model has been constructed explicitly in \citet{bcde2026}, following the method presented in \citet{Streicher} and formalised in \citet{Brunerie}. 
-However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
-extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
+However, and if people often assume that this extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
 To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for a large class of theories.
 A first step at solving this goal was achieved by Streicher \cite{Streicher}, proving initiality for a fully annotated Calculus of Constructions, and then
-
 proving its equivalence with the more common, unannotated formulation, close to a Pure Type System. 
 
-Generalised Algebraic Theories (GATs) provide a framework to describe type theories and their models in a uniform
-way, and to prove initiality rather easily \cite{noteGAT, Brunerie}, 
-thus solving the first part of the problem. However, GATs give rise to a fully explicit and annotated presentation of type theory, which is inconvenient to work in.
+Generalised Algebraic Theories (GATs) provide a framework to describe type theories and their models in a uniform way. However, GATs give rise to a fully explicit and annotated presentation of type theory, which is inconvenient to work in.
 Therefore, it would be essential to extend Streicher's equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
 with Russell universes and unannotated syntax.  This would justify rigorously the common practice of using informal syntax and Russell universes, as proposed by \citet{Luo},
 and would legitimate interpreting such syntax in the usual models of type theory.
@@ -68,7 +63,9 @@ arithmetic, whereas normalisation relies on a stronger metatheory \cite{Coq19} s
 In addition, we manually formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}.
 Throughout the paper, we provide links to the corresponding definitions and theorems
 in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}.
-Along with this, we did a complete auto-formalisation in Agda of the whole paper using Claude \cite{auto-formalisation}.\\
+Along with this, we did a complete auto-formalisation in Agda of the whole paper using Claude \cite{auto-formalisation}.
+This was useful to ensure correctness and find some mistakes in our proofs, in particular for the equivalence proof of Section \ref{sectionT2T2'}.
+\\
 
 \noindent
 \textbf{Structure of this paper.}
