@@ -1,8 +1,8 @@
-\section{Appendix : Type systems}\label{Rules}
+\section{appendix : type systems}\label{rules}
 
-\subsection{The system $\mathcal{T}_T$ : Tarski universes}
+\subsection{The system \ThyTarski : Tarski universes}
 
-We specify the system $\mathcal{T}_T$ with derivation rules.
+We specify the system \ThyTarski with derivation rules.
 This formulation with rules will be useful to prove properties by induction.
 We start with the typing judgments $a : A$ and the well-formed type judgment $A \;\type$ :
 
@@ -161,9 +161,9 @@ We start with the typing judgments $a : A$ and the well-formed type judgment $A 
 
 We also require the rules that makes $=$ a congruence, but we omit those rules for brevity.
 
-\subsection{The system $\mathcal{T}_G$ : explicit substitutions}
+\subsection{The system \ThyGAT : explicit substitutions}
 
-The system $\mathcal{T}_G$ is really close to $\mathcal{T}_T$, the only difference is that substitiutions
+The system \ThyGAT is really close to \ThyTarski, the only difference is that substitiutions
 are explicit : they appear directly in the syntax. Hence, the syntax is given by :
 \begin{gather*}
     \Gamma,\Delta ::= () \; | \; \Gamma.A\\
@@ -171,7 +171,7 @@ are explicit : they appear directly in the syntax. Hence, the syntax is given by
     a,b ::= \app(A,B,c,a) \; | \; \lambda(A,B,b) \; | \; t_m^n(a) \; | \; \U_m^n \; | \; \Pi^n \; a \; b \; | \; \q_\Gamma \; | \; a\sigma \\
     \sigma , \delta ::= \sigma \delta \; | \; \Id_\Gamma \; | \; \p_{\Gamma,\Gamma.A} \; | \; [a] \; | \; \sigma^{+(A)}
 \end{gather*}
-The rules are the same as $\mathcal{T}_T$, with only one modification for variables, that are replaced by the rule
+The rules are the same as \ThyTarski, with only one modification for variables, that are replaced by the rule
 for $\q$ :
 
 \begin{mathparsmall}
@@ -281,9 +281,9 @@ Then, we have rules for substitutions :
   }
 \end{mathparsmall}
 
-\subsection{The system $\mathcal{T}_R$ : Russell with annotations}
+\subsection{The system \ThyRussell : Russell with annotations}
 
-We specify the system $\mathcal{T}_R$, which is similar to $\mathcal{T}_T$, the only difference being that
+We specify the system \ThyRussell, which is similar to \ThyTarski, the only difference being that
 this system has Russell universes.
 
 \begin{mathparsmall}
@@ -404,9 +404,9 @@ this system has Russell universes.
 
 We also require the rules that makes $=$ a congruence, but we omit them for brevity.
 
-\subsection{The system $\mathcal{T}_P$ : Russell without annotations}
+\subsection{The system \ThyPTS : Russell without annotations}
 
-We specify the system $\mathcal{T}_P$, which is the same as the system $\mathcal{T}_R$, but without
+We specify the system \ThyPTS, which is the same as the system \ThyRussell, but without
 typing annotations.
 
 \begin{mathparsmall}

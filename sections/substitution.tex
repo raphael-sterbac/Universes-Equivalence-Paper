@@ -1,13 +1,13 @@
-\section{Explicit and implicit substitutions ($\mathcal{T}_G$ and $\mathcal{T}_T$)}\label{sectionT0T1}
+\section{Explicit and implicit substitutions (\ThyGAT and \ThyTarski)}\label{sectionT0T1}
 
-We now show $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent, thus relating the presentation with
+We now show \ThyTarski and \ThyGAT are equivalent, thus relating the presentation with
 an explicit substitution calculus, to the presentation where substitutions are defined as a meta operation,
 by induction on the syntax.
 
 \textcolor{red}{TODO: clarify this, more precise}
 
 If we were to be completely precise, we would have to show that we can remove context annotations from the operations of 
-$\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes,
+\ThyGAT formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes,
 that we will develop later. The main point is that the contexts and types can be inferred from the derivation, but for the
 sake of simplicity we will not detail this proof here. 
 
@@ -16,23 +16,23 @@ sake of simplicity we will not detail this proof here.
     The forgetful map $\fold$ is well-defined.
 \end{lemma}
 \begin{proof}
-    We check that $\fold$ produces types and terms in $\mathcal{T}_T$. This is
+    We check that $\fold$ produces types and terms in \ThyTarski. This is
     not completely clear, because of the cases $A\sigma$ and $a \sigma$.
     In fact, we check that $\fold(\sigma)$ indeed gives a list of well-formed elementary substitutions.
-    Then, the successive application of those substitutions gives a syntactically valid type or term in $\mathcal{T}_T$.
+    Then, the successive application of those substitutions gives a syntactically valid type or term in \ThyTarski.
 \end{proof}
 
-For the equivalence result, we need the usual substitution lemma in $\mathcal{T}_T$.
+For the equivalence result, we need the usual substitution lemma in \ThyTarski.
 
 \begin{lemma}[\formline{Utils.v}{710}{substitutionlemma} Substitution lemma]\label{Substitution}
-    If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
+    If $\Gamma \vdash J$ in \ThyTarski and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
     then we have a derivation : $\Delta \vdash J\alpha$.
 \end{lemma}
  
 With all of this, we show the following admissibility result.
 
 \begin{lemma}
-    The erasure of rules in $\mathcal{T}_G$ are admissible in $\mathcal{T}_T$.
+    The erasure of rules in \ThyGAT are admissible in \ThyTarski.
 \end{lemma}
 \begin{proof}
     The only two interesting rules are the ones defining the action of substitution on types and terms.
@@ -62,23 +62,23 @@ $n$ applications of the substitution lemma. We do the same thing for the action 
 Consequently, we get the following correction result as a rather direct corollary of the previous lemma. 
 
 \begin{theorem}[Correctness of $\fold$]
-    If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\fold(\Gamma) \vdash \fold(J)$ is derivable in $\mathcal{T}_T$.
+    If $\Gamma \vdash J$ in \ThyGAT then $\fold(\Gamma) \vdash \fold(J)$ is derivable in \ThyTarski.
 \end{theorem}
 \begin{proof}
-    By induction, we replace the rules of $\mathcal{T}_G$ by the admissible ones in $\mathcal{T}_T$ using the previous lemma. 
+    By induction, we replace the rules of \ThyGAT by the admissible ones in \ThyTarski using the previous lemma. 
 \end{proof}
 
-Finally, we deduce that the two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are equivalent, relating implicit and explicit subsitutions. 
+Finally, we deduce that the two systems \ThyGAT and \ThyTarski are equivalent, relating implicit and explicit subsitutions. 
 
 \begin{theorem}
-    The two systems $\mathcal{T}_G$ and $\mathcal{T}_T$ are equivalent.
+    The two systems \ThyGAT and \ThyTarski are equivalent.
 \end{theorem}
 \begin{proof}
-    Each rule of $\mathcal{T}_T$ is trivially admissible of $\mathcal{T}_G$ because $\mathcal{T}_T$ is a subsystem
-    of $\mathcal{T}_G$.
+    Each rule of \ThyTarski is trivially admissible of \ThyGAT because \ThyTarski is a subsystem
+    of \ThyGAT.
 
-    Hence, we have the identity map from $\mathcal{T}_T$ and $\mathcal{T}_G$, and as $\fold$ acts identically
+    Hence, we have the identity map from \ThyTarski and \ThyGAT, and as $\fold$ acts identically
     on types and terms without substitution, we get our equivalence result.
 \end{proof}
 
-This proves the equivalence of $\mathcal{T}_T$ with the generalised algebraic presentation of type theory given by $\mathcal{T}_G$.
+This proves the equivalence of \ThyTarski with the generalised algebraic presentation of type theory given by \ThyGAT.

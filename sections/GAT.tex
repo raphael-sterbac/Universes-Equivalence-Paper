@@ -2,7 +2,7 @@
 
 \subsection{A fully explicit presentation}
 
-In this section, we define the fully explicit theory with Tarski-style universes as a generalised algebraic theory $\mathcal{T}_G$.
+In this section, we define the fully explicit theory with Tarski-style universes as a generalised algebraic theory \ThyGAT.
 This means that we present the syntax in an algebraic way, and this provides a canonical notion of model in categories with families (CwF). Those
 were originally described by \citet{Cartmell}, and extended with dependent products and universes by \citet{CWF-CCD}.
 The theory described here is really close to the one of \citet{bcde2026}.
@@ -18,7 +18,7 @@ We have four sorts: contexts, substitutions, types, and elements.
 \end{definition}
 
 \begin{definition}[Substitutions]
-    $\mathcal{T}_G$ has substitutions with composition, identity and an empty context: 
+    \ThyGAT has substitutions with composition, identity and an empty context: 
 
     \noindent
     \begin{minipage}{0.35\linewidth}
@@ -52,7 +52,7 @@ We have four sorts: contexts, substitutions, types, and elements.
 Substitutions are acting on types and elements, in the sense of the following definition.
 
 \begin{definition}[Action of substitutions on types and terms]
-    $\mathcal{T}_G$ has the following operations:
+    \ThyGAT has the following operations:
     \begin{align*}
     \Gamma : \ctx, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdash A \sigma : \Type(\Delta)\\
     \Gamma : \ctx, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash a \sigma : \Elem(\Delta, A\sigma)
@@ -81,7 +81,7 @@ Substitutions are acting on types and elements, in the sense of the following de
 We also need context extension, in the sense of the following.
 
 \begin{definition}[Projections]
-    $\mathcal{T}_G$ has the following operations:
+    \ThyGAT has the following operations:
     \begin{align*}
         \Gamma : \ctx, A : \Type(\Gamma) &\vdash \Gamma.A : \ctx\\
         \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash (\sigma,a) : \Delta  \rightarrow \Gamma.A\\
@@ -154,7 +154,7 @@ along with explicit codes, lifts and decoding operations. This presentation of u
 This fully explicit syntax is the usual way to present type theory with cumulative universes in a (generalised) algebraic way.
 
 \begin{definition}[Tarski universes]
-    $\mathcal{T}_G$ has a countable list of universes $\U_n$ with a decoding operation $T_l(\cdot)$, 
+    \ThyGAT has a countable list of universes $\U_n$ with a decoding operation $T_l(\cdot)$, 
     codes for type connectives $\Pi^n$ and $\U_l^m$, and lifting operations $t_l^m$.
 
     \begin{align*}
@@ -210,13 +210,13 @@ Finally, to prove $\Pi$-injectivity in open contexts, we use the logical relatio
 This gives the following theorems, that we will use extensively throughout the paper.
 
 \begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
-    The dependent product is injective in $\mathcal{T}_G$: if $\Gamma \vdash \Pi(A,B) = \Pi(A',B')$, then $\Gamma \vdash A = A'$ and $\Gamma.A \vdash B = B'$.
+    The dependent product is injective in \ThyGAT: if $\Gamma \vdash \Pi(A,B) = \Pi(A',B')$, then $\Gamma \vdash A = A'$ and $\Gamma.A \vdash B = B'$.
 \end{theorem}
 
 \begin{theorem}[\formline{Utils.v}{1019}{Uinj} Injectivity of universes]\label{univ-inj}
-    If we have $\Gamma \vdash \U_{n_0} = \U_{n_1}$ in $\mathcal{T}_G$, then $n_0 = n_1$. 
+    If we have $\Gamma \vdash \U_{n_0} = \U_{n_1}$ in \ThyGAT, then $n_0 = n_1$. 
 \end{theorem}
 
 \begin{theorem}[\formline{Utils.v}{1023}{noconfusion} No-Confusion]\label{no-confusion}
-    For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in $\mathcal{T}_G$: $\Gamma \vdash \Pi(A,B) = \U_n$. 
+    For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in \ThyGAT: $\Gamma \vdash \Pi(A,B) = \U_n$. 
 \end{theorem}

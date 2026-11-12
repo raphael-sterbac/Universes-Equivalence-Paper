@@ -2,15 +2,15 @@
 
 \subsection{Implicit presentations}
 
-In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to $\mathcal{T}_G$.
+In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to \ThyGAT.
 
-First, we describe $\mathcal{T}_T$, which has implicit substitutions and exactly the same rules as the GAT 
+First, we describe \ThyTarski, which has implicit substitutions and exactly the same rules as the GAT 
 of section $2$. 
-A main goal of this paper is to relate $\mathcal{T}_T$ to the implicit formulation \textit{à la Russell} of cumulative universes denoted with $\mathcal{T}_R$.
+A main goal of this paper is to relate \ThyTarski to the implicit formulation \textit{à la Russell} of cumulative universes denoted with \ThyRussell.
 The latter conflates types and terms, with implicit inclusion between universes. 
 This system cannot be formulated algebraically, as this would involve adding a sort equation and a stratification of the sort of types $\Type_n$ which we would need to be included in each other.
 
-Both $\mathcal{T}_T$ and $\mathcal{T}_R$ have dependent products, lambda abstraction and application, described in the same way, with the
+Both \ThyTarski and \ThyRussell have dependent products, lambda abstraction and application, described in the same way, with the
 following rules.
 
 
@@ -65,12 +65,12 @@ following rules.
 \end{mathparsmall}
 \end{minipage}%
     }
-    \caption{Logical structure for $\mathcal{T}_T$ and $\mathcal{T}_R$}
+    \caption{Logical structure for \ThyTarski and \ThyRussell}
     \label{fig:rulestyping}
 \end{figure}
 
-Then, the operations of $\mathcal{T}_G$ can be translated as formation and introduction rules for Tarski-style universes and the theory
-$\mathcal{T}_T$. Namely, we need codes for products and universes, lifts and decoding. We describe the rules in the following:
+Then, the operations of \ThyGAT can be translated as formation and introduction rules for Tarski-style universes and the theory
+\ThyTarski. Namely, we need codes for products and universes, lifts and decoding. We describe the rules in the following:
 
 \begin{figure}[H]
     \centering
@@ -107,11 +107,11 @@ $\mathcal{T}_T$. Namely, we need codes for products and universes, lifts and dec
 \end{mathparsmall}
 \end{minipage}%
     }
-    \caption{Universe rules of $\mathcal{T}_T$}
+    \caption{Universe rules of \ThyTarski}
     \label{fig:rulesconv}
 \end{figure}
 
-The equations of $\mathcal{T}_G$ can be translated as conversion rules for $\mathcal{T}_T$. Namely,
+The equations of \ThyGAT can be translated as conversion rules for \ThyTarski. Namely,
 we need the decoding operation to be strict, and the lifts to commute with the codes for type connectives.
 The precise rules are the following ones.
 
@@ -155,11 +155,11 @@ The precise rules are the following ones.
 \end{mathparsmall}
 \end{minipage}%
     }
-    \caption{Conversion rules of $\mathcal{T}_T$}
+    \caption{Conversion rules of \ThyTarski}
     \label{fig:rulesconv}
 \end{figure}
 
-Now, for the theory $\mathcal{T}_R$ (Russell universes), types and terms are conflated, and thus
+Now, for the theory \ThyRussell (Russell universes), types and terms are conflated, and thus
 we should be able to deduce $\Gamma \vdash A \; \type$ from $\Gamma \vdash A : \U_n$. Conversely,
 the intuition is that whenever $\Gamma \vdash A \; \type$ then we should have  : \[\exists n \in \bN, \ \Gamma \vdash A : \U_n\]
 
@@ -201,12 +201,12 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
 \end{mathparsmall}
 \end{minipage}%
     }
-    \caption{Universe rules of $\mathcal{T}_R$}
+    \caption{Universe rules of \ThyRussell}
     \label{fig:rulesconv}
 \end{figure}
 
-Finally, we also consider a system $\mathcal{T}_P$, which removes redundant type annotations in functional application
-and lambda abstraction from $\mathcal{T}_R$. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ become $c \; a$ and $\lambda_{x:A} b$.
+Finally, we also consider a system \ThyPTS, which removes redundant type annotations in functional application
+and lambda abstraction from \ThyRussell. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ become $c \; a$ and $\lambda_{x:A} b$.
 This system is closer to the practical syntax of type theory, inherited from the lambda calculus,
 and often referred to as the "pure type system" presentation (PTS).
 
@@ -217,9 +217,9 @@ For a full and extensive description of the systems, please refer to appendix \r
 
 Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones.
 
-First, we define a morphism of theories between $\mathcal{T}_G$ and $\mathcal{T}_T$ which makes substitutions implicit.
-To do this, we map substitutions in $\mathcal{T}_G$ to a list of "elementary"
-substitutions in $\mathcal{T}_T$, as there is no composition in this system. Then, when translating the action of a substitution
+First, we define a morphism of theories between \ThyGAT and \ThyTarski which makes substitutions implicit.
+To do this, we map substitutions in \ThyGAT to a list of "elementary"
+substitutions in \ThyTarski, as there is no composition in this system. Then, when translating the action of a substitution
 on a term or a type, we can unfold that list to get a type formed by applying all those substitutions successively.
 
 \begin{definition}
@@ -273,7 +273,7 @@ forgets about all the explicit coercions given by the presentation à la Tarski,
     \end{minipage}
 \end{definition}
 
-Finally, we define the map $\strip$  which erases type annotations from a term of the system $\mathcal{T}_R$, and gives a term of $\mathcal{T}_P$.
+Finally, we define the map $\strip$  which erases type annotations from a term of the system \ThyRussell, and gives a term of \ThyPTS.
 This function is analogous to the one defined by \citet{Streicher}.
 
 \begin{definition}
@@ -309,10 +309,10 @@ forgetful maps, and the dotted arrows are the sections we will be constructing.
 \begin{circuitikz}
 \tikzstyle{every node}=[font=\LARGE]
 
-\draw  (-2.5,18.75) rectangle  node {\LARGE GAT ($\mathcal{T}_G$)} (2.5,16.25);
-\draw  (5,18.75) rectangle  node {\LARGE Tarski ($\mathcal{T}_T$)} (10,16.25);
-\draw  (12.5,18.75) rectangle  node {\LARGE Russell ($\mathcal{T}_R$)} (17.5,16.25);
-\draw  (20,18.75) rectangle  node {\LARGE PTS ($\mathcal{T}_P$)} (25,16.25);
+\draw  (-2.5,18.75) rectangle  node {\LARGE GAT (\ThyGAT)} (2.5,16.25);
+\draw  (5,18.75) rectangle  node {\LARGE Tarski (\ThyTarski)} (10,16.25);
+\draw  (12.5,18.75) rectangle  node {\LARGE Russell (\ThyRussell)} (17.5,16.25);
+\draw  (20,18.75) rectangle  node {\LARGE PTS (\ThyPTS)} (25,16.25);
 
 
 
@@ -333,6 +333,6 @@ forgetful maps, and the dotted arrows are the sections we will be constructing.
 \end{figure}
 
 As mentioned in the introduction, to prove our equivalence result, we rely on basic properties of the syntax of the explicit system
-$\mathcal{T}_G$ described in section \ref{GAT}, and we propagate them along our equivalence results.
-In the following sections, we show that all the systems $\mathcal{T}_G$, $\mathcal{T}_T$, $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent. In particular,
+\ThyGAT described in section \ref{GAT}, and we propagate them along our equivalence results.
+In the following sections, we show that all the systems \ThyGAT, \ThyTarski, \ThyRussell and \ThyPTS are equivalent. In particular,
 we show the equivalence result between Tarski-style and Russell-style universes. 

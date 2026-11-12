@@ -1,18 +1,18 @@
-\section{Tarski and Russell universes ($\mathcal{T}_T$ and $\mathcal{T}_R$)}\label{sectionT1T2}
+\section{Tarski and Russell universes (\ThyTarski and \ThyRussell)}\label{sectionT1T2}
 
-We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of $\mathcal{T}_T$ and $\mathcal{T}_R$.
+We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of \ThyTarski and \ThyRussell.
 All the results of this section have been completely formalised \textit{by hand} in Rocq.
 
 First, we show that the erasure operation $|.|$ preserves derivations.
 
 \begin{lemma}[\formline{Erasure.v}{143}{Erasurecorrection} Correctness of erasure]
-    If $\Gamma \vdash J$ in $\mathcal{T}_T$, then $|\Gamma| \vdash |J|$ in $\mathcal{T}_R$.
+    If $\Gamma \vdash J$ in \ThyTarski, then $|\Gamma| \vdash |J|$ in \ThyRussell.
 \end{lemma}
 
 \begin{proof}
     By mutual induction, we prove the statement for our five different kinds of judgements: well-formation of contexts and types,
     typing, and conversion between types and terms. The proof is mostly direct, and amounts to showing that the
-    erasure of each rule of $\mathcal{T}_T$ corresponds to an admissible rule of $\mathcal{T}_R$.
+    erasure of each rule of \ThyTarski corresponds to an admissible rule of \ThyRussell.
 \end{proof}
 
 Then, we want to show that this forgetful map has an inverse, hence proving the equivalence
@@ -50,7 +50,7 @@ Now, we would want to state the main result, by adapting the arguments of \citet
 following statement:\\
 
 \textbf{Lemma.} If we have $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ such that $|u_0| = |u_1|$
-in $\mathcal{T}_R$, then necessarily they are convertible i.e. $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$\\
+in \ThyRussell, then necessarily they are convertible i.e. $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$\\
 
 However, this fails when $u_0$ and $u_1$ are codes in different universes. For instance, we have $\Gamma \vdash \U_m^n : \U_n$ and $\Gamma \vdash \U_m^l : \U_l$
 which have the same erasure $|\U_m^n| = |\U_m^l| = \U_m$, but are not convertible (at least if $n \neq l$). Therefore,
@@ -123,7 +123,7 @@ have used stronger arguments such as normalisation, but this would make the proo
 Still, we sketch such a proof at the end of the section.
 
 \begin{lemma}[\formline{Equivalence.v}{813}{eraseinjty}] \label{mainuniverse}
-    In $\mathcal{T}_T$, we have:
+    In \ThyTarski, we have:
     \begin{enumerate}
     \item If $\Gamma \vdash A\; \type$ and $\Gamma \vdash B\; \type$ with $|A| = |B|$, then  $\Gamma \vdash A = B$.
 
@@ -235,13 +235,13 @@ Still, we sketch such a proof at the end of the section.
 
 
 Hence, we deduce the following corollary, which states that if we have two judgments
-in $\mathcal{T}_T$ which are syntactically equal in $\mathcal{T}_R$ (when removing coercions, lifts...), then
-they are provably convertible in $\mathcal{T}_T$. This already means that the Tarski system is not much stronger than
+in \ThyTarski which are syntactically equal in \ThyRussell (when removing coercions, lifts...), then
+they are provably convertible in \ThyTarski. This already means that the Tarski system is not much stronger than
 the Russell one, in the sense that if two terms differ only by their explicit coercion, then they have the same
 computational behaviour.
 
 \begin{corollary}[\formline{Equivalence.v}{1128}{eraseinjtermplus} Judgemental injectivity of erasure]\label{uniqueness}
-    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_T$ and $|u_0| = |u_1|$,
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in \ThyTarski and $|u_0| = |u_1|$,
     with the additional hypothesis $|A_0| = |A_1|$, then : $\Gamma \vdash A_0 = A_1$ and 
     $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{corollary}
@@ -255,17 +255,17 @@ computational behaviour.
 Now we prove the following theorem, stating the formal equivalence between the two systems:
 
 \begin{theorem}[\formline{Equivalence.v}{1379}{sectionctx} Section of erasure]\label{equT1T2}
-    If $\Gamma \vdash J$ in the system $\mathcal{T}_R$, then there exists a unique, up to conversion judgment
-    $\Gamma_1 \vdash J_1$ in the system $\mathcal{T}_T$ such that $|\Gamma_1| = \Gamma$ and $|J_1| = J$.
+    If $\Gamma \vdash J$ in the system \ThyRussell, then there exists a unique, up to conversion judgment
+    $\Gamma_1 \vdash J_1$ in the system \ThyTarski such that $|\Gamma_1| = \Gamma$ and $|J_1| = J$.
 \end{theorem}
 
 \begin{proof}
     Uniqueness up to conversion follows directly from the previous lemma. We have to construct the derivation 
-    by induction on the rules of $\mathcal{T}_R$, making an extensive use of the previous lemma for rules with two premises. Indeed,
+    by induction on the rules of \ThyRussell, making an extensive use of the previous lemma for rules with two premises. Indeed,
     when using the induction hypothesis on two premises, we need to make sure that the same types have 
     the same translations. To illustrate this, we detail the case of the product.\\
 
-    \textit{Dependent Product.} If the last rule applied in $\mathcal{T}_R$ is :
+    \textit{Dependent Product.} If the last rule applied in \ThyRussell is :
     \begin{mathparsmall}
       \ebrule{
         \hypo{\Pi_1}
@@ -277,18 +277,18 @@ Now we prove the following theorem, stating the formal equivalence between the t
     \end{mathparsmall}
 
         Then, by the induction hypothesis we get derivations 
-        $\Gamma' \vdash A' \; \type$ and $\Gamma'',A'' \vdash B' \; \type$ in $\mathcal{T}_T$ such that 
+        $\Gamma' \vdash A' \; \type$ and $\Gamma'',A'' \vdash B' \; \type$ in \ThyTarski such that 
          $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$. By Corollary \ref{uniqueness}, we get $\Gamma' \vdash A' = A''$, and  the contexts
         $\Gamma'$ and $\Gamma''$ are convertible. We can thus transform the second derivation to get $\Gamma',A' \vdash B' \; \type$.
-        Therefore, we can construct the derivation for $\Gamma' \vdash \Pi(A',B') \; \type$ in $\mathcal{T}_T$.
+        Therefore, we can construct the derivation for $\Gamma' \vdash \Pi(A',B') \; \type$ in \ThyTarski.
 \end{proof}
 
 This finally proves that any judgement in Russell-Style can be lifted uniquely to a judgement in Tarski-Style, proving
-the equivalence between $\mathcal{T}_T$ and $\mathcal{T}_R$ by exhibiting a section of the forgetful map.
+the equivalence between \ThyTarski and \ThyRussell by exhibiting a section of the forgetful map.
 
 \begin{remark}
 To prove this equivalence result, we could have relied on normalisation to simplify the proofs, at
 the cost of relying on a stronger metatheory and stronger properties of the theory. In fact, if we proved normalisation for
-$\mathcal{T}_R$ as well, we could construct the derivation of Theorem \ref{equT1T2} by an induction on normal forms.
+\ThyRussell as well, we could construct the derivation of Theorem \ref{equT1T2} by an induction on normal forms.
 Then, by showing that the erasure map $|.|$ commutes with $\nf(.)$, we would obtain the equivalence result.
 \end{remark}

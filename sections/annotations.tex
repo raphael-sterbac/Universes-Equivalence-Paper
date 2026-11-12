@@ -1,26 +1,26 @@
-\section{Unannotated syntax ($\mathcal{T}_R$ and $\mathcal{T}_P$)}\label{sectionT2T2'}
+\section{Unannotated syntax (\ThyRussell and \ThyPTS)}\label{sectionT2T2'}
 
-Finally, we prove our last equivalence result between $\mathcal{T}_R$ and $\mathcal{T}_P$, relating
-annotated and unannotated syntax. Concretely, the target theory $\mathcal{T}_P$ is the closest we can
+Finally, we prove our last equivalence result between \ThyRussell and \ThyPTS, relating
+annotated and unannotated syntax. Concretely, the target theory \ThyPTS is the closest we can
 get to a presentation as a Pure Type System of Martin-Löf's type theory with a cumulative hierarchy of universes.
 This section is a direct adaptation of the arguments of \citet{Streicher} to our setting. Notably, we need
-to adapt the arguments because the theory $\mathcal{T}_R$ does not enjoy uniqueness of types, precisely because
+to adapt the arguments because the theory \ThyRussell does not enjoy uniqueness of types, precisely because
 of cumulativity.
 
 Just as we did for the previous equivalence result, we prove that the forgetful map $\strip$ preserves
 derivations.
 
 \begin{theorem}
-    If $\Gamma \vdash J$ in $\mathcal{T}_R$, then we have a derivation $\strip(\Gamma) \vdash \strip(J)$ in $\mathcal{T}_P$.
+    If $\Gamma \vdash J$ in \ThyRussell, then we have a derivation $\strip(\Gamma) \vdash \strip(J)$ in \ThyPTS.
 \end{theorem}
 \begin{proof}
-    We just need to prove that the stripping of rules in $\mathcal{T}_R$ are admissible in $\mathcal{T}_P$, which
-    is quite easy as each rule in $\mathcal{T}_R$ corresponds directly to a rule of $\mathcal{T}_P$. Then, the theorem
-    is proved by an induction on the derivation which replaces rules in $\mathcal{T}_R$ by the admissible ones in $\mathcal{T}_P$.
+    We just need to prove that the stripping of rules in \ThyRussell are admissible in \ThyPTS, which
+    is quite easy as each rule in \ThyRussell corresponds directly to a rule of \ThyPTS. Then, the theorem
+    is proved by an induction on the derivation which replaces rules in \ThyRussell by the admissible ones in \ThyPTS.
 \end{proof}
 
 Now, following the ideas of \citet{Streicher}, we want to prove that two terms or types which
-become syntactically equal after erasing the annotations with $\strip$ are convertible in $\mathcal{T}_R$. Here, 
+become syntactically equal after erasing the annotations with $\strip$ are convertible in \ThyRussell. Here, 
 types are not unique because of cumulativity, so we could well have $\strip(u_0) = \strip(u_1)$ without
 necessarily having $u_0$ and $u_1$ convertible. This is due to the codomain annotations of $\lambda$-abstractions, which are erased by $\strip$ and are subject to cumulativity, as shown by the following counter-example.
 
@@ -31,7 +31,7 @@ necessarily having $u_0$ and $u_1$ convertible. This is due to the codomain anno
 \end{example}
 
 As Example \ref{ex:cumul-lam} illustrates, even if two applications $u_0$ and $u_1$ are compared at a common type, the functions $f_0$ and $f_1$ being applied may have types $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ that differ by cumulativity \emph{under $\Pi$}.
-Although $\mathcal{T}_R$ has no primitive sub-typing judgement for $\Pi$-types, we can relate such terms by defining explicit coercions into a common upper type (a \emph{join}) using $\eta$-expansion, with cumulativity acting at the leaves.
+Although \ThyRussell has no primitive sub-typing judgement for $\Pi$-types, we can relate such terms by defining explicit coercions into a common upper type (a \emph{join}) using $\eta$-expansion, with cumulativity acting at the leaves.
 
 \begin{definition}[Joins and coercions]\label{def:join}
     We inductively define the judgement $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$, relating types $T_0, T_1$ to a common join $L$ via coercion operations $\coe_0, \coe_1$, by the following inference rules:
@@ -81,7 +81,7 @@ When $T_0$ and $T_1$ are convertible, coercions into their join are injective up
 We now state and prove the main lemma of this section by structural induction on the syntax, comparing terms at the join of their types.
 
 \begin{lemma}\label{streichT2T2'}
-    In $\mathcal{T}_R$, we have:
+    In \ThyRussell, we have:
     \begin{enumerate}
         \item If $\Gamma \vdash u_0 : T_0$ and $\Gamma \vdash u_1 : T_1$ with $\strip(u_0) = \strip(u_1)$, then there exists a join $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$ such that $\Gamma \vdash \coe_0(u_0) = \coe_1(u_1) : L$.
         \item If $\Gamma \vdash A_0 \; \type$ and $\Gamma \vdash A_1 \; \type$ with $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$.
@@ -107,26 +107,26 @@ We now state and prove the main lemma of this section by structural induction on
 Combining Lemma \ref{streichT2T2'} with the diagonal lemma (Lemma \ref{lem:join-diag}), we deduce the following direct corollary, analogous to Corollary \ref{uniqueness} of the previous section.
 
 \begin{corollary}\label{cor:strip-uniq}
-    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$ with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in \ThyRussell with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{corollary}
 \begin{proof}
     If $\strip(A_0) = \strip(A_1)$, Lemma \ref{streichT2T2'}.(2) gives $\Gamma \vdash A_0 = A_1$. Then Lemma \ref{streichT2T2'}.(1) and Lemma \ref{lem:join-diag} yield $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{proof}
 
 Finally, we can show the following theorem, which exhibits the section of the forgetful map $\strip$, showing the equivalence
-of $\mathcal{T}_R$ and $\mathcal{T}_P$.
+of \ThyRussell and \ThyPTS.
 
 \begin{theorem}\label{equT2T2'}
-    If $\Gamma \vdash J$ in $\mathcal{T}_P$, then we have a unique up to conversion judgment 
-    $\Gamma' \vdash J'$ in $\mathcal{T}_R$ such that $\strip(\Gamma') = \Gamma$ and $\strip(J') = J$.
+    If $\Gamma \vdash J$ in \ThyPTS, then we have a unique up to conversion judgment 
+    $\Gamma' \vdash J'$ in \ThyRussell such that $\strip(\Gamma') = \Gamma$ and $\strip(J') = J$.
 \end{theorem}
 \begin{proof}
-    By induction on the derivation $\Gamma \vdash J$, using Corollary \ref{cor:strip-uniq}, we construct a derivation in $\mathcal{T}_R$.
+    By induction on the derivation $\Gamma \vdash J$, using Corollary \ref{cor:strip-uniq}, we construct a derivation in \ThyRussell.
     The main point is that the typing annotations can be inferred from the derivation, and that Corollary \ref{cor:strip-uniq} gives
     us uniqueness up to conversion for rules with shared terms or types in their premises. 
 \end{proof}
 
-In $\mathcal{T}_P$, we could also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
+In \ThyPTS, we could also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
 in a completely Russellian style. In such a system, there is no top-level of types and a type is simply a term
 of a certain universe.
 We can also consider named variables instead of de Bruijn indices, to get a theory presented exactly like a pure type
