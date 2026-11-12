@@ -4,6 +4,8 @@ We now show $\mathcal{T}_T$ and $\mathcal{T}_G$ are equivalent, thus relating th
 an explicit substitution calculus, to the presentation where substitutions are defined as a meta operation,
 by induction on the syntax.
 
+\textcolor{red}{TODO: clarify this, more precise}
+
 If we were to be completely precise, we would have to show that we can remove context annotations from the operations of 
 $\mathcal{T}_G$ formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes,
 that we will develop later. The main point is that the contexts and types can be inferred from the derivation, but for the
@@ -14,7 +16,7 @@ sake of simplicity we will not detail this proof here.
     The forgetful map $\fold$ is well-defined.
 \end{lemma}
 \begin{proof}
-    We check that $\fold$ produces types and term in $\mathcal{T}_T$. This is
+    We check that $\fold$ produces types and terms in $\mathcal{T}_T$. This is
     not completely clear, because of the cases $A\sigma$ and $a \sigma$.
     In fact, we check that $\fold(\sigma)$ indeed gives a list of well-formed elementary substitutions.
     Then, the successive application of those substitutions gives a syntactically valid type or term in $\mathcal{T}_T$.
@@ -24,16 +26,16 @@ For the equivalence result, we need the usual substitution lemma in $\mathcal{T}
 
 \begin{lemma}[\formline{Utils.v}{710}{substitutionlemma} Substitution lemma]\label{Substitution}
     If $\Gamma \vdash J$ in $\mathcal{T}_T$ and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
-    then we have a derivation : $\Gamma \vdash J\alpha$.
+    then we have a derivation : $\Delta \vdash J\alpha$.
 \end{lemma}
-
+ 
 With all of this, we show the following admissibility result.
 
 \begin{lemma}
     The erasure of rules in $\mathcal{T}_G$ are admissible in $\mathcal{T}_T$.
 \end{lemma}
 \begin{proof}
-    The only two interesting rules are the one defining the action of substitution on types and terms.
+    The only two interesting rules are the ones defining the action of substitution on types and terms.
     To prove admissibility, we iterate the substitution lemma when we unfold the list of "elementary" substitutions created by $\fold$:
 
 \begin{mathparsmall}
@@ -59,7 +61,7 @@ $n$ applications of the substitution lemma. We do the same thing for the action 
 
 Consequently, we get the following correction result as a rather direct corollary of the previous lemma. 
 
-\begin{theorem}[Correction of $\fold$]
+\begin{theorem}[Correctness of $\fold$]
     If $\Gamma \vdash J$ in $\mathcal{T}_G$ then $\fold(\Gamma) \vdash \fold(J)$ is derivable in $\mathcal{T}_T$.
 \end{theorem}
 \begin{proof}

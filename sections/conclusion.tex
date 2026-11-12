@@ -1,28 +1,28 @@
 \section{Conclusion and Future Work}
 
 We proved that the Generalised Algebraic Theory and Pure Type System
-presentations of Martin Löf's Type Theory are equivalent. More specifically, we related 
+presentations of Martin Löf's Type Theory are equivalent. In particular, we related 
 \textit{Tarski} and \textit{Russell} presentations of cumulative universe hierarchies. We also extended
-our equivalence result to theories with data types or universe polymorphism.
+our equivalence result to universe polymorphism.
 
 Those equivalence results are fundamental to justify the common, but informal, practice of using implicit syntax
-and Russell universes for practitioners of type theory. Notably, our result rigorously legitimates the interpretation of
-implicit presentations in the usual models of type theory, which usually applies to annotated syntax. Our
-result also shows that Russellian systems can be used as well to present this initial models of type theory, thus
+and Russell universes when \textit{using} type theory. Notably, our result rigorously legitimates the interpretation of
+implicit presentations in the usual models of type theory, which usually apply to fully annotated syntax. Our
+result also shows that Russellian systems can be used as well to present this initial model of type theory, thus
 extending initiality results to more realistic syntaxes.
 
 Our proof relies on definitional inversion, which we prove using the domain-theoretic approach of \citet{definitional-inv}. 
 Crucially, we do not rely on normalisation and our proof is completely elementary.
 We believe that our proof technique can be adapted to a variety of extensions and more sophisticated type theories.\\
 
-\textbf{\textit{Future work.}} In this paper, we did not consider cumulativity with a structural sub-typing relation for the sake of simplicity, and could lead to issues with general inductive types as pointed out by \citet{Luo}.
+\textbf{\textit{Future work.}} In this paper, we did not consider cumulativity with a structural sub-typing relation for the sake of simplicity, as it could lead to issues with general inductive types as pointed out by \citet{Luo}.
 
-In fact, structural subtyping on inductive types such as a the type of lists $\lst(.)$ breaks
+In fact, structural subtyping on inductive types such as the type of lists $\lst(.)$ breaks
 canonicity: we can coerce $\mathsf{nil}_{\U_0} : \lst(\U_1)$, but we do not have $\mathsf{nil}_{\U_0} = \mathsf{nil}_{\U_1}$,
 unless we manually add the equation.
 
 Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
-assistant. The issues mentioned for sub-typing of the introduction can be seen as a kind of anomaly of the syntax, and 
+assistant. The issues mentioned for sub-typing in the introduction can be seen as a kind of anomaly of the syntax, and 
 as a lack of proper equations. The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
 equations to solve this issue, and we hope that the results of this paper could be extended to this setting.\\
 

@@ -1,19 +1,17 @@
 \section{Tarski and Russell universes ($\mathcal{T}_T$ and $\mathcal{T}_R$)}\label{sectionT1T2}
 
 We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of $\mathcal{T}_T$ and $\mathcal{T}_R$.
-All the results of this section have been completely formalised in Rocq.
-In the mechanized proof, we take the results of section \ref{GAT} as Axioms, as the proof of 
-normalisation is not the subject of this paper. 
+All the results of this section have been completely formalised \textit{by hand} in Rocq.
 
 First, we show that the erasure operation $|.|$ preserves derivations.
 
-\begin{lemma}[\formline{Erasure.v}{143}{Erasurecorrection} Correction of erasure]
+\begin{lemma}[\formline{Erasure.v}{143}{Erasurecorrection} Correctness of erasure]
     If $\Gamma \vdash J$ in $\mathcal{T}_T$, then $|\Gamma| \vdash |J|$ in $\mathcal{T}_R$.
 \end{lemma}
 
 \begin{proof}
-    By mutual induction, we prove the statement for our five different kinds of judgements : well-formation of contexts and types,
-    typing, and conversion between types and terms. The proof is mostly direct, and amounts at showing that the
+    By mutual induction, we prove the statement for our five different kinds of judgements: well-formation of contexts and types,
+    typing, and conversion between types and terms. The proof is mostly direct, and amounts to showing that the
     erasure of each rule of $\mathcal{T}_T$ corresponds to an admissible rule of $\mathcal{T}_R$.
 \end{proof}
 
@@ -54,10 +52,10 @@ following statement:\\
 \textbf{Lemma.} If we have $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ such that $|u_0| = |u_1|$
 in $\mathcal{T}_R$, then necessarily they are convertible i.e. $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$\\
 
-However, this fails when $u_0$ and $u_1$ are codes in different universes. For instance, we have $\Gamma \vdash \U_m^n : \U_n$ and $\Gamma \vdash \U_m^l$
+However, this fails when $u_0$ and $u_1$ are codes in different universes. For instance, we have $\Gamma \vdash \U_m^n : \U_n$ and $\Gamma \vdash \U_m^l : \U_l$
 which have the same erasure $|\U_m^n| = |\U_m^l| = \U_m$, but are not convertible (at least if $n \neq l$). Therefore,
 we need to prove a more general statement that properly deals with the case when $A_0$ and $A_1$ are universes. In this case, we should 
-be able to find a lower universe, and two convertible terms in that lower universe, which lifts to $u_0$ and $u_1$ respectively. This correspond to the 
+be able to find a lower universe, and two convertible terms in that lower universe, which lift to $u_0$ and $u_1$ respectively. This correspond to the 
 following figure:
 
 \begin{figure}[H]
@@ -114,13 +112,13 @@ following figure:
 \label{fig:my_label}
 \end{figure}
 
-Even with this generalised lemma, we would get stuck in the proof for the case of the decoding. Indeed, if we have a code $a: \U_n$ type $A$ 
-which erasure is $|A| = |a|$, then we cannot deduce much on $A$ itself as it could well be any type.
+Even with this generalised lemma, we would get stuck in the proof for the case of the decoding. Indeed, if we have a code $a: \U_n$ and a type $A$ 
+whose erasure is $|A| = |a|$, then we cannot deduce much on $A$ itself as it could well be any type.
 Nevertheless, we still know that $\Gamma \vdash A : \U_n$ holds in Russell-style because it is the same syntactic term as $a$. This should indicate that $A$ is a small type, i.e. a decoded type, and
 in this setting we will prove that : \[\Gamma \vdash A = T_n(a)\]
 
 Thus, we shall prove the following lemma, which is the most technical result of this paper. One of 
-the reason for this, is that we want to keep the proof elementary, by relying only on basic syntactic arguments. We could also
+the reasons for this is that we want to keep the proof elementary, by relying only on basic syntactic arguments. We could also
 have used stronger arguments such as normalisation, but this would make the proof less modular and algorithmic.
 Still, we sketch such a proof at the end of the section.
 
@@ -129,7 +127,7 @@ Still, we sketch such a proof at the end of the section.
     \begin{enumerate}
     \item If $\Gamma \vdash A\; \type$ and $\Gamma \vdash B\; \type$ with $|A| = |B|$, then  $\Gamma \vdash A = B$.
 
-    \item If $\Gamma \vdash t : \U_n$ and $\Gamma \vdash A \; \type$ with $|A| = |t|$, then $\Gamma \vdash A = T_n(a)$. 
+    \item If $\Gamma \vdash t : \U_n$ and $\Gamma \vdash A \; \type$ with $|A| = |t|$, then $\Gamma \vdash A = T_n(t)$. 
 
     \item If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ with $|u_0| = |u_1|$, then we have two cases:
     \begin{itemize}
@@ -162,7 +160,7 @@ Still, we sketch such a proof at the end of the section.
 
     We now present some of the key cases of the proof.\\
 
-    \textit{Lambda abstraction.} If $u_0 = \lambda(C_0,B_0,b_0)$, then we necessarily have $A_0 = \Pi(C_0,B_0)$,
+    \textit{Lambda abstraction.} If $u_0 = \lambda(C_0,B_0,b_0)$, then we necessarily have $\Gamma \vdash A_0 = \Pi(C_0,B_0)$,
         and by inversion, the derivation $\Gamma \vdash u_0 : A_0$ looks like :
 
     \begin{mathparsmall}
@@ -182,11 +180,11 @@ Still, we sketch such a proof at the end of the section.
     Then, by lemma \ref{Transform} we get a derivation
     $\Gamma,C_0 \vdash b_1 : B_1$. Now we can apply the induction hypothesis on $b_0$ with $b_1$, and get two cases. 
     
-    In the first case, we get directly derivations $\Gamma \vdash b_1 = b_0 : B_0$ and $\Gamma \vdash B_0 = B_1$,
+    In the first case, we get directly derivations $\Gamma.C_0 \vdash b_1 = b_0 : B_0$ and $\Gamma.C_0 \vdash B_0 = B_1$,
     and using congruence equations we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$.
     
     In the second case, we get $\Gamma \vdash A_0 = \U_{n_0}$, from which we deduce $\Gamma \vdash \Pi(C_0,B_0) = \U_{n_0}$,
-    which is a contradiction by lemma \ref{no-confusion}.
+    which is a contradiction by Theorem \ref{no-confusion}.
 
     \item \underline{Second case:} $u_1 = t_n^m(a)$, and we will show that this case is not possible.
         Indeed, we thus have $A_1 = \U_m$ and $|u_1| = |a| = |u_0|$ and we can apply the induction hypothesis
@@ -239,7 +237,7 @@ Still, we sketch such a proof at the end of the section.
 Hence, we deduce the following corollary, which states that if we have two judgments
 in $\mathcal{T}_T$ which are syntactically equal in $\mathcal{T}_R$ (when removing coercions, lifts...), then
 they are provably convertible in $\mathcal{T}_T$. This already means that the Tarski system is not much stronger than
-the Russell one, in the sense that if two term differ only by their explicit coercion, then they have the same
+the Russell one, in the sense that if two terms differ only by their explicit coercion, then they have the same
 computational behaviour.
 
 \begin{corollary}[\formline{Equivalence.v}{1128}{eraseinjtermplus} Judgemental injectivity of erasure]\label{uniqueness}
@@ -280,9 +278,9 @@ Now we prove the following theorem, stating the formal equivalence between the t
 
         Then, by the induction hypothesis we get derivations 
         $\Gamma' \vdash A' \; \type$ and $\Gamma'',A'' \vdash B' \; \type$ in $\mathcal{T}_T$ such that 
-         $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$. By lemma \ref{uniqueness}, we get $\Gamma \vdash A = A'$, and  the contexts
+         $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$. By Corollary \ref{uniqueness}, we get $\Gamma' \vdash A' = A''$, and  the contexts
         $\Gamma'$ and $\Gamma''$ are convertible. We can thus transform the second derivation to get $\Gamma',A' \vdash B' \; \type$.
-        Therefore, we can construct the derivation for $\Gamma \vdash \Pi(A',B') \; \type$ in $\mathcal{T}_T$.
+        Therefore, we can construct the derivation for $\Gamma' \vdash \Pi(A',B') \; \type$ in $\mathcal{T}_T$.
 \end{proof}
 
 This finally proves that any judgement in Russell-Style can be lifted uniquely to a judgement in Tarski-Style, proving
@@ -290,8 +288,7 @@ the equivalence between $\mathcal{T}_T$ and $\mathcal{T}_R$ by exhibiting a sect
 
 \begin{remark}
 To prove this equivalence result, we could have relied on normalisation to simplify the proofs, at
-the cost of relying on less elementary properties of the theory. In fact, if we proved normalisation for
-$\mathcal{T}_R$ as well, we could construct the derivation of \ref{equT1T2} by an induction on normal forms.
+the cost of relying on a stronger metatheory and stronger properties of the theory. In fact, if we proved normalisation for
+$\mathcal{T}_R$ as well, we could construct the derivation of Theorem \ref{equT1T2} by an induction on normal forms.
 Then, by showing that the erasure map $|.|$ commutes with $\nf(.)$, we would obtain the equivalence result.
-However, we chose to not rely on such results as they are stronger and not needed.
 \end{remark}

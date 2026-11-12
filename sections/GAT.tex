@@ -2,7 +2,7 @@
 
 \subsection{A fully explicit presentation}
 
-In this section, we define the fully explicit theory with Tarski-style universes as a generalized algebraic theory $\mathcal{T}_G$.
+In this section, we define the fully explicit theory with Tarski-style universes as a generalised algebraic theory $\mathcal{T}_G$.
 This means that we present the syntax in an algebraic way, and this provides a canonical notion of model in categories with families (CwF). Those
 were originally described by \citet{Cartmell}, and extended with dependent products and universes by \citet{CWF-CCD}.
 The theory described here is really close to the one of \citet{bcde2026}.
@@ -39,7 +39,7 @@ We have four sorts: contexts, substitutions, types, and elements.
 
     \begin{minipage}{0.40\linewidth}
         \centering
-        $\sigma \; \Id_\Gamma = \Id_\Gamma \; \sigma = \sigma$
+        $\sigma \; \Id_\Delta = \Id_\Gamma \; \sigma = \sigma$
     \end{minipage}
     \hfill
     \begin{minipage}{0.40\linewidth}
@@ -49,13 +49,13 @@ We have four sorts: contexts, substitutions, types, and elements.
 
 \end{definition}
 
-Subsitutions are acting on types and elements, in the sense of the following definition.
+Substitutions are acting on types and elements, in the sense of the following definition.
 
 \begin{definition}[Action of substitutions on types and terms]
     $\mathcal{T}_G$ has the following operations:
     \begin{align*}
-    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdash A \sigma : \Type(\Gamma)\\
-    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash a \sigma : \Elem(\Delta, A\sigma)
+    \Gamma : \ctx, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdash A \sigma : \Type(\Delta)\\
+    \Gamma : \ctx, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash a \sigma : \Elem(\Delta, A\sigma)
     \end{align*}
 
     Satisfying the following equations:
@@ -110,7 +110,7 @@ We also need context extension, in the sense of the following.
 \end{definition}
 
 All of this defines an \textit{explicit} substitution calculus, from which
-we can recover the usual presentation of substition, as defined in the following.
+we can recover the usual presentation of substitution, as defined in the following.
 
 \begin{definition}[Usual syntax for substitutions]
     If $A : \Type(\Gamma)$, $a : \Elem(\Gamma,A)$ and $\sigma : \Delta \rightarrow \Gamma$ we define the following: 
@@ -136,7 +136,7 @@ Now, we can add logical structure via type connectives in our theory, starting w
         \begin{gather*}
             \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)\\
             \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^+,b\sigma^+)\\
-            \app(A,B,(\lambda(A,B,b),a)) = b[a]
+            \app(A,B,\lambda(A,B,b),a) = b[a]
         \end{gather*}
     \end{minipage}
     \hfill
@@ -151,7 +151,7 @@ Now, we can add logical structure via type connectives in our theory, starting w
 
 We now add cumulative universes to our theory, by requiring a countable hierarchy of universes $\U_0, \U_1,...$
 along with explicit codes, lifts and decoding operations. This presentation of universes is referred to as \textit{à la Tarski}.
-This fully explicit syntax is the the usual way to present type theory with cumulative universes in a (generalised) algebraic way.
+This fully explicit syntax is the usual way to present type theory with cumulative universes in a (generalised) algebraic way.
 
 \begin{definition}[Tarski universes]
     $\mathcal{T}_G$ has a countable list of universes $\U_n$ with a decoding operation $T_l(\cdot)$, 
@@ -159,17 +159,17 @@ This fully explicit syntax is the the usual way to present type theory with cumu
 
     \begin{align*}
             \Gamma : \ctx &\vdash (\U_l)_\Gamma : \Type(\Gamma)\\
-            \Gamma : \ctx &\vdash (\U_l^m)_\Gamma : \Elem(\Gamma,(\U_m)_\Gamma) \\
-            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash t_l^m(a) : \Elem(\Gamma,(\U_m)_\Gamma) \\
+            \Gamma : \ctx &\vdash (\U_l^m)_\Gamma : \Elem(\Gamma,(\U_m)_\Gamma) \quad (l < m)\\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash t_l^m(a) : \Elem(\Gamma,(\U_m)_\Gamma) \quad\; (l\leq m)\\
             \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash T_l(a) : \Type(\Gamma)\\
-            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma),  b : \Elem(\Gamma.T_l(a),(\U_l)_\Gamma) &\vdash \Pi^l(a,b) : \Elem(\Gamma,(\U_l)_\Gamma)
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma),  b : \Elem(\Gamma.T_l(a),(\U_l)_{\Gamma.T_l(a)}) &\vdash \Pi^l(a,b) : \Elem(\Gamma,(\U_l)_\Gamma)
     \end{align*}
     The decoding and lifting maps must be strict and natural:
 
     \noindent
     \begin{minipage}{0.35\linewidth}
         \begin{gather*}
-            T_l(t_n^l(X)) = T_n(X) \text{ for } l \leq n \\
+            T_l(t_n^l(X)) = T_n(X) \text{ for } n \leq l \\
             T_n(\Pi^n \; X \; Y) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
             T_n(\U_m^n) = \U_m \text{ for } m < n 
         \end{gather*}
@@ -198,7 +198,7 @@ We refer the reader to \citet[Section 2]{definitional-inv} for the general const
 In \citet{definitional-inv}, terms are interpreted in a Scott domain $D$ constructed elementarily via its conditional upper semi-lattice of compact elements $C = \bigcup_{k \in \bN} C_k$ (representing finite observations), where the identification $\lambda(\perp) = \perp$ validates the $\eta$-rule for functions while type constructors remain distinct from $\perp$. 
 In their paper, \citet[Section 3]{definitional-inv} models a universe hierarchy by erasing levels into a single semantic code $\U$ and recovering universe injectivity from the logical relation.
 
-To take our cumulative hierarchy into acccount, we equip $C$ with a hierarchy of universe codes $\U_n$ ($n \in \bN$), while keeping the stage-indexed semantic membership relation $u :_k \U_n$ not interacting with levels, so that $\U_m :_{k+1} \U_n$ holds for all $m, n$. 
+To take our cumulative hierarchy into account, we equip $C$ with a hierarchy of universe codes $\U_n$ ($n \in \bN$), while keeping the stage-indexed semantic membership relation $u :_k \U_n$ not interacting with levels, so that $\U_m :_{k+1} \U_n$ holds for all $m, n$. 
 This has two consequences:
 \begin{itemize}
     \item \textit{Cumulativity and Tarski coercions.} Because semantic membership in $\U_n$ ignores the level $n$, cumulativity holds trivially in the model. Moreover, we interpret decodings $T_n(a)$ and lifts $t_n^p(a)$ as the identity on semantic elements, and codes $\Pi^n(a,b), \U_m^n$ are interpreted by the same semantic constructors as $\Pi(A,B), \U_m$. Thus, all the naturality and functoriality equations hold by definition.

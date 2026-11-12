@@ -10,11 +10,12 @@ When presenting Type Theory in an algebraic fashion, Tarski universes are essent
 This initial model has been constructed explicitly in \citet{bcde2026}, following the method presented in \citet{Streicher} and formalised in \citet{Brunerie}. 
 However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
 extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
-To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for large class of theories.
+To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for a large class of theories.
 A first step at solving this goal was achieved by Streicher \cite{Streicher}, proving initiality for a fully annotated Calculus of Constructions, and then
+
 proving its equivalence with the more common, unannotated formulation, close to a Pure Type System. 
 
-Generalised Algebraic Theories (GATs) provide a framework to describe type theories and their model in a uniform
+Generalised Algebraic Theories (GATs) provide a framework to describe type theories and their models in a uniform
 way, and to prove initiality rather easily \cite{noteGAT, Brunerie}, 
 thus solving the first part of the problem. However, GATs give rise to a fully explicit and annotated presentation of type theory, which is inconvenient to work in.
 Therefore, it would be essential to extend Streicher's equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
@@ -23,7 +24,7 @@ and would legitimate interpreting such syntax in the usual models of type theory
 In particular, our work essentially relates the results proven on explicit type theories using semantic arguments, to the corresponding implicit theories implemented in proof systems.
 
 \noindent
-\textbf{Related work.} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentation of universes for the Calculus
+\textbf{Related work.} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentations of universes for the Calculus
 of Constructions with $\beta$ as an external reduction. Nevertheless, it appeared that their proof was 
 incorrect, and a new proof using the same technique was finally published by \citet{tiago-fscd}. Unfortunately, their arguments do not apply to
 formulations of type theory with judgemental equality, and do not extend to $\eta$-equivalence. 
@@ -42,7 +43,7 @@ and that our proof should extend to any system that handles structural sub-typin
 
 \noindent
 \textbf{Contributions.} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
-for Martin Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
+for Martin-Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
 Our proof is modular and adapts to more complicated type systems. For instance, it adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
 More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
 inherited from Pure Type Systems. In particular, our result justifies the practice of working in implicit
@@ -53,7 +54,7 @@ The main argument is as follows: there is a natural forgetful map from the Tarsk
 Russell presentation. We show that any Russell judgement can be lifted in a unique way
 to a Tarski judgement, proving the syntactic equivalence of the two theories.
 This work is done in section \ref{sectionT2T2'}.
-We rely on well-known properties of the syntax : no-confusion and injectivity of type formers, which are sometimes refered to as \textit{definitional inversion}.
+We rely on well-known properties of the syntax : no-confusion and injectivity of type formers, which are sometimes referred to as \textit{definitional inversion}.
 We only need them at the level of the generalised algebraic theory, and they will propagate along our equivalence results.
 Those properties seem to be strongly related to conversion \cite{meven}, and our equivalence result itself is to be
 related to the elaboration in proof assistants.

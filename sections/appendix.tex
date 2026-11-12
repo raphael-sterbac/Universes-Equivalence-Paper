@@ -33,7 +33,7 @@ We start with the typing judgments $a : A$ and the well-formed type judgment $A 
   \and
   \ebrule{
     \hypo{\Gamma \vdash c:\Pi(A, B)}
-    \hypo{\Gamma.A \vdash a: A}
+    \hypo{\Gamma \vdash a: A}
     \hypo{\Gamma.A \vdash B \;\type}
     \hypo{\Gamma \vdash A \;\type}
     \infer4{\Gamma \vdash \app(A,B,c,a) : B[a]}
@@ -62,8 +62,8 @@ We start with the typing judgments $a : A$ and the well-formed type judgment $A 
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a: \U_n}
-    \infer1[($n\leq p$)]{\Gamma \vdash t_m^n(a): \U_p}
+    \hypo{\Gamma \vdash a: \U_m}
+    \infer1[($m\leq n$)]{\Gamma \vdash t_m^n(a): \U_m}
   }
   \and
   \ebrule{
@@ -220,7 +220,7 @@ Then, we have rules for substitutions :
   \ebrule{
     \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
     \hypo{\Gamma \vdash t : A}
-    \infer2{\Delta \vdash t \sigma \; \type}
+    \infer2{\Delta \vdash t \sigma : A \sigma}
   }
   \ebrule{
     \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
@@ -277,7 +277,7 @@ Then, we have rules for substitutions :
   \ebrule{
     \hypo{\Gamma \vdash \app(A,B,c,a) : B[a]}
     \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
-    \infer2{\Delta \vdash \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^{+(A)},c\sigma,a\sigma) : B\sigma[a\sigma]}
+    \infer2{\Delta \vdash \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^{+(A)},c\sigma,a\sigma) : B\sigma^{+(A)}[a\sigma]}
   }
 \end{mathparsmall}
 
@@ -311,7 +311,7 @@ this system has Russell universes.
   \and
   \ebrule{
     \hypo{\Gamma \vdash c:\Pi(A, B)}
-    \hypo{\Gamma.A \vdash a: A}
+    \hypo{\Gamma \vdash a: A}
     \infer2{\Gamma \vdash \app(A,B,c,a) : B[a]}
   }
   \and
