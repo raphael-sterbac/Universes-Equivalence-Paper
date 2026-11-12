@@ -1,0 +1,337 @@
+\section{A Zoo of Syntaxes}\label{implicit-presentations}
+
+\subsection{Implicit presentations}
+
+In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to $\mathcal{T}_G$.
+
+First, we describe $\mathcal{T}_T$, which has implicit substitutions and exactly the same rules as the GAT 
+of section $2$. 
+A main goal of this paper is to relate $\mathcal{T}_T$ to the implicit formulation \textit{à la Russell} of cumulative universes denoted with $\mathcal{T}_R$.
+The latter conflates types and terms, with implicit inclusion between universes. 
+This system cannot be formulated algebraically, as this would involve adding a sort equation and a stratification of the sort of types $\Type_n$ which we would need to be included in each other.
+
+Both $\mathcal{T}_T$ and $\mathcal{T}_R$ have dependent products, lambda abstraction and application, described in the same way, with the
+following rules.
+
+
+\begin{figure}[H]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{% 
+        \begin{minipage}{0.95\textwidth}
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \infer1{\Gamma.A \vdash v_0 : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash v_n:A}
+    \hypo{\Gamma \vdash B \;\type}
+    \infer2{\Gamma.B \vdash v_{n+1} : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \infer2{\Gamma \vdash \Pi(A, B) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \hypo{\Gamma \vdash A \;\type}
+    \infer3{\Gamma \vdash \lambda(A,B,b) : \Pi (A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash c:\Pi(A, B)}
+    \hypo{\Gamma.A \vdash a: A}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \hypo{\Gamma \vdash A \;\type}
+    \infer4{\Gamma \vdash \app(A,B,c,a) : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma \vdash a:A}
+    \infer2[($\beta$-rule)]{\Gamma \vdash \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash f: \Pi \; A \; B}
+    \infer1[($\eta$-rule)]{\Gamma \vdash f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)}
+  }
+\end{mathparsmall}
+\end{minipage}%
+    }
+    \caption{Logical structure for $\mathcal{T}_T$ and $\mathcal{T}_R$}
+    \label{fig:rulestyping}
+\end{figure}
+
+Then, the operations of $\mathcal{T}_G$ can be translated as formation and introduction rules for Tarski-style universes and the theory
+$\mathcal{T}_T$. Namely, we need codes for products and universes, lifts and decoding. We describe the rules in the following:
+
+\begin{figure}[H]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{% 
+        \begin{minipage}{0.95\textwidth}
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma.T_n(a) \vdash b: \U_n}
+    \hypo{\Gamma \vdash T_n(a) \;\type}
+    \infer3{\Gamma \vdash \Pi^n \; a \; b: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a:\U_n}
+    \infer1{\Gamma \vdash T_n(a) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($m<n$)]{\Gamma \vdash \U_m^n: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_m^n(a): \U_p}
+  }
+\end{mathparsmall}
+\end{minipage}%
+    }
+    \caption{Universe rules of $\mathcal{T}_T$}
+    \label{fig:rulesconv}
+\end{figure}
+
+The equations of $\mathcal{T}_G$ can be translated as conversion rules for $\mathcal{T}_T$. Namely,
+we need the decoding operation to be strict, and the lifts to commute with the codes for type connectives.
+The precise rules are the following ones.
+
+\begin{figure}[H]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{% 
+        \begin{minipage}{0.95\textwidth}
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma,T_n(a) \vdash b: \U_n}
+    \infer2{\Gamma \vdash T_n(\Pi^n \; a \; b) = \Pi(T_n(a),T_n(b))}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma,T_n(a) \vdash b: \U_n}
+    \infer2[($n<p$)]{\Gamma \vdash t_n^p(\Pi^n \; a \; b) = \Pi^p(t_n^p(a),t_n^p(b))}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash T_n(\U_m^n) = \U_m}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a : \U_m}
+    \infer1[($m\leq n$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a : \U_m}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+  }
+\end{mathparsmall}
+\end{minipage}%
+    }
+    \caption{Conversion rules of $\mathcal{T}_T$}
+    \label{fig:rulesconv}
+\end{figure}
+
+Now, for the theory $\mathcal{T}_R$ (Russell universes), types and terms are conflated, and thus
+we should be able to deduce $\Gamma \vdash A \; \type$ from $\Gamma \vdash A : \U_n$. Conversely,
+the intuition is that whenever $\Gamma \vdash A \; \type$ then we should have  : \[\exists n \in \bN, \ \Gamma \vdash A : \U_n\]
+
+Instead of having codes for each of the type formers, we now close $\U_n$ under the type connectives. Note that, as we
+consider \textit{cumulative} universes, we do not take the suprema of levels for the dependent product. Cumulativity itself
+is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash A : \U_n$ then $\Gamma \vdash A : \U_p$ for $p > n$. 
+
+\begin{figure}[H]
+    \centering
+    \setlength{\fboxsep}{10pt}
+    \fbox{% 
+        \begin{minipage}{0.95\textwidth}
+\begin{mathparsmall}
+\ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A:\U_n}
+    \infer1{\Gamma \vdash A \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \hypo{\Gamma.A \vdash B: \U_n}
+    \infer2{\Gamma \vdash \Pi(A, B): \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($m<n$)]{\Gamma \vdash \U_m: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \infer1[($n<p$)]{\Gamma \vdash A: \U_p}
+  }
+\end{mathparsmall}
+\end{minipage}%
+    }
+    \caption{Universe rules of $\mathcal{T}_R$}
+    \label{fig:rulesconv}
+\end{figure}
+
+Finally, we also consider a system $\mathcal{T}_P$, which removes redundant type annotations in functional application
+and lambda abstraction from $\mathcal{T}_R$. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ becomes $c \; a$ and $\lambda_{x:A} b$.
+This system is closer to the practical syntax of type theory, inherited from the lambda calculus,
+and often referred to as the "pure type system" presentation (PTS).
+
+
+For a full and extensive description of the systems, please refer to appendix \ref{Rules}.
+
+\subsection{Forgetful maps}
+
+Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones.
+
+First, we define a morphism of theories between $\mathcal{T}_G$ and $\mathcal{T}_T$ which makes substitutions implicit.
+To do this, we map substitutions in $\mathcal{T}_G$ to a list of "elementary"
+substitutions in $\mathcal{T}_T$, as there is no composition in this system. Then, when translating the action of a substitution
+on a term or a type, we can unfold that list to get a type formed by applying all those substitutions successively.
+
+\begin{definition}
+    We define $\fold(.)$ inductively by: 
+
+    \noindent
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        \fold(\q) &= v_0\\
+        \fold([a]) &= [\fold(a)]\\
+        \fold(A \sigma) &= (...(\fold(A)\sigma_1)...)...\sigma_n\\
+        \fold(a \sigma) &= (...(\fold(a)\sigma_1)...)...\sigma_n\\ 
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        \fold(\p) &= \p\\
+        \fold(\Id) &= \\ 
+        \fold(\sigma\delta) &= \fold(\sigma)::\fold(\delta)\\
+        \fold(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+Then, we define the following erasure operation, which erases the lift and decoding operation of 
+Tarski-style universes, and sends codes to the corresponding type formers. Concretely, this operation
+forgets about all the explicit coercions given by the presentation à la Tarski, and leaves everything implicit.
+
+\begin{definition}[\formline{Erasure.v}{10}{Erasurefunction} Erasure]
+    We define the erasure operation $|.|$ inductively by:
+
+    \noindent
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        |\U_n| &= \U_n\\
+        |\U_m^n| &= \U_m\\
+        |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
+        |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
+        |v_i| &= v_i\\
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+    \begin{align*}
+        |T_n(a)| &= |a|\\
+        |t_m^n(a)| &= |a|\\
+        |\Pi^n \; a \; b| &= \Pi(|a|, |b|)\\
+        |\Pi(A, B)| &= \Pi(|A|, |B|)\\
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+Finally, we define the map $\strip$  which erases type annotations from a term of the system $\mathcal{T}_R$, and gives a term of $\mathcal{T}_P$.
+This function is analogous to the one defined by \citet{Streicher}.
+
+\begin{definition}
+    We define $\strip$ defined inductively by :
+    \begin{align*}
+        \strip(\lambda (A,B,b)) &= \lambda(A, \strip(b))\\ 
+        \strip(\app (A,B,c,a)) &= \strip(c) \; \strip(a)\\
+        \strip(\Pi(A,B)) &= \Pi(\strip(A), \strip(B))\\
+        \strip(\U_n) &= \U_n
+    \end{align*}
+\end{definition}
+
+In the following, we will prove lemmas of the following shape, following \citet{Streicher}:\\
+
+\textbf{Lemma.} If $\Gamma \vdash t,t' : A$ in $\mathcal{T}$ with $|t| = |t'|$ in $\mathcal{T}'$, then we have : $\Gamma \vdash t = t' : A$ in $\mathcal{T}$.\\
+
+\begin{remark}As mentioned in the introduction, this relates to elaboration in proof assistants. 
+Concretely, this lemma means that if two terms are syntactically the same in the implicit user syntax, then they should have the same
+computational behaviour in the core system, and thus should be convertible. This is to be compared with a simulation
+result, and is often referred to as a \emph{coherence} lemma.
+\end{remark}
+
+In the next sections, we will prove such lemmas for each of our theories. With those, we will be able to lift a derivation from an implicit theory to an explicit one.
+The situation is summarized in the following figure, where the strong arrows are the known
+forgetful maps, and the dotted arrows are the sections we will be constructing.
+
+\vspace{1em}
+
+\begin{figure}[!ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{circuitikz}
+\tikzstyle{every node}=[font=\LARGE]
+
+\draw  (-2.5,18.75) rectangle  node {\LARGE GAT ($\mathcal{T}_G$)} (2.5,16.25);
+\draw  (5,18.75) rectangle  node {\LARGE Tarski ($\mathcal{T}_T$)} (10,16.25);
+\draw  (12.5,18.75) rectangle  node {\LARGE Russell ($\mathcal{T}_R$)} (17.5,16.25);
+\draw  (20,18.75) rectangle  node {\LARGE PTS ($\mathcal{T}_P$)} (25,16.25);
+
+
+
+
+
+
+\draw [->, >=Stealth] (2.5,18.25) -- (5,18.25)node[pos=0.5, fill=white]{$\fold$};
+\draw [->, >=Stealth] (10,18.25) -- (12.5,18.25)node[pos=0.5, fill=white]{$|.|$};
+\draw [->, >=Stealth] (17.5,18.25) -- (20,18.25)node[pos=0.5, fill=white]{$\strip$};
+\draw [->, >=Stealth, dashed] (5,16.75) -- (2.5,16.75);
+\draw [->, >=Stealth, dashed] (12.5,16.75) -- (10,16.75);
+\draw [->, >=Stealth, dashed] (20,16.75) -- (17.5,16.75);
+\end{circuitikz}
+}%
+
+\label{fig:my_label}
+\caption{The hierarchy of theories}
+\end{figure}
+
+As mentionned in the introduction, to prove our equivalence result, we rely on basic properties of the syntax of the explicit system
+$\mathcal{T}_G$ described in section \ref{GAT}, and we propagate them along our equivalence results.
+In the following sections, we show that all the systems $\mathcal{T}_G$, $\mathcal{T}_T$, $\mathcal{T}_R$ and $\mathcal{T}_P$ are equivalent. In particular,
+we show the equivalence result between Tarski-style and Russell-style universes. 

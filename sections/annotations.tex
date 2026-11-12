@@ -1,0 +1,142 @@
+\section{Unannotated syntax ($\mathcal{T}_R$ and $\mathcal{T}_P$)}\label{sectionT2T2'}
+
+Finally, we prove our last equivalence result between $\mathcal{T}_R$ and $\mathcal{T}_P$, relating
+annotated and unannotated syntax. Concretely, the target theory $\mathcal{T}_P$ is the closest we can
+get to a presentation as a Pure Type System of Martin-Löf's type theory with a cumulative hierarchy of universes.
+This section is a direct adaptation of the arguments of \citet{Streicher} to our setting. Notably, we need
+to adapt the arguments because the theory $\mathcal{T}_R$ does not enjoy uniqueness of types, precisely because
+of cumulativity.
+
+Just as we did for the previous equivalence result, we prove that the forgetful map $\strip$ preserves
+derivations.
+
+\begin{theorem}
+    If $\Gamma \vdash J$ in $\mathcal{T}_R$, then we have a derivation $\strip(\Gamma) \vdash \strip(J)$ in $\mathcal{T}_P$.
+\end{theorem}
+\begin{proof}
+    We just need to prove that the stripping of rules in $\mathcal{T}_R$ are admissible in $\mathcal{T}_P$, which
+    is quite easy as each rule in $\mathcal{T}_R$ corresponds directly to a rule of $\mathcal{T}_P$. Then, the theorem
+    is proved by an induction on the derivation which replaces rules in $\mathcal{T}_R$ by the admissible ones in $\mathcal{T}_P$.
+\end{proof}
+
+Now, following the ideas of \citet{Streicher}, we want to prove that two terms or types which
+become syntactically equal after erasing the annotations with $\strip$ are convertible in $\mathcal{T}_R$. Here, 
+types are not unique because of cumulativity, so we could well have $\strip(u_0) = \strip(u_1)$ without
+necessarily having $u_0$ and $u_1$ convertible. This is due to the codomain annotations of $\lambda$-abstractions, which are erased by $\strip$ and are subject to cumulativity, as shown by the following counter-example.
+
+\begin{example}\label{ex:cumul-lam}
+    For $n < p$, the terms $f_0 = \lambda(\U_n,\U_n,v_0) : \Pi(\U_n,\U_n)$ and $f_1 = \lambda(\U_n,\U_p,v_0) : \Pi(\U_n,\U_p)$ have the same stripping $\lambda(\U_n,v_0)$,
+    but neither their types $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ nor $f_0$ and $f_1$ are convertible.
+    Yet, when applied to $\U_0$ (for $0 < n < p$), the applications $u_0 = \app(\U_n,\U_n,f_0,\U_0)$ and $u_1 = \app(\U_n,\U_p,f_1,\U_0)$ both have type $\U_p$ by cumulativity, have the same stripping $(\lambda(\U_n,v_0))\;\U_0$, and are convertible: $\Gamma \vdash u_0 = u_1 : \U_p$.
+\end{example}
+
+As Example \ref{ex:cumul-lam} illustrates, even if two applications $u_0$ and $u_1$ are compared at a common type, the functions $f_0$ and $f_1$ being applied may have types $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ that differ by cumulativity \emph{under $\Pi$}.
+Although $\mathcal{T}_R$ has no primitive sub-typing judgement for $\Pi$-types, we can relate such terms by defining explicit coercions into a common upper type (a \emph{join}) using $\eta$-expansion, with cumulativity acting at the leaves.
+
+\begin{definition}[Joins and coercions]\label{def:join}
+    We inductively define the judgement $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$, relating types $T_0, T_1$ to a common join $L$ via coercion operations $\coe_0, \coe_1$, by the following inference rules:
+    \begin{mathparsmall}
+      \ebrule{
+        \hypo{\Gamma \vdash T_0 = L}
+        \hypo{\Gamma \vdash T_1 = L}
+        \infer2{\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\Id, \Id)}
+      }
+      \and
+      \ebrule{
+        \hypo{\Gamma \vdash T_0 = \U_k}
+        \hypo{\Gamma \vdash T_1 = \U_m}
+        \infer2{\Gamma \vdash \JoinTy(T_0, T_1, \U_{\max(k,m)}) \leadsto (\Id, \Id)}
+      }
+      \and
+      \ebrule{
+        \hypo{\Gamma \vdash T_0 = \Pi(A, B_0)}
+        \hypo{\Gamma \vdash T_1 = \Pi(A, B_1)}
+        \hypo{\Gamma.A \vdash \JoinTy(B_0, B_1, L') \leadsto (\coe_0, \coe_1)}
+        \infer3{\Gamma \vdash \JoinTy(T_0, T_1, \Pi(A, L')) \leadsto (\pi_{A,B_0,L'}(\coe_0), \pi_{A,B_1,L'}(\coe_1))}
+      }
+    \end{mathparsmall}
+    where the action of a coercion on a term $t$ is defined inductively by:
+    \begin{align*}
+        \Id(t) &:= t,\\
+        \pi_{A,B,L'}(\coe)(t) &:= \lambda(A, L', \coe(\app(A\p, B\p^+, t\p, v_0))).
+    \end{align*}
+\end{definition}
+
+By induction on the join derivation, joins are symmetric, transport along type conversions $\Gamma \vdash T'_i = T_i$, and are stable under substitution $\sigma : \Delta \to \Gamma$, with $(\coe_i(t))\sigma = \coe_{i\sigma}(t\sigma)$. Coercions are well-typed ($\Gamma \vdash t : T_i \implies \Gamma \vdash \coe_i(t) : L$), congruent, and compute under application by the $\beta$-rule:
+\[\Gamma \vdash \app(A, L', \pi_{A,B_i,L'}(\coe_i)(t), a) = \coe_{i[a]}(\app(A, B_i, t, a)) : L'[a].\]
+
+When $T_0$ and $T_1$ are convertible, coercions into their join are injective up to conversion (analogously to Lemma \ref{Utile}).
+
+\begin{lemma}[Diagonal lemma]\label{lem:join-diag}
+    If $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$, $\Gamma \vdash t_0 : T_0$, $\Gamma \vdash t_1 : T_1$, and $\Gamma \vdash \coe_0(t_0) = \coe_1(t_1) : L$, then $\Gamma \vdash T_0 = T_1$ implies $\Gamma \vdash t_0 = t_1 : T_0$.
+\end{lemma}
+\begin{proof}
+    By induction on $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$. The conversion case is immediate.\\
+
+    \textit{Universe case.} $\Gamma \vdash \U_k = \U_m$ gives $k = m$ by universe injectivity, so $L = \U_{\max(k,k)} = \U_k$.\\
+
+    \textit{Product case.} $\Gamma \vdash \Pi(A, B_0) = \Pi(A, B_1)$ gives $\Gamma.A \vdash B_0 = B_1$ by $\Pi$-injectivity. Weakening $\Gamma \vdash \pi_{A,B_0,L'}(\coe_0)(t_0) = \pi_{A,B_1,L'}(\coe_1)(t_1) : \Pi(A, L')$ to $\Gamma.A$, applying both sides to $v_0$, and using the $\beta$-rule yields $\Gamma.A \vdash \coe_0(h_0) = \coe_1(h_1) : L'$ where $h_i = \app(A\p, B_i\p^+, t_i\p, v_0)$. The induction hypothesis gives $\Gamma.A \vdash h_0 = h_1 : B_0$, and congruence of $\lambda$ together with the $\eta$-rule concludes $\Gamma \vdash t_0 = t_1 : T_0$.
+\end{proof}
+
+We now state and prove the main lemma of this section by structural induction on the syntax, comparing terms at the join of their types.
+
+\begin{lemma}\label{streichT2T2'}
+    In $\mathcal{T}_R$, we have:
+    \begin{enumerate}
+        \item If $\Gamma \vdash u_0 : T_0$ and $\Gamma \vdash u_1 : T_1$ with $\strip(u_0) = \strip(u_1)$, then there exists a join $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$ such that $\Gamma \vdash \coe_0(u_0) = \coe_1(u_1) : L$.
+        \item If $\Gamma \vdash A_0 \; \type$ and $\Gamma \vdash A_1 \; \type$ with $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$.
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+    By mutual structural induction on $u_0$ and $A_0$. Statement (2) follows directly from statement (1), since for $\Gamma \vdash A_i : \U_{l_i}$, any join of $\U_{l_0}$ and $\U_{l_1}$ gives $\Gamma \vdash A_0 = A_1 : \U_{\max(l_0, l_1)}$ by no-confusion and universe injectivity.
+    For statement (1), inversion on $\Gamma \vdash u_i : T_i$ gives the principal type $P_i$ of $u_i$, which is related to $T_i$ either by conversion or by universe cumulativity $\U_k \leq \U_m$. It therefore suffices to construct a join for the principal types $P_0, P_1$.
+
+    Since $\strip(u_0) = \strip(u_1)$, $u_0$ and $u_1$ have the same head constructor. Variables, universes, and products are straightforward. For $\lambda$-abstractions $u_i = \lambda(A_i, B_i, b_i)$, statement (2) gives $\Gamma \vdash A_0 = A_1$. After transporting $b_1 : B_1$ to context $\Gamma.A_0$, the induction hypothesis on $b_0, b_1$ yields a join $\Gamma.A_0 \vdash \JoinTy(B_0, B_1, L') \leadsto (\coe_0, \coe_1)$ with $\Gamma.A_0 \vdash \coe_0(b_0) = \coe_1(b_1) : L'$, which lifts to a product join on $\Pi(A_0, L')$ via the $\beta$-rule under $\lambda$. We detail the remaining case of function application.\\
+
+    \textit{Function application.} If $u_0 = \app(C_0, D_0, c_0, a_0)$, then $u_1 = \app(C_1, D_1, c_1, a_1)$ with $\strip(c_0) = \strip(c_1)$ and $\strip(a_0) = \strip(a_1)$. By inversion, $\Gamma \vdash c_i : \Pi(C_i, D_i)$ and $\Gamma \vdash a_i : C_i$, with principal type $P_i = D_i[a_i]$.
+    By the induction hypothesis, we have a join $\Gamma \vdash \JoinTy(\Pi(C_0, D_0), \Pi(C_1, D_1), L) \leadsto (\coe_0, \coe_1)$ with $\Gamma \vdash \coe_0(c_0) = \coe_1(c_1) : L$, and a join for $a_0, a_1$ on $C_0, C_1$. By no-confusion, the join for $c_0, c_1$ is either a conversion join or a product join:
+    \begin{itemize}
+        \item \underline{Conversion join:} We have $\Gamma \vdash \Pi(C_0, D_0) = \Pi(C_1, D_1)$ and $\Gamma \vdash c_0 = c_1 : \Pi(C_0, D_0)$. By $\Pi$-injectivity, $\Gamma \vdash C_0 = C_1$ and $\Gamma.C_0 \vdash D_0 = D_1$. Lemma \ref{lem:join-diag} on the join for $a_0, a_1$ gives $\Gamma \vdash a_0 = a_1 : C_0$, and congruence of $\app$ concludes.
+        \item \underline{Product join:} We have $L = \Pi(A, L')$ with $\Gamma \vdash \Pi(C_i, D_i) = \Pi(A, B_i)$ and $\Gamma.A \vdash \JoinTy(B_0, B_1, L') \leadsto (\coe_{B_0}, \coe_{B_1})$. By $\Pi$-injectivity, $\Gamma \vdash C_i = A$ and $\Gamma.C_i \vdash D_i = B_i$. In particular, $\Gamma \vdash C_0 = C_1$, so Lemma \ref{lem:join-diag} again gives $\Gamma \vdash a_0 = a_1 : A$. Applying $\Gamma \vdash \coe_0(c_0) = \coe_1(c_1) : \Pi(A, L')$ to $a_0$, using the $\beta$-computation rule for coercions on both sides, and congruence of $\app$ yields:
+        \[\Gamma \vdash \coe_{B_0[a_0]}(u_0) = \coe_{B_1[a_0]}(u_1) : L'[a_0],\]
+        which is a join for $B_0[a_0]$ and $B_1[a_0]$, and hence for $D_0[a_0]$ and $D_1[a_1]$.
+    \end{itemize}
+\end{proof}
+
+Combining Lemma \ref{streichT2T2'} with the diagonal lemma (Lemma \ref{lem:join-diag}), we deduce the following direct corollary, analogous to Corollary \ref{uniqueness} of the previous section.
+
+\begin{corollary}\label{cor:strip-uniq}
+    If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in $\mathcal{T}_R$ with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
+\end{corollary}
+\begin{proof}
+    If $\strip(A_0) = \strip(A_1)$, Lemma \ref{streichT2T2'}.(2) gives $\Gamma \vdash A_0 = A_1$. Then Lemma \ref{streichT2T2'}.(1) and Lemma \ref{lem:join-diag} yield $\Gamma \vdash u_0 = u_1 : A_0$.
+\end{proof}
+
+Finally, we can show the following theorem, which exhibits the section of the forgetful map $\strip$, showing the equivalence
+of $\mathcal{T}_R$ and $\mathcal{T}_P$.
+
+\begin{theorem}\label{equT2T2'}
+    If $\Gamma \vdash J$ in $\mathcal{T}_P$, then we have a unique up to conversion judgment 
+    $\Gamma' \vdash J'$ in $\mathcal{T}_R$ such that $\strip(\Gamma') = \Gamma$ and $\strip(J') = J$.
+\end{theorem}
+\begin{proof}
+    By induction on the derivation $\Gamma \vdash J$, using Corollary \ref{cor:strip-uniq}, we construct a derivation in $\mathcal{T}_R$.
+    The main point is that the typing annotations can be inferred from the derivation, and that Corollary \ref{cor:strip-uniq} gives
+    us uniqueness up to conversion for rules with shared terms or types in their premises. 
+\end{proof}
+
+In $\mathcal{T}_P$, we could also remove the judgement $\Gamma \vdash A\; \type$ to manipulate only universes,
+in a completely Russellian style. In such a system, there is no top-level of types and a type is simply a term
+of a certain universe.
+We can also consider named variables instead of de Bruijn indices, to get a theory presented exactly like a pure type
+system, with the additional rule for cumulativity.
+
+If we wanted to go even further, we could also remove the annotation of the variable from the lambda abstraction, again
+following \citet{Streicher}. However to do so, we crucially need to rely on the full normalisation result,
+as removing this annotation can lead to multiple non-convertible derivations for the same judgement, as shown by the following example.
+    
+\begin{example}
+        We have two derivations : $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdash \lambda \,x.x : \Pi(\U_n,\U_p)$, which are not convertible when $n<p$.
+        Then we can construct the same derivation from those two premises: \[t :\U_n \vdash (\lambda \,y.t) \; (\lambda \,x.x) : \U_n\]
+\end{example}

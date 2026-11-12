@@ -1,0 +1,526 @@
+\section{Appendix : Type systems}\label{Rules}
+
+\subsection{The system $\mathcal{T}_T$ : Tarski universes}
+
+We specify the system $\mathcal{T}_T$ with derivation rules.
+This formulation with rules will be useful to prove properties by induction.
+We start with the typing judgments $a : A$ and the well-formed type judgment $A \;\type$ :
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \infer1{\Gamma.A \vdash v_0 : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash v_n:A}
+    \hypo{\Gamma \vdash B \;\type}
+    \infer2{\Gamma.B \vdash v_{n+1} : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \infer2{\Gamma \vdash \Pi(A, B) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \hypo{\Gamma \vdash A \;\type}
+    \infer3{\Gamma \vdash \lambda(A,B,b) : \Pi (A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash c:\Pi(A, B)}
+    \hypo{\Gamma.A \vdash a: A}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \hypo{\Gamma \vdash A \;\type}
+    \infer4{\Gamma \vdash \app(A,B,c,a) : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma.T_n(a) \vdash b: \U_n}
+    \hypo{\Gamma \vdash T_n(a) \;\type}
+    \infer3{\Gamma \vdash \Pi^n \; a \; b: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a:\U_n}
+    \infer1{\Gamma \vdash T_n(a) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($m<n$)]{\Gamma \vdash \U_m^n: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_m^n(a): \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a:B}
+  }
+  \ebrule{
+    \hypo{\Gamma \vdash a=a' : A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a=a':B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = B}
+    \hypo{\Gamma \vdash A = C}
+    \infer2{\Gamma \vdash B = C}
+  }
+  \and
+  \ebrule{
+    \hypo{A \;\type}
+    \infer1{A=A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a=b : A}
+    \hypo{\Gamma \vdash a=c : A}
+    \infer2{\Gamma \vdash b=c:A}
+  }
+  \and
+  \ebrule{
+    \hypo{a:A}
+    \infer1{a=a:A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = A'}
+    \hypo{\Gamma.A \vdash B = B'}
+    \infer2{\Gamma \vdash \Pi(A, B) = \Pi(A', B')}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma \vdash a:A}
+    \infer2[($\beta$-rule)]{\Gamma \vdash \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{f: \Pi \; A \; B}
+    \infer1[($\eta$-rule)]{f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a = a': \U_n}
+    \infer1{\Gamma \vdash T_n(a) = T_n(a')}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a = a': \U_n}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(a) = t_n^p(a'): \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma,T_n(a) \vdash b: \U_n}
+    \infer2{T_n(\Pi^n \; a \; b) = \Pi(T_n(a),T_n(b))}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: \U_n}
+    \hypo{\Gamma,T_n(a) \vdash b: \U_n}
+    \infer2[($n\leq p$)]{t_n^p(\Pi^n \; a \; b) = \Pi^p(t_n^p(a),t_n^p(b))}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash T_n(\U_m^n) = \U_m}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a : \U_m}
+    \infer1[($m \leq n$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a : \U_m}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+  }
+\end{mathparsmall}
+
+We also require the rules that makes $=$ a congruence, but we omit those rules for brevity.
+
+\subsection{The system $\mathcal{T}_G$ : explicit substitutions}
+
+The system $\mathcal{T}_G$ is really close to $\mathcal{T}_T$, the only difference is that substitiutions
+are explicit : they appear directly in the syntax. Hence, the syntax is given by :
+\begin{gather*}
+    \Gamma,\Delta ::= () \; | \; \Gamma.A\\
+    A,B ::=  \Pi \; A \; B \;|\; \U_n \; | \; T_n(a) \; | \; A \sigma\\
+    a,b ::= \app(A,B,c,a) \; | \; \lambda(A,B,b) \; | \; t_m^n(a) \; | \; \U_m^n \; | \; \Pi^n \; a \; b \; | \; \q_\Gamma \; | \; a\sigma \\
+    \sigma , \delta ::= \sigma \delta \; | \; \Id_\Gamma \; | \; \p_{\Gamma,\Gamma.A} \; | \; [a] \; | \; \sigma^{+(A)}
+\end{gather*}
+The rules are the same as $\mathcal{T}_T$, with only one modification for variables, that are replaced by the rule
+for $\q$ :
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \infer1{\Gamma.A \vdash q_{\Gamma.A} : A\p_{\Gamma,\Gamma.A}}
+  }
+\end{mathparsmall}
+
+Then, we have rules for substitutions :
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash}
+    \infer1{\vdash \Id_\Gamma : \Gamma \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \; \type}
+    \infer1{\vdash \p_{\Gamma,\Gamma.A} : \Gamma.A \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a:A}
+    \infer1{\vdash [a] : \Gamma \rightarrow \Gamma.A}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \hypo{\Gamma \vdash A \; \type}
+    \infer2{\vdash \sigma^{+(A)}  : \Delta.A\sigma \rightarrow \Gamma.A}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \hypo{\vdash \delta : \Theta \rightarrow \Delta}
+    \infer2{\vdash \sigma \delta : \Theta \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \hypo{\Gamma \vdash A \; \type}
+    \infer2{\Delta \vdash A \sigma \; \type}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \hypo{\Gamma \vdash t : A}
+    \infer2{\Delta \vdash t \sigma \; \type}
+  }
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \infer1{\vdash \sigma \Id_\Delta = \sigma : \Delta \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \infer1{\vdash \Id_\Gamma \sigma = \sigma : \Delta \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a = a' : A}
+    \infer1{\vdash [a] = [a'] : \Gamma \rightarrow \Gamma.A}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \hypo{\vdash \delta : \Theta \rightarrow \Delta}
+    \hypo{\vdash \nu : \Xi \rightarrow \Theta}
+    \infer3{\vdash (\sigma \delta)\nu = \sigma(\delta \nu) : \Xi \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma = \delta : \Delta \rightarrow \Gamma}
+    \hypo{\vdash \sigma = \nu : \Delta \rightarrow \Gamma}
+    \infer2{\vdash \sigma = \nu : \Delta \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma = \sigma' : \Delta \rightarrow \Gamma}
+    \hypo{\vdash \delta : \Theta \rightarrow \Delta}
+    \infer2{\vdash \sigma\delta = \sigma'\delta : \Theta \rightarrow \Gamma}
+  }
+  \and
+  \ebrule{
+    \hypo{\vdash \sigma = \sigma' : \Delta \rightarrow \Gamma}
+    \hypo{\vdash \delta : \Gamma \rightarrow \Theta}
+    \infer2{\vdash \delta\sigma = \delta\sigma' : \Delta \rightarrow \Theta}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash \Pi(A,B) \; \type}
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \infer2{\Delta \vdash \Pi(A,B)\sigma = \Pi(A\sigma,B\sigma^{+(A)})}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash \lambda(A,B,b) : \Pi(A,B)}
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \infer2{\Delta \vdash \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^{+(A)},b\sigma^{+(A)}) : \Pi(A\sigma,B\sigma^{+(A)})}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash \app(A,B,c,a) : B[a]}
+    \hypo{\vdash \sigma : \Delta \rightarrow \Gamma}
+    \infer2{\Delta \vdash \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^{+(A)},c\sigma,a\sigma) : B\sigma[a\sigma]}
+  }
+\end{mathparsmall}
+
+\subsection{The system $\mathcal{T}_R$ : Russell with annotations}
+
+We specify the system $\mathcal{T}_R$, which is similar to $\mathcal{T}_T$, the only difference being that
+this system has Russell universes.
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \infer1{\Gamma.A \vdash v_0 : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash v_n:A}
+    \hypo{\Gamma \vdash B \;\type}
+    \infer2{\Gamma.B \vdash v_{n+1} : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \infer2{\Gamma \vdash \Pi(A, B) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \infer1{\Gamma \vdash \lambda(A,B,b) : \Pi (A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash c:\Pi(A, B)}
+    \hypo{\Gamma.A \vdash a: A}
+    \infer2{\Gamma \vdash \app(A,B,c,a) : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A:\U_n}
+    \infer1{\Gamma \vdash A \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \hypo{\Gamma.A \vdash B: \U_n}
+    \infer2{\Gamma \vdash \Pi(A, B): \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($m<n$)]{\Gamma \vdash \U_m: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \infer1[($n<p$)]{\Gamma \vdash A: \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a:B}
+  }
+  \ebrule{
+    \hypo{\Gamma \vdash a=a' : A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a=a':B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = B}
+    \hypo{\Gamma \vdash A = C}
+    \infer2{\Gamma \vdash B = C}
+  }
+  \and
+  \ebrule{
+    \hypo{A \;\type}
+    \infer1{A=A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a=b : A}
+    \hypo{\Gamma \vdash a=c : A}
+    \infer2{\Gamma \vdash b=c:A}
+  }
+  \and
+  \ebrule{
+    \hypo{a:A}
+    \infer1{a=a:A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = A'}
+    \hypo{\Gamma.A \vdash B = B'}
+    \infer2{\Gamma \vdash \Pi(A, B) = \Pi(A', B')}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma \vdash a:A}
+    \infer2[($\beta$-rule)]{\Gamma \vdash \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{f: \Pi \; A \; B}
+    \infer1[($\eta$-rule)]{f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{A = A': \U_n}
+    \infer1{A = A'}
+  }
+  \and
+  \ebrule{
+    \hypo{A = A': \U_n}
+    \infer1[($n<p$)]{A = A': \U_p}
+  }
+\end{mathparsmall}
+
+We also require the rules that makes $=$ a congruence, but we omit them for brevity.
+
+\subsection{The system $\mathcal{T}_P$ : Russell without annotations}
+
+We specify the system $\mathcal{T}_P$, which is the same as the system $\mathcal{T}_R$, but without
+typing annotations.
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \infer1{\Gamma.A \vdash v_0 : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash v_n:A}
+    \hypo{\Gamma \vdash B \;\type}
+    \infer2{\Gamma.B \vdash v_{n+1} : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Gamma.A \vdash B \;\type}
+    \infer2{\Gamma \vdash \Pi \; A \;B \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \infer1{\Gamma \vdash \lambda \; A \; b : \Pi \; A \; B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash c:\Pi \; A\; B}
+    \hypo{\Gamma.A \vdash a: A}
+    \infer2{\Gamma \vdash c\; a : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1{\Gamma \vdash \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A:\U_n}
+    \infer1{\Gamma \vdash A \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \hypo{\Gamma.A \vdash B: \U_n}
+    \infer2{\Gamma \vdash \Pi \; A \; B : \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{}
+    \infer1[($m<n$)]{\Gamma \vdash \U_m: \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A: \U_n}
+    \infer1[($n<p$)]{\Gamma \vdash A: \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a: A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a:B}
+  }
+  \ebrule{
+    \hypo{\Gamma \vdash a=a' : A}
+    \hypo{\Gamma \vdash A = B}
+    \infer2{\Gamma \vdash a=a':B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = B}
+    \hypo{\Gamma \vdash A = C}
+    \infer2{\Gamma \vdash B = C}
+  }
+  \and
+  \ebrule{
+    \hypo{A \;\type}
+    \infer1{A=A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash a=b : A}
+    \hypo{\Gamma \vdash a=c : A}
+    \infer2{\Gamma \vdash b=c:A}
+  }
+  \and
+  \ebrule{
+    \hypo{a:A}
+    \infer1{a=a:A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A = A'}
+    \hypo{\Gamma.A \vdash B = B'}
+    \infer2{\Gamma \vdash \Pi \; A \; B = \Pi \; A' \; B'}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdash b: B}
+    \hypo{\Gamma \vdash a:A}
+    \infer2[($\beta$-rule)]{\Gamma \vdash ((\lambda \;A \;b) \; a) = b[a] : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{f: \Pi \; A \; B}
+    \infer1[($\eta$-rule)]{f = \lambda \; A \; (f\p \; v_0) : \Pi \; A \; B}
+  }
+  \and
+  \ebrule{
+    \hypo{A = A': \U_n}
+    \infer1{A = A'}
+  }
+  \and
+  \ebrule{
+    \hypo{A = A': \U_n}
+    \infer1[($n<p$)]{A = A': \U_p}
+  }
+\end{mathparsmall}

@@ -1,0 +1,222 @@
+\section{The Generalised Algebraic Theory and No-Confusion}\label{GAT}
+
+\subsection{A fully explicit presentation}
+
+In this section, we define the fully explicit theory with Tarski-style universes as a generalized algebraic theory $\mathcal{T}_G$.
+This means that we present the syntax in an algebraic way, and this provides a canonical notion of model in categories with families (CwF). Those
+were originally described by \citet{Cartmell}, and extended with dependent products and universes by \citet{CWF-CCD}.
+The theory described here is really close to the one of \citet{bcde2026}.
+
+\begin{definition}[Sorts]
+We have four sorts: contexts, substitutions, types, and elements. 
+\begin{align*}
+    &\vdash \ctx\\
+    \Delta, \Gamma : \ctx &\vdash \Delta \rightarrow \Gamma\\
+    \Gamma : \ctx &\vdash \Type(\Gamma)\\
+    \Gamma : \ctx, A : \Type(\Gamma) &\vdash \Elem(\Gamma,A)
+\end{align*}
+\end{definition}
+
+\begin{definition}[Substitutions]
+    $\mathcal{T}_G$ has substitutions with composition, identity and an empty context: 
+
+    \noindent
+    \begin{minipage}{0.35\linewidth}
+        \begin{align*}
+            &\vdash 1 : \ctx\\
+            \Gamma &\vdash ()_\Gamma : \Gamma \rightarrow 1
+        \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \begin{align*}
+            \Gamma : \ctx &\vdash \Id_\Gamma : \Gamma \rightarrow \Gamma\\
+            \Theta, \Delta, \Gamma : \ctx, \sigma : \Delta \rightarrow \Gamma, \delta : \Theta \rightarrow \Delta &\vdash \sigma\delta : \Theta \rightarrow \Gamma\\
+        \end{align*}
+    \end{minipage}
+
+    which satisfies the following equations (we omit the contexts for the sake of simplicity) :
+
+    \begin{minipage}{0.40\linewidth}
+        \centering
+        $\sigma \; \Id_\Gamma = \Id_\Gamma \; \sigma = \sigma$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.40\linewidth}
+        \centering
+        $(\theta \sigma)\delta = \theta (\sigma \delta)$
+    \end{minipage}
+
+\end{definition}
+
+Subsitutions are acting on types and elements, in the sense of the following definition.
+
+\begin{definition}[Action of substitutions on types and terms]
+    $\mathcal{T}_G$ has the following operations:
+    \begin{align*}
+    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdash A \sigma : \Type(\Gamma)\\
+    \Gamma : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash a \sigma : \Elem(\Delta, A\sigma)
+    \end{align*}
+
+    Satisfying the following equations:
+
+    \begin{minipage}{0.20\linewidth}
+        $A \; \Id = A$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $(A\sigma)\delta = A(\sigma \delta)$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $a \; \Id = a$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+        $(a\sigma)\delta = a (\sigma \delta)$
+    \end{minipage}
+
+\end{definition}
+
+We also need context extension, in the sense of the following.
+
+\begin{definition}[Projections]
+    $\mathcal{T}_G$ has the following operations:
+    \begin{align*}
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \Gamma.A : \ctx\\
+        \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdash (\sigma,a) : \Delta  \rightarrow \Gamma.A\\
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \p_{\Gamma,A} : \Gamma.A \rightarrow \Gamma \\
+        \Gamma : \ctx, A : \Type(\Gamma) &\vdash \q_{\Gamma,A} : \Elem(\Gamma.A, A\p_{\Gamma,A})
+    \end{align*}
+
+    Satisfying the following equations:
+    
+    \begin{minipage}{0.20\linewidth}
+        $\p(\sigma,a) = \sigma$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $\q(\sigma,a) = a$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $(\sigma,a)\delta = (\sigma \delta, a\delta)$
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.20\linewidth}
+            $(\p,\q) = \Id$
+    \end{minipage}
+
+\end{definition}
+
+All of this defines an \textit{explicit} substitution calculus, from which
+we can recover the usual presentation of substition, as defined in the following.
+
+\begin{definition}[Usual syntax for substitutions]
+    If $A : \Type(\Gamma)$, $a : \Elem(\Gamma,A)$ and $\sigma : \Delta \rightarrow \Gamma$ we define the following: 
+    \begin{gather*}
+        [a] = (\Id,a) : \Gamma \rightarrow \Gamma.A\\
+        \sigma^+ = (\sigma\p,\q) : \Delta.A\sigma \rightarrow \Gamma.A
+    \end{gather*}
+\end{definition}
+
+Now, we can add logical structure via type connectives in our theory, starting with dependent products.
+
+\begin{definition}[Dependent product]
+     We require the following operations, corresponding to the dependent product with lambda abstraction and application:
+     \begin{align*}
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A) &\vdash \Pi(A,B) : \Type(\Gamma)\\
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A), b : \Elem(\Gamma.A,B) &\vdash \lambda(A,B,b) : \Elem(\Gamma,\Pi(A,B))\\
+         \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A), f : \Elem(\Gamma, \Pi(A,B)), a : \Elem(\Gamma,A) &\vdash \app(A,B,f,a) : \Elem(\Gamma,B[a])
+     \end{align*}
+
+    Those should be functorial and satisfy the $\beta$ and $\eta$ rules, given by the following equations.
+    \noindent
+    \begin{minipage}{0.30\linewidth}
+        \begin{gather*}
+            \Pi(A, B)\sigma = \Pi(A\sigma, B \sigma^+)\\
+            \lambda(A,B,b)\sigma = \lambda(A\sigma,B\sigma^+,b\sigma^+)\\
+            \app(A,B,(\lambda(A,B,b),a)) = b[a]
+        \end{gather*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            c = \lambda(A,B, \app(A\p,B\p^+,c\p,\q))\\
+            \app(A,B,c,a)\sigma = \app(A\sigma,B\sigma^+,c\sigma,a\sigma)
+        \end{gather*}
+    \end{minipage}
+
+\end{definition}
+
+We now add cumulative universes to our theory, by requiring a countable hierarchy of universes $\U_0, \U_1,...$
+along with explicit codes, lifts and decoding operations. This presentation of universes is referred to as \textit{à la Tarski}.
+This fully explicit syntax is the the usual way to present type theory with cumulative universes in a (generalised) algebraic way.
+
+\begin{definition}[Tarski universes]
+    $\mathcal{T}_G$ has a countable list of universes $\U_n$ with a decoding operation $T_l(\cdot)$, 
+    codes for type connectives $\Pi^n$ and $\U_l^m$, and lifting operations $t_l^m$.
+
+    \begin{align*}
+            \Gamma : \ctx &\vdash (\U_l)_\Gamma : \Type(\Gamma)\\
+            \Gamma : \ctx &\vdash (\U_l^m)_\Gamma : \Elem(\Gamma,(\U_m)_\Gamma) \\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash t_l^m(a) : \Elem(\Gamma,(\U_m)_\Gamma) \\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdash T_l(a) : \Type(\Gamma)\\
+            \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma),  b : \Elem(\Gamma.T_l(a),(\U_l)_\Gamma) &\vdash \Pi^l(a,b) : \Elem(\Gamma,(\U_l)_\Gamma)
+    \end{align*}
+    The decoding and lifting maps must be strict and natural:
+
+    \noindent
+    \begin{minipage}{0.35\linewidth}
+        \begin{gather*}
+            T_l(t_n^l(X)) = T_n(X) \text{ for } l \leq n \\
+            T_n(\Pi^n \; X \; Y) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
+            T_n(\U_m^n) = \U_m \text{ for } m < n 
+        \end{gather*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.50\linewidth}
+        \begin{gather*}
+            t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m \leq n \leq p \\
+            t_n^p(\Pi^n \; X \; Y) = \Pi^p \; t_n^p(X) \; t_n^p(Y) \text{ for } n \leq p \\
+            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n \leq p
+        \end{gather*}
+    \end{minipage}
+\end{definition}
+
+It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes.
+In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire},
+where they are described as requiring "\textit{full reflection}".
+This system can also be presented with more usual inference rules, while keeping substitution explicit.
+
+\subsection{Injectivity and no-confusion}
+
+In the next sections, we will rely on three definitional inversion properties: injectivity of $\Pi$-types, injectivity of universes, and no-confusion between $\Pi$ and $\U_n$. 
+Rather than proving them as corollaries of normalisation (which requires a strong metatheory) or via untyped confluence (which fails in the presence of judgemental $\eta$-equality), we establish them using the new domain-theoretic technique of \citet{definitional-inv}. 
+We refer the reader to \citet[Section 2]{definitional-inv} for the general construction and focus on the adaptation to a cumulative hierarchy of universes. The details of the proof can be found in the Agda formalisation \cite{auto-formalisation}.
+
+In \citet{definitional-inv}, terms are interpreted in a Scott domain $D$ constructed elementarily via its conditional upper semi-lattice of compact elements $C = \bigcup_{k \in \bN} C_k$ (representing finite observations), where the identification $\lambda(\perp) = \perp$ validates the $\eta$-rule for functions while type constructors remain distinct from $\perp$. 
+In their paper, \citet[Section 3]{definitional-inv} models a universe hierarchy by erasing levels into a single semantic code $\U$ and recovering universe injectivity from the logical relation.
+
+To take our cumulative hierarchy into acccount, we equip $C$ with a hierarchy of universe codes $\U_n$ ($n \in \bN$), while keeping the stage-indexed semantic membership relation $u :_k \U_n$ not interacting with levels, so that $\U_m :_{k+1} \U_n$ holds for all $m, n$. 
+This has two consequences:
+\begin{itemize}
+    \item \textit{Cumulativity and Tarski coercions.} Because semantic membership in $\U_n$ ignores the level $n$, cumulativity holds trivially in the model. Moreover, we interpret decodings $T_n(a)$ and lifts $t_n^p(a)$ as the identity on semantic elements, and codes $\Pi^n(a,b), \U_m^n$ are interpreted by the same semantic constructors as $\Pi(A,B), \U_m$. Thus, all the naturality and functoriality equations hold by definition.
+    \item \textit{Universe injectivity and no-confusion.} Because the codes $\U_n$ and $\Pi(a,b)$ are already distinct in $C$, soundness of the model in the constant bottom environment $\rho_\perp(x) = \perp$ directly yields Theorems \ref{univ-inj} and \ref{no-confusion}.
+\end{itemize}
+
+Finally, to prove $\Pi$-injectivity in open contexts, we use the logical relation of \citet[Section 2.6]{definitional-inv} indexed by compact observations $a \in C_k$. By structural induction on derivations, we prove that the model is adequate: every derivable conversion $\Gamma \vdash A = B$ is valid in the logical relation at any compact approximation $a$ of $A$. Evaluating adequacy on $\Gamma \vdash \Pi(A,B) = \Pi(A',B')$ at the compact witness $\Pi(\perp,\perp)$ yields $\Gamma \vdash A = A'$ and $\Gamma.A \vdash B = B'$.
+
+This gives the following theorems, that we will use extensively throughout the paper.
+
+\begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
+    The dependent product is injective in $\mathcal{T}_G$: if $\Gamma \vdash \Pi(A,B) = \Pi(A',B')$, then $\Gamma \vdash A = A'$ and $\Gamma.A \vdash B = B'$.
+\end{theorem}
+
+\begin{theorem}[\formline{Utils.v}{1019}{Uinj} Injectivity of universes]\label{univ-inj}
+    If we have $\Gamma \vdash \U_{n_0} = \U_{n_1}$ in $\mathcal{T}_G$, then $n_0 = n_1$. 
+\end{theorem}
+
+\begin{theorem}[\formline{Utils.v}{1023}{noconfusion} No-Confusion]\label{no-confusion}
+    For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in $\mathcal{T}_G$: $\Gamma \vdash \Pi(A,B) = \U_n$. 
+\end{theorem}

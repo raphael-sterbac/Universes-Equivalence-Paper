@@ -1,0 +1,82 @@
+\section{Introduction}
+
+In type theory, universes allow manipulating types as terms.
+To avoid Girard's paradox, it is routine to introduce a \textit{hierarchy} of universes: $\U_0, \U_1, \U_2, ...$.
+In practical systems, those are often assumed to be \textit{cumulative}, requiring proper inclusions between them.
+There are two different ways to formulate the notion of universe in type theory. Martin-Löf’s
+first versions \cite{MARTINLOF75, MARTINLOF82} were formulated à la Russell, where a universe is seen as a type of types. Later, an alternative version à la Tarski \cite{MARTINLOF84}, where a universe is seen as a type of codes along with a decoding function, was also introduced. Usually, Russell universes are regarded as an informal notation of the latter, as \cite{Luo} suggested.
+
+When presenting Type Theory in an algebraic fashion, Tarski universes are essential, at least if we do not want to introduce sort equations, and one can show that the system à la Tarski presents the initial model of such a theory.
+This initial model has been constructed explicitly in \citet{bcde2026}, following the method presented in \citet{Streicher} and formalised in \citet{Brunerie}. 
+However, there are as many initiality theorems as there are presentations of type theory, and if people often assume that they
+extend easily to the more informal syntax used in practice, this comes from misconceptions as they depend on subtle details of the presentation.
+To solve this issue, Voevodsky proposed the \textit{Initiality Conjecture project}, which aimed at developing rigorous metatheory for large class of theories.
+A first step at solving this goal was achieved by Streicher \cite{Streicher}, proving initiality for a fully annotated Calculus of Constructions, and then
+proving its equivalence with the more common, unannotated formulation, close to a Pure Type System. 
+
+Generalised Algebraic Theories (GATs) provide a framework to describe type theories and their model in a uniform
+way, and to prove initiality rather easily \cite{noteGAT, Brunerie}, 
+thus solving the first part of the problem. However, GATs give rise to a fully explicit and annotated presentation of type theory, which is inconvenient to work in.
+Therefore, it would be essential to extend Streicher's equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
+with Russell universes and unannotated syntax.  This would justify rigorously the common practice of using informal syntax and Russell universes, as proposed by \citet{Luo},
+and would legitimate interpreting such syntax in the usual models of type theory.
+In particular, our work essentially relates the results proven on explicit type theories using semantic arguments, to the corresponding implicit theories implemented in proof systems.
+
+\noindent
+\textbf{Related work.} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentation of universes for the Calculus
+of Constructions with $\beta$ as an external reduction. Nevertheless, it appeared that their proof was 
+incorrect, and a new proof using the same technique was finally published by \citet{tiago-fscd}. Unfortunately, their arguments do not apply to
+formulations of type theory with judgemental equality, and do not extend to $\eta$-equivalence. 
+This legitimates the study of a new proof technique. 
+
+In the present paper, we will not consider cumulativity with a structural sub-typing judgement $A \leq B$ \cite{assaf,thire,Luo, subtyping},
+as it can lead to discrepancy between Russell and Tarski universes in a more general setting, as pointed out by Luo \cite{Luo}.
+For instance, sub-typing breaks canonicity when adding inductive types, and does not hold for $\Pi$-types in the Set model, or it is at least unclear
+depending on the encoding of application in the ambient set theory. 
+Therefore, here we will study the simplest form of cumulativity that is possible.
+Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
+assistant. Notably, it simplifies greatly the use of algebraic hierarchies \cite{subtyping}.
+The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
+equations to solve the issues mentioned above. In any case, we believe that our work is orthogonal to such considerations,
+and that our proof should extend to any system that handles structural sub-typing in a correct way.\\
+
+\noindent
+\textbf{Contributions.} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
+for Martin Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
+Our proof is modular and adapts to more complicated type systems. For instance, it adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
+More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
+inherited from Pure Type Systems. In particular, our result justifies the practice of working in implicit
+syntax, while legitimating the interpretation of implicit systems in usual models of type theory, such as in Categories with Families.
+More precisely, our result proves that those two presentations have the same models.
+
+The main argument is as follows: there is a natural forgetful map from the Tarski to the
+Russell presentation. We show that any Russell judgement can be lifted in a unique way
+to a Tarski judgement, proving the syntactic equivalence of the two theories.
+This work is done in section \ref{sectionT2T2'}.
+We rely on well-known properties of the syntax : no-confusion and injectivity of type formers, which are sometimes refered to as \textit{definitional inversion}.
+We only need them at the level of the generalised algebraic theory, and they will propagate along our equivalence results.
+Those properties seem to be strongly related to conversion \cite{meven}, and our equivalence result itself is to be
+related to the elaboration in proof assistants.
+
+Our proof is elementary and provides an algorithm to translate from one presentation to the other. Notably,
+we only rely on the basic induction principles for the syntax, and not on stronger induction principles given
+by normalisation. The definitional inversion properties are proven using the new domain-theoretic technique of \citet{definitional-inv}. Thus we believe that our proof could be adapted to various theories which do not enjoy this property.
+In fact, the proof is purely syntactic and can be done internal to a weak metatheory such as primitive recursive
+arithmetic, whereas normalisation relies on a stronger metatheory \cite{Coq19} such as the constructive set theory of \citet{aczel}.
+
+In addition, we manually formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}.
+Throughout the paper, we provide links to the corresponding definitions and theorems
+in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}.
+Along with this, we did a complete auto-formalisation in Agda of the whole paper using Claude \cite{auto-formalisation}.\\
+
+\noindent
+\textbf{Structure of this paper.}
+In Section \ref{GAT} we present the fully explicit Generalised Algebraic Theory and prove definitional inversion, before presenting the zoo of implicit presentations in Section \ref{implicit-presentations}.
+Then, we prove that all those syntaxes are equivalent in the following sections: 
+
+\begin{itemize}
+    \item[] \textbf{\S\S~\ref{sectionT0T1}.} We relate explicit and implicit substitutions. 
+    \item[] \textbf{\S\S~\ref{sectionT1T2}.} We relate Tarski and Russell presentations for cumulative universes.
+    \item[] \textbf{\S\S~\ref{sectionT2T2'}.} We relate annotated and unannotated syntaxes. 
+\end{itemize}
+
