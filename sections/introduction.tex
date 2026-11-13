@@ -19,17 +19,17 @@ and would legitimate interpreting such syntax in the usual models of type theory
 In particular, our work bridges the gap between the correction and semantics working with explicit presentations, to the corresponding implicit theories actually implemented in proof systems.
 
 \noindent
-\paragraph*{Related work} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentations of universes for the Calculus
-of Constructions with $\beta$ as an external reduction. Nevertheless, it appeared that their proof was 
+\paragraph*{Related work} In recent work, \citet{assaf,thire} show the equivalence between Russell and Tarski presentations of universes for the Calculus
+of Constructions with $\beta$ as an external reduction, by using confluence. Nevertheless, it appeared that their proof was 
 incorrect, and a new proof using the same technique was finally published by \citet{tiago-fscd}. Unfortunately, their arguments do not apply to
 formulations of type theory with judgemental equality, and do not extend to $\eta$-equivalence. 
-This legitimates the study of a new proof technique. 
+This legitimates the study of a new proof technique, which applies to equational presentations of type theory with $\eta$-conversion. 
 
 In the present paper, we will not consider cumulativity with a structural sub-typing judgement $A \leq B$ \cite{assaf,thire,Luo, subtyping},
 as it can lead to discrepancy between Russell and Tarski universes in a more general setting, as pointed out by Luo \cite{Luo}.
-For instance, sub-typing breaks canonicity when adding inductive types, and does not hold for $\Pi$-types in the Set model, or it is at least unclear
-depending on the encoding of application in the ambient set theory. 
-Therefore, here we will study the simplest form of cumulativity that is possible.
+For instance, sub-typing breaks canonicity when adding inductive types.
+
+Therefore, here we will study the simplest form of cumulativity that is possible, differing from \citet{tiago-fscd} who retain product covariance. 
 Yet, structural sub-typing would provide a more convenient manipulation of universes in a practical proof
 assistant. Notably, it simplifies greatly the use of algebraic hierarchies \cite{subtyping}.
 The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
@@ -50,6 +50,7 @@ to a Tarski judgement, proving the syntactic equivalence of the two theories.
 This work is done in section \ref{sectionT2T2'}.
 We rely on well-known properties of the syntax : no-confusion and injectivity of type formers, which are sometimes referred to as \textit{definitional inversion}.
 We only need them at the level of the generalised algebraic theory, and they will propagate along our equivalence results.
+This also differs from the technique of \citet{tiago-fscd}, which need injectivity for both theories.
 Those properties seem to be strongly related to conversion \cite{meven}, and our equivalence result itself is to be
 related to the elaboration in proof assistants.
 
