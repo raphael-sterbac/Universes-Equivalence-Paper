@@ -111,9 +111,8 @@ Then, the operations of \ThyGAT can be translated as formation and introduction 
     \label{fig:rulesconv}
 \end{figure}
 
-The equations of \ThyGAT can be translated as conversion rules for \ThyTarski. Namely,
-we need the decoding operation to be strict, and the lifts to commute with the codes for type connectives.
-The precise rules are the following ones.
+The equations of \ThyGAT can be translated as conversion rules for \ThyTarski (Figure \ref{fig:rulesconv}). Namely,
+we require the decoding and lifting operation to be strict, and natural.
 
 \begin{figure}[H]
     \centering
@@ -211,16 +210,15 @@ This system is closer to the practical syntax of type theory, inherited from the
 and often referred to as the "pure type system" presentation (PTS).
 
 
-For a full and extensive description of the systems, please refer to appendix \ref{Rules}.
+For a full and extensive description of the systems, please refer to appendix \ref{appendix:rules}.
 
 \subsection{Forgetful maps}
 
 Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones.
 
 First, we define a morphism of theories between \ThyGAT and \ThyTarski which makes substitutions implicit.
-To do this, we map substitutions in \ThyGAT to a list of "elementary"
-substitutions in \ThyTarski, as there is no composition in this system. Then, when translating the action of a substitution
-on a term or a type, we can unfold that list to get a type formed by applying all those substitutions successively.
+To do this, we map substitutions in \ThyGAT to a list of elementary substitutions in \ThyTarski, as there is no composition in this system. Then, when translating the action of a substitution
+on a term or a type, we can unfold that list to get a type obtained by applying all those substitutions successively.
 
 \begin{definition}
     We define $\fold(.)$ inductively by: 
@@ -240,7 +238,7 @@ on a term or a type, we can unfold that list to get a type formed by applying al
         \fold(\p) &= \p\\
         \fold(\Id) &= []\\ 
         \fold(\sigma\delta) &= \fold(\sigma) @ \fold(\delta)\\
-        \fold(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)\\
+        \fold(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)
     \end{align*}
     \end{minipage}
 \end{definition}
@@ -268,13 +266,13 @@ forgets about all the explicit coercions given by the presentation à la Tarski,
         |T_n(a)| &= |a|\\
         |t_m^n(a)| &= |a|\\
         |\Pi^n \; a \; b| &= \Pi(|a|, |b|)\\
-        |\Pi(A, B)| &= \Pi(|A|, |B|)\\
+        |\Pi(A, B)| &= \Pi(|A|, |B|)
     \end{align*}
     \end{minipage}
 \end{definition}
 
 Finally, we define the map $\strip$  which erases type annotations from a term of the system \ThyRussell, and gives a term of \ThyPTS.
-This function is analogous to the one defined by \citet{Streicher}.
+This is analogous to the one defined by \citet{Streicher}.
 
 \begin{definition}
     We define $\strip$ inductively by :
@@ -298,10 +296,9 @@ result, and is often referred to as a \emph{coherence} lemma.
 \end{remark}
 
 In the next sections, we will prove such lemmas for each of our theories. With those, we will be able to lift a derivation from an implicit theory to an explicit one.
-The situation is summarized in the following figure, where the strong arrows are the known
-forgetful maps, and the dotted arrows are the sections we will be constructing.
+The situation is summarized in Figure \ref{hierarchy-zoo}, where the strong arrows are the known forgetful maps, and the dotted arrows are the sections we will be constructing.
 
-\vspace{1em}
+\textcolor{red}{TODO: precise what kind of equivalence this is. What does this means in terms of models, syntax etc...}
 
 \begin{figure}[!ht]
 \centering
@@ -328,11 +325,10 @@ forgetful maps, and the dotted arrows are the sections we will be constructing.
 \end{circuitikz}
 }%
 
-\label{fig:my_label}
 \caption{The hierarchy of theories}
+\label{hierarchy-zoo}
 \end{figure}
 
-As mentioned in the introduction, to prove our equivalence result, we rely on basic properties of the syntax of the explicit system
-\ThyGAT described in section \ref{GAT}, and we propagate them along our equivalence results.
-In the following sections, we show that all the systems \ThyGAT, \ThyTarski, \ThyRussell and \ThyPTS are equivalent. In particular,
-we show the equivalence result between Tarski-style and Russell-style universes. 
+As mentioned in the introduction, to prove our equivalence result, we rely on the definitional inversion properties for \textit{only} the explicit system
+\ThyGAT proved in section \ref{GAT}, and we propagate those along our equivalence results.
+In the following sections \ref{sectionT0T1}, \ref{sectionT1T2}, and \ref{sectionT2T2'} we show that all the systems \ThyGAT, \ThyTarski, \ThyRussell and \ThyPTS are equivalent.

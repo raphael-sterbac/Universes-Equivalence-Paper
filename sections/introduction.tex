@@ -16,10 +16,10 @@ Generalised Algebraic Theories (GATs) provide a framework to describe type theor
 Therefore, it would be essential to extend Streicher's equivalence results to relate Generalised Algebraic and Pure Type System presentations, where the latter is presented
 with Russell universes and unannotated syntax.  This would justify rigorously the common practice of using informal syntax and Russell universes, as proposed by \citet{Luo},
 and would legitimate interpreting such syntax in the usual models of type theory.
-In particular, our work essentially relates the results proven on explicit type theories using semantic arguments, to the corresponding implicit theories implemented in proof systems.
+In particular, our work bridges the gap between the correction and semantics working with explicit presentations, to the corresponding implicit theories actually implemented in proof systems.
 
 \noindent
-\textbf{Related work.} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentations of universes for the Calculus
+\paragraph*{Related work} In recent work, Assaf and Thiré \cite{assaf,thire} show the equivalence between Russell and Tarski presentations of universes for the Calculus
 of Constructions with $\beta$ as an external reduction. Nevertheless, it appeared that their proof was 
 incorrect, and a new proof using the same technique was finally published by \citet{tiago-fscd}. Unfortunately, their arguments do not apply to
 formulations of type theory with judgemental equality, and do not extend to $\eta$-equivalence. 
@@ -34,10 +34,9 @@ Yet, structural sub-typing would provide a more convenient manipulation of unive
 assistant. Notably, it simplifies greatly the use of algebraic hierarchies \cite{subtyping}.
 The recent work of \citet{AdapTT} presents a general framework which would provide automatically the necessary
 equations to solve the issues mentioned above. In any case, we believe that our work is orthogonal to such considerations,
-and that our proof should extend to any system that handles structural sub-typing in a correct way.\\
+and that our proof should extend to any system that handles structural sub-typing in a correct way.
 
-\noindent
-\textbf{Contributions.} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
+\paragraph*{Contributions} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
 for Martin-Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
 Our proof is modular and adapts to more complicated type systems. For instance, it adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
 More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
@@ -65,10 +64,10 @@ Throughout the paper, we provide links to the corresponding definitions and theo
 in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}.
 Along with this, we did a complete auto-formalisation in Agda of the whole paper using Claude \cite{auto-formalisation}.
 This was useful to ensure correctness and find some mistakes in our proofs, in particular for the equivalence proof of Section \ref{sectionT2T2'}.
-\\
 
-\noindent
-\textbf{Structure of this paper.}
+\textcolor{red}{TODO: Clarify AI usage}
+
+\paragraph*{Structure of this paper}
 In Section \ref{GAT} we present the fully explicit Generalised Algebraic Theory and prove definitional inversion, before presenting the zoo of implicit presentations in Section \ref{implicit-presentations}.
 Then, we prove that all those syntaxes are equivalent in the following sections: 
 
