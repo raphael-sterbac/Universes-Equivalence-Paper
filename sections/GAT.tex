@@ -202,7 +202,7 @@ To take our cumulative hierarchy into account, we equip $C$ with a hierarchy of 
 This has two consequences:
 \begin{itemize}
     \item \textit{Cumulativity and Tarski coercions.} Because semantic membership in $\U_n$ ignores the level $n$, cumulativity holds trivially in the model. Moreover, we interpret decodings $T_n(a)$ and lifts $t_n^p(a)$ as the identity on semantic elements, and codes $\Pi^n(a,b), \U_m^n$ are interpreted by the same semantic constructors as $\Pi(A,B), \U_m$. Thus, all the naturality and functoriality equations hold by definition.
-    \item \textit{Universe injectivity and no-confusion.} Because the codes $\U_n$ and $\Pi(a,b)$ are already distinct in $C$, soundness of the model in the constant bottom environment $\rho_\perp(x) = \perp$ directly yields \zcref{univ-inj} and \zcref{no-confusion}.
+    \item \textit{Universe injectivity and no-confusion.} Because the codes $\U_n$ and $\Pi(a,b)$ are already distinct in $C$, soundness of the model in the constant bottom environment $\rho_\perp(x) = \perp$ directly gives \zcref{univ-inj} and \zcref{no-confusion}.
 \end{itemize}
 
 Finally, to prove $\Pi$-injectivity in open contexts, we use the logical relation of \citet[Section 2.6]{definitional-inv} indexed by compact observations $a \in C_k$. By structural induction on derivations, we prove that the model is adequate: every derivable conversion $\Gamma \vdash A = B$ is valid in the logical relation at any compact approximation $a$ of $A$. Evaluating adequacy on $\Gamma \vdash \Pi(A,B) = \Pi(A',B')$ at the compact witness $\Pi(\perp,\perp)$ yields $\Gamma \vdash A = A'$ and $\Gamma.A \vdash B = B'$.

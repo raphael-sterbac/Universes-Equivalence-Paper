@@ -75,7 +75,7 @@ When $T_0$ and $T_1$ are convertible, coercions into their join are injective up
 
     \textit{Universe case.} $\Gamma \vdash \U_k = \U_m$ gives $k = m$ by universe injectivity, so $L = \U_{\max(k,k)} = \U_k$.\\
 
-    \textit{Product case.} $\Gamma \vdash \Pi(A, B_0) = \Pi(A, B_1)$ gives $\Gamma.A \vdash B_0 = B_1$ by $\Pi$-injectivity. Weakening $\Gamma \vdash \pi_{A,B_0,L'}(\coe_0)(t_0) = \pi_{A,B_1,L'}(\coe_1)(t_1) : \Pi(A, L')$ to $\Gamma.A$, applying both sides to $v_0$, and using the $\beta$-rule yields $\Gamma.A \vdash \coe_0(h_0) = \coe_1(h_1) : L'$ where $h_i = \app(A\p, B_i\p^+, t_i\p, v_0)$. The induction hypothesis gives $\Gamma.A \vdash h_0 = h_1 : B_0$, and congruence of $\lambda$ together with the $\eta$-rule concludes $\Gamma \vdash t_0 = t_1 : T_0$.
+    \textit{Product case.} $\Gamma \vdash \Pi(A, B_0) = \Pi(A, B_1)$ gives $\Gamma.A \vdash B_0 = B_1$ by $\Pi$-injectivity. Weakening $\Gamma \vdash \pi_{A,B_0,L'}(\coe_0)(t_0) = \pi_{A,B_1,L'}(\coe_1)(t_1) : \Pi(A, L')$ to $\Gamma.A$, applying both sides to $v_0$, and using the $\beta$-rule gives $\Gamma.A \vdash \coe_0(h_0) = \coe_1(h_1) : L'$ where $h_i = \app(A\p, B_i\p^+, t_i\p, v_0)$. The induction hypothesis gives $\Gamma.A \vdash h_0 = h_1 : B_0$, and congruence of $\lambda$ together with the $\eta$-rule concludes $\Gamma \vdash t_0 = t_1 : T_0$.
 \end{proof}
 
 We now state and prove the main lemma of this section by structural induction on the syntax, comparing terms at the join of their types.
@@ -110,7 +110,7 @@ Combining \zcref{streichT2T2'} with the diagonal lemma (\zcref{lem:join-diag}), 
     If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in \ThyRussell with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{corollary}
 \begin{proof}
-    If $\strip(A_0) = \strip(A_1)$, \zcref{streichT2T2'}.(2) gives $\Gamma \vdash A_0 = A_1$. Then \zcref{streichT2T2'}.(1) and \zcref{lem:join-diag} yield $\Gamma \vdash u_0 = u_1 : A_0$.
+    If $\strip(A_0) = \strip(A_1)$, point (2) of \zcref{streichT2T2'} gives $\Gamma \vdash A_0 = A_1$. Then point (1) and \zcref{lem:join-diag} give $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{proof}
 
 Finally, we can show the following theorem, which exhibits the section of the forgetful map $\strip$, showing the equivalence
