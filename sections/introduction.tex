@@ -39,15 +39,14 @@ and that our proof should extend to any system that handles structural sub-typin
 \paragraph*{Contributions} In this paper we show the equivalence of Russell and Tarski universes by a method due to \citet{Streicher},
 for Martin-Löf's Type Theory with dependent products, cumulative universes and judgmental $\beta\eta$ equality.
 Our proof is modular and adapts to more complicated type systems. For instance, it adapts to a theory with universe polymorphism and internal universe levels \cite{polymorphism}.
-More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation
-inherited from Pure Type Systems. In particular, our result justifies the practice of working in implicit
-syntax, while legitimating the interpretation of implicit systems in usual models of type theory, such as in Categories with Families.
-More precisely, our result proves that those two presentations have the same models.
+More generally, we relate the Generalised Algebraic presentation of type theory to the implicit, and unannotated presentation inherited from Pure Type Systems.
+Concretely, our equivalence result entails that any semantic model $\mathcal{M}$ of the GAT interprets derivations of the implicit, unannotated Russell theory.
+In particular, this justifies the practice of working in implicit syntax, while interpreting such systems in models of type theory .
 
 The main argument is as follows: there is a natural forgetful map from the Tarski to the
 Russell presentation. We show that any Russell judgement can be lifted in a unique way
 to a Tarski judgement, proving the syntactic equivalence of the two theories.
-This work is done in section \ref{sectionT2T2'}.
+This work is done in \zcref{sectionT2T2'}.
 We rely on well-known properties of the syntax : no-confusion and injectivity of type formers, which are sometimes referred to as \textit{definitional inversion}.
 We only need them at the level of the generalised algebraic theory, and they will propagate along our equivalence results.
 This also differs from the technique of \citet{tiago-fscd}, which need injectivity for both theories.
@@ -60,16 +59,15 @@ by normalisation. The definitional inversion properties are proven using the new
 In fact, the proof is purely syntactic and can be done internal to a weak metatheory such as primitive recursive
 arithmetic, whereas normalisation relies on a stronger metatheory \cite{Coq19} such as the constructive set theory of \citet{aczel}.
 
-In addition, we manually formalised and verified our equivalence result between Tarski and Russell universes in Rocq \cite{Formalisation}.
+In addition, we manually formalised the equivalence between Tarski and Russell universes in Rocq \cite{Formalisation}.
 Throughout the paper, we provide links to the corresponding definitions and theorems
 in the formalisation, indicated by the Rocq logo \includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}.
 Along with this, we did a complete auto-formalisation in Agda of the whole paper using Claude \cite{auto-formalisation}.
-This was useful to ensure correctness and find some mistakes in our proofs, in particular for the equivalence proof of Section \ref{sectionT2T2'}.
-
-\textcolor{red}{TODO: Clarify AI usage}
+This was useful to ensure correctness and find some mistakes in our proofs.
+More precisely, we found an issue in the equivalence proof of \zcref{sectionT2T2'}, and we checked that our result extends to universe polymorphism (\zcref{extension})
 
 \paragraph*{Structure of this paper}
-In Section \ref{GAT} we present the fully explicit Generalised Algebraic Theory and prove definitional inversion, before presenting the zoo of implicit presentations in Section \ref{implicit-presentations}.
+In \zcref{GAT} we present the fully explicit Generalised Algebraic Theory and prove definitional inversion, before presenting the zoo of implicit presentations in \zcref{implicit-presentations}.
 Then, we prove that all those syntaxes are equivalent in the following sections: 
 
 \begin{itemize}

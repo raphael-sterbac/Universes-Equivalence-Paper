@@ -4,13 +4,8 @@ We now show \ThyTarski and \ThyGAT are equivalent, thus relating the presentatio
 an explicit substitution calculus, to the presentation where substitutions are defined as a meta operation,
 by induction on the syntax.
 
-\textcolor{red}{TODO: clarify this, more precise}
-
-If we were to be completely precise, we would have to show that we can remove context annotations from the operations of 
-\ThyGAT formally. This can be done with an analogous technique as for the equivalence of Russell and Tarski universes,
-that we will develop later. The main point is that the contexts and types can be inferred from the derivation, but for the
-sake of simplicity we will not detail this proof here. 
-
+In the algebraic presentation of \ThyGAT, operations have explicit context annotations, whereas in \ThyTarski these are omitted.
+Formally, erasing context annotations from \ThyGAT poses no difficulty and follows the same coherence pattern as \zcref{sectionT1T2} and \zcref{sectionT2T2'}, which is even simpler here because \ThyGAT enjoys uniqueness of types up to conversion.
 
 \begin{lemma}[Well-formed definition of $\fold$]
     The forgetful map $\fold$ is well-defined.

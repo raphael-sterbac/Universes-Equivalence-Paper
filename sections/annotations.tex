@@ -30,7 +30,7 @@ necessarily having $u_0$ and $u_1$ convertible. This is due to the codomain anno
     Yet, when applied to $\U_0$ (for $0 < n < p$), the applications $u_0 = \app(\U_n,\U_n,f_0,\U_0)$ and $u_1 = \app(\U_n,\U_p,f_1,\U_0)$ both have type $\U_p$ by cumulativity, have the same stripping $(\lambda(\U_n,v_0))\;\U_0$, and are convertible: $\Gamma \vdash u_0 = u_1 : \U_p$.
 \end{example}
 
-As Example \ref{ex:cumul-lam} illustrates, even if two applications $u_0$ and $u_1$ are compared at a common type, the functions $f_0$ and $f_1$ being applied may have types $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ that differ by cumulativity \emph{under $\Pi$}.
+As \zcref{ex:cumul-lam} illustrates, even if two applications $u_0$ and $u_1$ are compared at a common type, the functions $f_0$ and $f_1$ being applied may have types $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ that differ by cumulativity \emph{under $\Pi$}.
 Although \ThyRussell has no primitive sub-typing judgement for $\Pi$-types, we can relate such terms by defining explicit coercions into a common upper type (a \emph{join}) using $\eta$-expansion, with cumulativity acting at the leaves.
 
 \begin{definition}[Joins and coercions]\label{def:join}
@@ -65,7 +65,7 @@ Although \ThyRussell has no primitive sub-typing judgement for $\Pi$-types, we c
 By induction on the join derivation, joins are symmetric, transport along type conversions $\Gamma \vdash T'_i = T_i$, and are stable under substitution $\sigma : \Delta \to \Gamma$, with $(\coe_i(t))\sigma = \coe_{i\sigma}(t\sigma)$. Coercions are well-typed ($\Gamma \vdash t : T_i \implies \Gamma \vdash \coe_i(t) : L$), congruent, and compute under application by the $\beta$-rule:
 \[\Gamma \vdash \app(A, L', \pi_{A,B_i,L'}(\coe_i)(t), a) = \coe_{i[a]}(\app(A, B_i, t, a)) : L'[a].\]
 
-When $T_0$ and $T_1$ are convertible, coercions into their join are injective up to conversion (analogously to Lemma \ref{Utile}).
+When $T_0$ and $T_1$ are convertible, coercions into their join are injective up to conversion (analogously to \zcref{Utile}).
 
 \begin{lemma}[Diagonal lemma]\label{lem:join-diag}
     If $\Gamma \vdash \JoinTy(T_0, T_1, L) \leadsto (\coe_0, \coe_1)$, $\Gamma \vdash t_0 : T_0$, $\Gamma \vdash t_1 : T_1$, and $\Gamma \vdash \coe_0(t_0) = \coe_1(t_1) : L$, then $\Gamma \vdash T_0 = T_1$ implies $\Gamma \vdash t_0 = t_1 : T_0$.
@@ -97,20 +97,20 @@ We now state and prove the main lemma of this section by structural induction on
     \textit{Function application.} If $u_0 = \app(C_0, D_0, c_0, a_0)$, then $u_1 = \app(C_1, D_1, c_1, a_1)$ with $\strip(c_0) = \strip(c_1)$ and $\strip(a_0) = \strip(a_1)$. By inversion, $\Gamma \vdash c_i : \Pi(C_i, D_i)$ and $\Gamma \vdash a_i : C_i$, with principal type $P_i = D_i[a_i]$.
     By the induction hypothesis, we have a join $\Gamma \vdash \JoinTy(\Pi(C_0, D_0), \Pi(C_1, D_1), L) \leadsto (\coe_0, \coe_1)$ with $\Gamma \vdash \coe_0(c_0) = \coe_1(c_1) : L$, and a join for $a_0, a_1$ on $C_0, C_1$. By no-confusion, the join for $c_0, c_1$ is either a conversion join or a product join:
     \begin{itemize}
-        \item \underline{Conversion join:} We have $\Gamma \vdash \Pi(C_0, D_0) = \Pi(C_1, D_1)$ and $\Gamma \vdash c_0 = c_1 : \Pi(C_0, D_0)$. By $\Pi$-injectivity, $\Gamma \vdash C_0 = C_1$ and $\Gamma.C_0 \vdash D_0 = D_1$. Lemma \ref{lem:join-diag} on the join for $a_0, a_1$ gives $\Gamma \vdash a_0 = a_1 : C_0$, and congruence of $\app$ concludes.
-        \item \underline{Product join:} We have $L = \Pi(A, L')$ with $\Gamma \vdash \Pi(C_i, D_i) = \Pi(A, B_i)$ and $\Gamma.A \vdash \JoinTy(B_0, B_1, L') \leadsto (\coe_{B_0}, \coe_{B_1})$. By $\Pi$-injectivity, $\Gamma \vdash C_i = A$ and $\Gamma.C_i \vdash D_i = B_i$. In particular, $\Gamma \vdash C_0 = C_1$, so Lemma \ref{lem:join-diag} again gives $\Gamma \vdash a_0 = a_1 : A$. Applying $\Gamma \vdash \coe_0(c_0) = \coe_1(c_1) : \Pi(A, L')$ to $a_0$, using the $\beta$-computation rule for coercions on both sides, and congruence of $\app$ yields:
+        \item \underline{Conversion join:} We have $\Gamma \vdash \Pi(C_0, D_0) = \Pi(C_1, D_1)$ and $\Gamma \vdash c_0 = c_1 : \Pi(C_0, D_0)$. By $\Pi$-injectivity, $\Gamma \vdash C_0 = C_1$ and $\Gamma.C_0 \vdash D_0 = D_1$. \zcref{lem:join-diag} on the join for $a_0, a_1$ gives $\Gamma \vdash a_0 = a_1 : C_0$, and congruence of $\app$ concludes.
+        \item \underline{Product join:} We have $L = \Pi(A, L')$ with $\Gamma \vdash \Pi(C_i, D_i) = \Pi(A, B_i)$ and $\Gamma.A \vdash \JoinTy(B_0, B_1, L') \leadsto (\coe_{B_0}, \coe_{B_1})$. By $\Pi$-injectivity, $\Gamma \vdash C_i = A$ and $\Gamma.C_i \vdash D_i = B_i$. In particular, $\Gamma \vdash C_0 = C_1$, so \zcref{lem:join-diag} again gives $\Gamma \vdash a_0 = a_1 : A$. Applying $\Gamma \vdash \coe_0(c_0) = \coe_1(c_1) : \Pi(A, L')$ to $a_0$, using the $\beta$-computation rule for coercions on both sides, and congruence of $\app$ yields:
         \[\Gamma \vdash \coe_{B_0[a_0]}(u_0) = \coe_{B_1[a_0]}(u_1) : L'[a_0],\]
         which is a join for $B_0[a_0]$ and $B_1[a_0]$, and hence for $D_0[a_0]$ and $D_1[a_1]$.
     \end{itemize}
 \end{proof}
 
-Combining Lemma \ref{streichT2T2'} with the diagonal lemma (Lemma \ref{lem:join-diag}), we deduce the following direct corollary, analogous to Corollary \ref{uniqueness} of the previous section.
+Combining \zcref{streichT2T2'} with the diagonal lemma (\zcref{lem:join-diag}), we deduce the following direct corollary, analogous to \zcref{uniqueness} of the previous section.
 
 \begin{corollary}\label{cor:strip-uniq}
     If $\Gamma \vdash u_0 : A_0$ and $\Gamma \vdash u_1 : A_1$ in \ThyRussell with $\strip(u_0) = \strip(u_1)$ and $\strip(A_0) = \strip(A_1)$, then $\Gamma \vdash A_0 = A_1$ and $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{corollary}
 \begin{proof}
-    If $\strip(A_0) = \strip(A_1)$, Lemma \ref{streichT2T2'}.(2) gives $\Gamma \vdash A_0 = A_1$. Then Lemma \ref{streichT2T2'}.(1) and Lemma \ref{lem:join-diag} yield $\Gamma \vdash u_0 = u_1 : A_0$.
+    If $\strip(A_0) = \strip(A_1)$, \zcref{streichT2T2'}.(2) gives $\Gamma \vdash A_0 = A_1$. Then \zcref{streichT2T2'}.(1) and \zcref{lem:join-diag} yield $\Gamma \vdash u_0 = u_1 : A_0$.
 \end{proof}
 
 Finally, we can show the following theorem, which exhibits the section of the forgetful map $\strip$, showing the equivalence
@@ -121,8 +121,8 @@ of \ThyRussell and \ThyPTS.
     $\Gamma' \vdash J'$ in \ThyRussell such that $\strip(\Gamma') = \Gamma$ and $\strip(J') = J$.
 \end{theorem}
 \begin{proof}
-    By induction on the derivation $\Gamma \vdash J$, using Corollary \ref{cor:strip-uniq}, we construct a derivation in \ThyRussell.
-    The main point is that the typing annotations can be inferred from the derivation, and that Corollary \ref{cor:strip-uniq} gives
+    By induction on the derivation $\Gamma \vdash J$, using \zcref{cor:strip-uniq}, we construct a derivation in \ThyRussell.
+    The main point is that the typing annotations can be inferred from the derivation, and that \zcref{cor:strip-uniq} gives
     us uniqueness up to conversion for rules with shared terms or types in their premises. 
 \end{proof}
 

@@ -152,7 +152,7 @@ Thus, we shall prove the following lemma, which is one of the most technical res
 \begin{proof}
     We prove the property by mutual induction on $A$ and $u_0$, proving the three statements at the same time. For each of the cases of
     the induction, we need a "catch-up" lemma which inverts the erasure hypothesis. Concretely the issue is that we cannot 
-    deduce from $|u_1| = \Pi(A,B)$ that $u_1$ is a dependent product, as it could well be the decoding of a code $T_n(\Pi^n \; a \; b)$, or
+    deduce from $|u_1| = \Pi(A,B)$ that $u_1$ is a dependent product, as it could well be the decoding of a code $T_n(\Pi^n(a,b))$, or
     even a decoding of a lift $T_n(t_m^n(a))$. To solve this, we need to do another induction on $u_1$ for each case.
 
     We now present some of the key cases of the proof.\\
@@ -174,19 +174,19 @@ Thus, we shall prove the following lemma, which is one of the most technical res
         \item \underline{First case:} $u_1 = \lambda(C_1, B_1, b_1)$ with $|C_1| = |C_0|$, $|B_1| = |B_0|$, $|b_1| = |b_0|$.
     Also, by inversion $\Gamma \vdash u_1 : A_1$ is necessarily of the same shape. 
     Using the induction hypothesis on $C_0$ with $C_1$, we get $\Gamma \vdash C_0 = C_1$.
-    Then, by lemma \ref{Transform} we get a derivation
+    Then, by \zcref{Transform} we get a derivation
     $\Gamma,C_0 \vdash b_1 : B_1$. Now we can apply the induction hypothesis on $b_0$ with $b_1$, and get two cases. 
     
     In the first case, we get directly derivations $\Gamma.C_0 \vdash b_1 = b_0 : B_0$ and $\Gamma.C_0 \vdash B_0 = B_1$,
     and using congruence equations we obtain the desired $\Gamma \vdash u_0 = u_1 : A_0$.
     
     In the second case, we get $\Gamma \vdash A_0 = \U_{n_0}$, from which we deduce $\Gamma \vdash \Pi(C_0,B_0) = \U_{n_0}$,
-    which is a contradiction by Theorem \ref{no-confusion}.
+    which is a contradiction by \zcref{no-confusion}.
 
     \item \underline{Second case:} $u_1 = t_n^m(a)$, and we will show that this case is not possible.
         Indeed, we thus have $A_1 = \U_m$ and $|u_1| = |a| = |u_0|$ and we can apply the induction hypothesis
         on $a$, and in each case we obtain either $\Gamma \vdash A_0 = \U_m$ or $\Gamma \vdash A_0 = \U_{n_0}$, which
-        are absurd because of lemma \ref{no-confusion}.
+        are absurd because of \zcref{no-confusion}.
     \end{itemize}
 
     The case of lambda abstraction illustrated the main arguments used, and how no-confusion plays an 
@@ -244,9 +244,9 @@ computational behaviour.
 \end{corollary}
 
 \begin{proof}
-    We apply lemma \ref{mainuniverse} on the equality $|A_0| = |A_1|$ to get $\Gamma \vdash A_0 = A_1$, and on
+    We apply \zcref{mainuniverse} on the equality $|A_0| = |A_1|$ to get $\Gamma \vdash A_0 = A_1$, and on
     $|u_0| = |u_1|$ to get the two cases. In the first one, we directly have $\Gamma \vdash u_0 = u_1 : A_0$,
-    and in the second one, we use lemma \ref{Utile} to get the derivation.
+    and in the second one, we use lemma \zcref{Utile} to get the derivation.
 \end{proof}
 
 Now we prove the following theorem, stating the formal equivalence between the two systems:
@@ -275,7 +275,7 @@ Now we prove the following theorem, stating the formal equivalence between the t
 
         Then, by the induction hypothesis we get derivations 
         $\Gamma' \vdash A' \; \type$ and $\Gamma'',A'' \vdash B' \; \type$ in \ThyTarski such that 
-         $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$. By Corollary \ref{uniqueness}, we get $\Gamma' \vdash A' = A''$, and  the contexts
+         $|\Gamma'| = |\Gamma''| = \Gamma$ and $|A''| = |A'| = A$. By \zcref{uniqueness}, we get $\Gamma' \vdash A' = A''$, and  the contexts
         $\Gamma'$ and $\Gamma''$ are convertible. We can thus transform the second derivation to get $\Gamma',A' \vdash B' \; \type$.
         Therefore, we can construct the derivation for $\Gamma' \vdash \Pi(A',B') \; \type$ in \ThyTarski.
 \end{proof}
@@ -286,6 +286,6 @@ the equivalence between \ThyTarski and \ThyRussell by exhibiting a section of th
 \begin{remark}
 To prove this equivalence result, we could have relied on normalisation to simplify the proofs, at
 the cost of relying on a stronger metatheory and stronger properties of the theory. In fact, if we proved normalisation for
-\ThyRussell as well, we could construct the derivation of Theorem \ref{equT1T2} by an induction on normal forms.
+\ThyRussell as well, we could construct the derivation of \zcref{equT1T2} by an induction on normal forms.
 Then, by showing that the erasure map $|.|$ commutes with $\nf(.)$, we would obtain the equivalence result.
 \end{remark}
