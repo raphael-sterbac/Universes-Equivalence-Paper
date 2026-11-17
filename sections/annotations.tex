@@ -133,8 +133,8 @@ We can also consider named variables instead of de Bruijn indices, to get a theo
 system, with the additional rule for cumulativity.
 
 If we wanted to go even further, we could also remove the annotation of the variable from the lambda abstraction, again
-following \citet{Streicher}. However to do so, we crucially need to rely on the full normalisation result,
-as removing this annotation can lead to multiple non-convertible derivations for the same judgement, as shown by the following example.
+following \citet{Streicher}.
+However to do so, we crucially need to rely on the full normalisation result, as removing this annotation can lead to multiple non-convertible derivations for the same judgement, as shown by the following example.
     
 \begin{example}
         We have two derivations : $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_p)$, which are not convertible when $n<p$.

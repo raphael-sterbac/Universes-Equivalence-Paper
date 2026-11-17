@@ -4,7 +4,7 @@ In this section, we illustrate the modularity of our proof method by showing tha
 In fact, we believe that the proof should extend to various flavours of type theories, as long as they satisfy definitional inversion.
 
 For instance, we describe how to extend our equivalence result to the theory of \citet{polymorphism, bcde2026}, with explicit universe polymorphism and cumulative universes indexed by internal levels.
-For the theory without constraints, the proof of the previous sections can be adapted directly by simply making the reasoning on levels internal to the theory.
+For the theory without constraints, the proof of the previous sections can be adapted directly by simply making the reasoning on levels internal to the theory. We already know that this theory enjoys definitional inversion as it is normalising \cite{fuss-free}
 However, for a theory with constraints, things get more complicated. 
 
 In this system, contexts can be extended with level variables $\Gamma, \alpha$ and level constraints $\Gamma, \psi$, we also have level and constraint products $[\alpha]A$, $[\psi]A$, along with a collapse element $\emptyset$ in inconsistent level contexts.
@@ -20,3 +20,5 @@ Second, to relate the annotated and unannotated Russell presentations (\ThyRusse
 For the diagonal lemma (\zcref{lem:join-diag}) to go through for constraint products, we add the natural $\eta$-rule for constraint products :
 \[\Gamma \vdashR \langle \psi \rangle_A t  = t : [\psi]A \quad \text{when} \quad \Gamma \vdashR t : [\psi]A\]
 Moreover, since $[\psi]A = A$ holds whenever $\psi$ is valid in $\Gamma$, a constraint product is not necessarily distinct from a universe, $\Pi$-type, or level product. Thus, the domain model should have a guard-aware no-confusion property stating that in a consistent context, if $[\psi]A$ is convertible to $\U_l$, $\Pi(C,B)$, or $[\alpha]B$, then $\psi$ is valid in $\Gamma$.
+
+\textcolor{red}{TODO: Clarify that this has been auto-formalised}
