@@ -18,5 +18,5 @@ Second, to relate the annotated and unannotated Russell presentations (\ThyRusse
     \coe_{[\psi]B \leq [\psi]L'}(t) := \langle \psi \rangle_{L'}\,\coe_{B \leq L'}(t).
 \]
 For the diagonal lemma (\zcref{lem:join-diag}) to go through for constraint products, we add the natural $\eta$-rule for constraint products :
-\[\Gamma \vdash \langle \psi \rangle_A t  = t : [\psi]A \quad \text{when} \quad \Gamma \vdash t : [\psi]A\]
+\[\Gamma \vdashR \langle \psi \rangle_A t  = t : [\psi]A \quad \text{when} \quad \Gamma \vdashR t : [\psi]A\]
 Moreover, since $[\psi]A = A$ holds whenever $\psi$ is valid in $\Gamma$, a constraint product is not necessarily distinct from a universe, $\Pi$-type, or level product. Thus, the domain model should have a guard-aware no-confusion property stating that in a consistent context, if $[\psi]A$ is convertible to $\U_l$, $\Pi(C,B)$, or $[\alpha]B$, then $\psi$ is valid in $\Gamma$.

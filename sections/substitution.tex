@@ -20,8 +20,8 @@ Formally, erasing context annotations from \ThyGAT poses no difficulty and follo
 For the equivalence result, we need the usual substitution lemma in \ThyTarski.
 
 \begin{lemma}[\formline{Utils.v}{710}{substitutionlemma} Substitution lemma]\label{Substitution}
-    If $\Gamma \vdash J$ in \ThyTarski and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
-    then we have a derivation : $\Delta \vdash J\alpha$.
+    If $\Gamma \vdashT J$ in \ThyTarski and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
+    then we have a derivation : $\Delta \vdashT J\alpha$.
 \end{lemma}
  
 With all of this, we show the following admissibility result.
@@ -35,16 +35,16 @@ With all of this, we show the following admissibility result.
 
 \begin{mathparsmall}
   \ebrule{
-    \hypo{\Gamma \vdash A \; \type}
-    \hypo{ \vdash \sigma : \Delta \rightarrow \Gamma}
-    \infer2{\Delta \vdash A \sigma \; \type}
+    \hypo{\Gamma \vdashG A \; \type}
+    \hypo{ \vdashG \sigma : \Delta \rightarrow \Gamma}
+    \infer2{\Delta \vdashG A \sigma \; \type}
   }
   \and
   \text{erases to:}
   \and
   \ebrule{
-    \hypo{\Gamma \vdash \fold(A) \; \type}
-    \infer1{\Delta \vdash \fold(A) \sigma_1 ... \sigma_n \; \type}
+    \hypo{\Gamma \vdashT \fold(A) \; \type}
+    \infer1{\Delta \vdashT \fold(A) \sigma_1 ... \sigma_n \; \type}
   }
 \end{mathparsmall}
 
@@ -57,7 +57,7 @@ $n$ applications of the substitution lemma. We do the same thing for the action 
 Consequently, we get the following correction result as a rather direct corollary of the previous lemma. 
 
 \begin{theorem}[Correctness of $\fold$]
-    If $\Gamma \vdash J$ in \ThyGAT then $\fold(\Gamma) \vdash \fold(J)$ is derivable in \ThyTarski.
+    If $\Gamma \vdashG J$ in \ThyGAT then $\fold(\Gamma) \vdashT \fold(J)$ is derivable in \ThyTarski.
 \end{theorem}
 \begin{proof}
     By induction, we replace the rules of \ThyGAT by the admissible ones in \ThyTarski using the previous lemma. 

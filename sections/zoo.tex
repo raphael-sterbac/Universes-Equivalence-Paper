@@ -80,29 +80,29 @@ Then, the operations of \ThyGAT can be translated as formation and introduction 
 \begin{mathparsmall}
   \ebrule{
     \hypo{}
-    \infer1{\Gamma \vdash \U_n \;\type}
+    \infer1{\Gamma \vdashT \U_n \;\type}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a: \U_n}
-    \hypo{\Gamma.T_n(a) \vdash b: \U_n}
-    \hypo{\Gamma \vdash T_n(a) \;\type}
-    \infer3{\Gamma \vdash \Pi^n(a,b): \U_n}
+    \hypo{\Gamma \vdashT a: \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b: \U_n}
+    \hypo{\Gamma \vdashT T_n(a) \;\type}
+    \infer3{\Gamma \vdashT \Pi^n(a,b): \U_n}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a:\U_n}
-    \infer1{\Gamma \vdash T_n(a) \;\type}
+    \hypo{\Gamma \vdashT a:\U_n}
+    \infer1{\Gamma \vdashT T_n(a) \;\type}
   }
   \and
   \ebrule{
     \hypo{}
-    \infer1[($m<n$)]{\Gamma \vdash \U_m^n: \U_n}
+    \infer1[($m<n$)]{\Gamma \vdashT \U_m^n: \U_n}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a: \U_m}
-    \infer1[($m\leq n$)]{\Gamma \vdash t_m^n(a): \U_n}
+    \hypo{\Gamma \vdashT a: \U_m}
+    \infer1[($m\leq n$)]{\Gamma \vdashT t_m^n(a): \U_n}
   }
 \end{mathparsmall}
 \end{minipage}%
@@ -121,35 +121,35 @@ we require the decoding and lifting operation to be strict, and natural.
         \begin{minipage}{0.95\textwidth}
 \begin{mathparsmall}
   \ebrule{
-    \hypo{\Gamma \vdash a: \U_n}
-    \hypo{\Gamma.T_n(a) \vdash b: \U_n}
-    \infer2{\Gamma \vdash T_n(\Pi^n(a,b)) = \Pi(T_n(a),T_n(b))}
+    \hypo{\Gamma \vdashT a: \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b: \U_n}
+    \infer2{\Gamma \vdashT T_n(\Pi^n(a,b)) = \Pi(T_n(a),T_n(b))}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a: \U_n}
-    \hypo{\Gamma.T_n(a) \vdash b: \U_n}
-    \infer2[($n\leq p$)]{\Gamma \vdash t_n^p(\Pi^n(a,b)) = \Pi^p(t_n^p(a),t_n^p(b)) : \U_p}
-  }
-  \and
-  \ebrule{
-    \hypo{}
-    \infer1[$m<n$]{\Gamma \vdash T_n(\U_m^n) = \U_m}
+    \hypo{\Gamma \vdashT a: \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b: \U_n}
+    \infer2[($n\leq p$)]{\Gamma \vdashT t_n^p(\Pi^n(a,b)) = \Pi^p(t_n^p(a),t_n^p(b)) : \U_p}
   }
   \and
   \ebrule{
     \hypo{}
-    \infer1[($n\leq p$)]{\Gamma \vdash t_n^p(\U_m^n) = \U_m^p : \U_p}
+    \infer1[$m<n$]{\Gamma \vdashT T_n(\U_m^n) = \U_m}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($m\leq n$)]{\Gamma \vdash T_n(t_m^n(a)) = T_m(a)}
+    \hypo{}
+    \infer1[($n\leq p$)]{\Gamma \vdashT t_n^p(\U_m^n) = \U_m^p : \U_p}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash a : \U_m}
-    \infer1[($m\leq n\leq p$)]{\Gamma \vdash t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+    \hypo{\Gamma \vdashT a : \U_m}
+    \infer1[($m\leq n$)]{\Gamma \vdashT T_n(t_m^n(a)) = T_m(a)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_m}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdashT t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
   }
 \end{mathparsmall}
 \end{minipage}%
@@ -159,12 +159,12 @@ we require the decoding and lifting operation to be strict, and natural.
 \end{figure}
 
 Now, for the theory \ThyRussell (Russell universes), types and terms are conflated, and thus
-we should be able to deduce $\Gamma \vdash A \; \type$ from $\Gamma \vdash A : \U_n$. Conversely,
-the intuition is that whenever $\Gamma \vdash A \; \type$ then we should have  : \[\exists n \in \bN, \ \Gamma \vdash A : \U_n\]
+we should be able to deduce $\Gamma \vdashR A \; \type$ from $\Gamma \vdashR A : \U_n$. Conversely,
+the intuition is that whenever $\Gamma \vdashR A \; \type$ then we should have  : \[\exists n \in \bN, \ \Gamma \vdashR A : \U_n\]
 
 Instead of having codes for each of the type formers, we now close $\U_n$ under the type connectives. Note that, as we
 consider \textit{cumulative} universes, we do not take the suprema of levels for the dependent product. Cumulativity itself
-is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash A : \U_n$ then $\Gamma \vdash A : \U_p$ for $p > n$. 
+is expressed by asking for the proper inclusion of universes : if $\Gamma \vdashR A : \U_n$ then $\Gamma \vdashR A : \U_p$ for $p > n$. 
 
 \begin{figure}[H]
     \centering
@@ -174,28 +174,28 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
 \begin{mathparsmall}
 \ebrule{
     \hypo{}
-    \infer1{\Gamma \vdash \U_n \;\type}
+    \infer1{\Gamma \vdashR \U_n \;\type}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash A:\U_n}
-    \infer1{\Gamma \vdash A \;\type}
+    \hypo{\Gamma \vdashR A:\U_n}
+    \infer1{\Gamma \vdashR A \;\type}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash A: \U_n}
-    \hypo{\Gamma.A \vdash B: \U_n}
-    \infer2{\Gamma \vdash \Pi(A, B): \U_n}
+    \hypo{\Gamma \vdashR A: \U_n}
+    \hypo{\Gamma.A \vdashR B: \U_n}
+    \infer2{\Gamma \vdashR \Pi(A, B): \U_n}
   }
   \and
   \ebrule{
     \hypo{}
-    \infer1[($m<n$)]{\Gamma \vdash \U_m: \U_n}
+    \infer1[($m<n$)]{\Gamma \vdashR \U_m: \U_n}
   }
   \and
   \ebrule{
-    \hypo{\Gamma \vdash A: \U_n}
-    \infer1[($n<p$)]{\Gamma \vdash A: \U_p}
+    \hypo{\Gamma \vdashR A: \U_n}
+    \infer1[($n<p$)]{\Gamma \vdashR A: \U_p}
   }
 \end{mathparsmall}
 \end{minipage}%
