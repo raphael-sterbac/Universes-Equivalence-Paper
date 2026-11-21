@@ -1,4 +1,4 @@
-\section{The Generalised Algebraic Theory and No-Confusion}\label{GAT}
+\section{The Generalised Algebraic Theory and Definitional inversion}\label{GAT}
 
 \subsection{A fully explicit presentation}
 
@@ -164,14 +164,17 @@ This fully explicit syntax is the usual way to present type theory with cumulati
             \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma) &\vdashG T_l(a) : \Type(\Gamma)\\
             \Gamma : \ctx, a : \Elem(\Gamma,(\U_l)_\Gamma),  b : \Elem(\Gamma.T_l(a),(\U_l)_{\Gamma.T_l(a)}) &\vdashG \Pi^l(a,b) : \Elem(\Gamma,(\U_l)_\Gamma)
     \end{align*}
-    The decoding and lifting maps must be strict and natural:
+    The decoding and lifting maps must be strict, natural, and should commute with substitution:
 
     \noindent
-    \begin{minipage}{0.35\linewidth}
+    \begin{minipage}{0.45\linewidth}
         \begin{gather*}
             T_l(t_n^l(X)) = T_n(X) \text{ for } n \leq l \\
             T_n(\Pi^n(X,Y)) = \Pi(T_n(X), T_n(Y)) \text{ for } n \geq 0\\
-            T_n(\U_m^n) = \U_m \text{ for } m < n 
+            T_n(\U_m^n) = \U_m \text{ for } m < n\\
+            (\U_l)_\Gamma\sigma = (\U_l)_\Delta \\
+            (\U_l^m)_\Gamma\sigma = (\U_l^m)_\Delta \text{ for } l < m \\
+            t_l^m(a)\sigma = t_l^m(a\sigma) \text{ for } l \leq m
         \end{gather*}
     \end{minipage}
     \hfill
@@ -179,17 +182,18 @@ This fully explicit syntax is the usual way to present type theory with cumulati
         \begin{gather*}
             t_n^p(t_m^n(X)) = t_m^p(X) \text{ for } m \leq n \leq p \\
             t_n^p(\Pi^n(X,Y)) = \Pi^p(t_n^p(X),t_n^p(Y)) \text{ for } n \leq p \\
-            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n \leq p
+            t_n^p(\U_m^n) = \U_m^p \text{ for } m < n \leq p\\
+            T_l(a)\sigma = T_l(a\sigma) \\
+            \Pi^l(a,b)\sigma = \Pi^l(a\sigma, b\sigma^+)
         \end{gather*}
     \end{minipage}
 \end{definition}
 
-It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes.
-In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire},
-where they are described as requiring "\textit{full reflection}".
-This presentation is intrinsically typed, but in the following we will work with the corresponding extrinsic system over raw terms equipped with typing and conversion judgments (see \zcref{appendix:rules}). 
+It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes. In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire}, where they are described as requiring \textit{`full reflection''}. This presentation is intrinsically typed \cite{CWF-CCD,QIIT}, but in the following we will work with the corresponding extrinsic system, which is defined as a deductive system over raw terms (see \zcref{appendix:rules}). 
 
 \subsection{Injectivity and no-confusion}
+
+\textcolor{red}{TODO: rework to be more readable/self-contained}
 
 In the next sections, we will rely on three definitional inversion properties: injectivity of $\Pi$-types, injectivity of universes, and no-confusion between $\Pi$ and $\U_n$. 
 Rather than proving them as corollaries of normalisation (which requires a strong metatheory) or via untyped confluence (which fails in the presence of judgemental $\eta$-equality), we establish them using the new domain-theoretic technique of \citet{definitional-inv}. 

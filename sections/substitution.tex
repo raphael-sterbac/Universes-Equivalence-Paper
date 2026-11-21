@@ -1,78 +1,71 @@
 \section{Explicit and implicit substitutions (\ThyGAT and \ThyTarski)}\label{sectionT0T1}
 
-\textcolor{red}{TODO: rework this section, use Thiago's remarks}
-
-We now show \ThyTarski and \ThyGAT are equivalent, thus relating the presentation with
-an explicit substitution calculus, to the presentation where substitutions are defined as a meta operation,
-by induction on the syntax.
-
-In the algebraic presentation of \ThyGAT, operations have explicit context annotations, whereas in \ThyTarski these are omitted.
-Formally, erasing context annotations from \ThyGAT poses no difficulty and follows the same coherence pattern as \zcref{sectionT1T2} and \zcref{sectionT2T2'}, which is even simpler here because \ThyGAT enjoys uniqueness of types up to conversion.
-
-\begin{lemma}[Well-formed definition of $\fold$]
-    The forgetful map $\fold$ is well-defined.
-\end{lemma}
-\begin{proof}
-    We check that $\fold$ produces types and terms in \ThyTarski. This is
-    not completely clear, because of the cases $A\sigma$ and $a \sigma$.
-    In fact, we check that $\fold(\sigma)$ indeed gives a list of well-formed elementary substitutions.
-    Then, the successive application of those substitutions gives a syntactically valid type or term in \ThyTarski.
-\end{proof}
-
-For the equivalence result, we need the usual substitution lemma in \ThyTarski.
+We now show that \ThyGAT{} and \ThyTarski{} are equivalent, relating the explicit substitution calculus to the presentation where substitution is a meta-operation.
 
 \begin{lemma}[\formline{Utils.v}{710}{substitutionlemma} Substitution lemma]\label{Substitution}
-    If $\Gamma \vdashT J$ in \ThyTarski and $\alpha : \Delta \rightarrow \Gamma$ is a substitution,
-    then we have a derivation : $\Delta \vdashT J\alpha$.
+    If $\Gamma \vdashT J$ and $\Delta \vdashT \alpha : \Gamma$, then $\Delta \vdashT J[\alpha]$. Moreover, if $\Delta \vdashT \alpha = \alpha' : \Gamma$, then $\Gamma \vdashT A\;\type$ implies $\Delta \vdashT A[\alpha] = A[\alpha']$ and $\Gamma \vdashT a : A$ implies $\Delta \vdashT a[\alpha] = a[\alpha'] : A[\alpha]$.
 \end{lemma}
- 
-With all of this, we show the following admissibility result.
 
-\begin{lemma}
-    The erasure of rules in \ThyGAT are admissible in \ThyTarski.
-\end{lemma}
-\begin{proof}
-    The only two interesting rules are the ones defining the action of substitution on types and terms.
-    To prove admissibility, we iterate the substitution lemma when we unfold the list of "elementary" substitutions created by $\fold$:
-
-\begin{mathparsmall}
-  \ebrule{
-    \hypo{\Gamma \vdashG A \; \type}
-    \hypo{ \vdashG \sigma : \Delta \rightarrow \Gamma}
-    \infer2{\Delta \vdashG A \sigma \; \type}
-  }
-  \and
-  \text{erases to:}
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT \fold(A) \; \type}
-    \infer1{\Delta \vdashT \fold(A) \sigma_1 ... \sigma_n \; \type}
-  }
-\end{mathparsmall}
-
-\vspace{0.5em}
-
-Where $\fold(\sigma) = (\sigma_1, ..., \sigma_n)$, and this derivation is admissible with
-$n$ applications of the substitution lemma. We do the same thing for the action of substitution on terms. 
-\end{proof}
-
-Consequently, we get the following correction result as a rather direct corollary of the previous lemma. 
-
-\begin{theorem}[Correctness of $\fold$]
-    If $\Gamma \vdashG J$ in \ThyGAT then $\fold(\Gamma) \vdashT \fold(J)$ is derivable in \ThyTarski.
+\begin{theorem}[Soundness of $\eraseT{\cdot}$]
+    If $\Gamma \vdashG J$ in \ThyGAT{}, then $\eraseT{\Gamma} \vdashT \eraseT{J}$ in \ThyTarski{}.
 \end{theorem}
 \begin{proof}
-    By induction, we replace the rules of \ThyGAT by the admissible ones in \ThyTarski using the previous lemma. 
+    By mutual induction on derivations in \ThyGAT{}, we check that the erasure of each rule is admissible in \ThyTarski{}. The rules for substitution action and congruence follow immediately from \zcref{Substitution}. Every substitution equation of \ThyGAT{} holds after erasure.
+
+    For instance, the equation $\Delta \vdashG \q_{\Gamma,A}(\sigma, a) = a : A\sigma$ erases to $\eraseT{\q_{\Gamma,A}(\sigma, a)} = v_0[(\eraseT{\sigma}, \eraseT{a})] = \eraseT{a}$, so it holds by reflexivity.
 \end{proof}
 
-Finally, we deduce that the two systems \ThyGAT and \ThyTarski are equivalent, relating implicit and explicit subsitutions. 
+To lift derivations back to \ThyGAT{} and recover the context annotations, we define a lifting operation $\liftG{-}$, parameterized by the current context $\Gamma$ of \ThyGAT:
+\begin{align*}
+    \liftG{1} &:= 1, & \liftG{\Gamma.A} &:= \Gamma'.\liftG[\Gamma']{A} \quad (\text{where } \Gamma' := \liftG{\Gamma}), \\
+    \liftG[\Gamma.A]{v_0} &:= \q_{\Gamma,A}, & \liftG[\Gamma.B]{v_{n+1}} &:= \liftG[\Gamma]{v_n}\p_{\Gamma,B}, \\
+    \liftG[\Gamma]{\U_n} &:= (\U_n)_\Gamma, & \liftG[\Gamma]{\U_m^n} &:= (\U_m^n)_\Gamma,
+\end{align*}
 
-\begin{theorem}
-    The two systems \ThyGAT and \ThyTarski are equivalent.
+\begin{lemma}[Right inverse]\label{embedding-rightinverse}
+    The embedding $\liftG{-}$ is a strict right inverse of $\eraseT{\cdot}$:
+    \begin{itemize}
+        \item For every context $\Gamma$ of \ThyTarski{}, $\eraseT{\liftG{\Gamma}} = \Gamma$.
+        \item For any raw $\Gamma$ and type $A$ of \ThyTarski{}, we have $\eraseT{\liftG[\Delta]{A}} = A$ (where $\Delta := \liftG{\Gamma}$).
+        \item For any raw $\Gamma$ and term $a$ of \ThyTarski{}, we have $\eraseT{\liftG[\Delta]{a}} = a$ (where $\Delta := \liftG{\Gamma}$).
+    \end{itemize}
+\end{lemma}
+\begin{proof}
+    By induction, using the equality $\eraseT{\liftG[\Gamma]{v_n}\p_{\Gamma,B}} = v_n[\mathsf{wk}] = v_{n+1}$.
+\end{proof}
+
+\begin{lemma}[Correctness of $\liftG{-}$]\label{embedding-correctness}
+    The embedding $\liftG{-}$ preserves derivations:
+    \begin{itemize}
+        \item If $\Gamma \vdashT J$ and $\Gamma' := \liftG{\Gamma}$, then $\Gamma' \vdashG \liftG[\Gamma']{J}$. 
+        \item If $\Delta \vdashT \alpha : \Gamma$ with $\Delta' := \liftG{\Delta}$, then $\vdashG \liftG[\Delta' \to \Gamma']{\alpha} : \Delta' \to \Gamma'$
+        \item For every $\Gamma \vdashT A\;\type$, we have $\Delta' \vdashG \liftG[\Gamma']{A}\,\liftG[\Delta' \to \Gamma']{\alpha} = \liftG[\Delta']{A[\alpha]}$.
+        \item For every $\Gamma \vdashT a : A$, we have $\Delta' \vdashG \liftG[\Gamma']{a}\,\liftG[\Delta' \to \Gamma']{\alpha} = \liftG[\Delta']{a[\alpha]} : \liftG[\Delta']{A[\alpha]}$.
+    \end{itemize}
+\end{lemma}
+\begin{proof}
+    We prove by mutual induction that $\liftG{-}$ preserves derivations and commutes with substitution.
+
+    For $v_n$, we prove commutation by induction on $n$. 
+    For binders, it follows from the functoriality equations of \ThyGAT{} and the identity $(\liftG[\Delta' \to \Gamma']{\alpha})^+ = \liftG[\Delta'.A' \to \Gamma'.\tilde{A}]{\alpha^+}$ where $\tilde{A} := \liftG[\Gamma']{A}$ and $A' := \liftG[\Delta']{A[\alpha]}$. Using this commutation property, the rules of \ThyTarski{} involving the meta-substitution translate directly to derivable rules in \ThyGAT{}.
+\end{proof}
+
+\begin{lemma}[Left inverse modulo conversion]\label{embedding-leftinverse}
+    In \ThyGAT, we have:
+    \begin{itemize}
+        \item $\Gamma \vdashG$ implies $\vdashG \Gamma = \liftG{\eraseT{\Gamma}}$
+        \item $\Gamma \vdashG A\;\type$ implies $\Gamma \vdashG A = \liftG[\Gamma]{\eraseT{A}}$
+        \item $\Gamma \vdashG a : A$ implies $\Gamma \vdashG a = \liftG[\Gamma]{\eraseT{a}} : A$
+        \item $\vdashG \sigma : \Delta \to \Gamma$ implies $\vdashG \sigma = \liftG[\Delta \to \Gamma]{\eraseT{\sigma}} : \Delta \to \Gamma$.
+    \end{itemize}
+\end{lemma}
+\begin{proof}
+    By mutual induction. The cases $\Id_\Gamma$ and $\p_{\Gamma,A}$ use $(\p,\q) = \Id$ and $()_1 = \Id_1$. Composition $\sigma\delta$ uses $(\tau,a)\delta = (\tau\delta, a\delta)$ and \zcref{embedding-correctness}.The substitution actions $A\sigma$ and $a\sigma$ follow by congruence and \zcref{embedding-correctness}. The remaining constructors are direct by congruence.
+\end{proof}
+
+\begin{theorem}[Section of $\eraseT{\cdot}$]
+    If $\Gamma \vdashT J$ in \ThyTarski{}, then there exists a unique up to conversion judgment $\Gamma' \vdashG J'$ in \ThyGAT{} such that $\eraseT{\Gamma'} = \Gamma$ and $\eraseT{J'} = J$.
 \end{theorem}
 \begin{proof}
-    Each rule of \ThyTarski is trivially admissible of \ThyGAT because \ThyTarski is a subsystem
-    of \ThyGAT.
-    Hence, we have the identity map from \ThyTarski and \ThyGAT, and as $\fold$ acts identically
-    on types and terms without substitution, we get our equivalence result.
+    Existence is given by $\Gamma' \vdashG \liftG[\Gamma']{J}$ with $\Gamma' := \liftG{\Gamma}$, using \zcref{embedding-rightinverse} and \zcref{embedding-correctness}. Uniqueness up to conversion follows from \zcref{embedding-leftinverse}.
 \end{proof}

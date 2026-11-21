@@ -22,8 +22,7 @@
 
 \keywords{Type theory, Universes, Cumulativity} 
 
-\acknowledgements{The authors are grateful to Meven Lennon-Bertrand for his useful feedback on the first drafts
-of this work, and for his comments on the mechanized proof.}
+\acknowledgements{The authors are grateful to Meven Lennon-Bertrand and Thiago Felicissimo for their useful feedback on the first drafts of this work, and on the mechanized proof.}
 
 \category{} %optional, e.g. invited paper
 
@@ -136,17 +135,26 @@ of this work, and for his comments on the mechanized proof.}
 \newcommand{\cO}{\mathcal{O}}
 
 \usepackage{xspace}
-\newcommand{\ThyGAT}{\textbf{$\mathcal{T}_\text{GAT}$}\xspace}
-\newcommand{\ThyTarski}{\textbf{$\mathcal{T}_\text{Tarski}$}\xspace}
-\newcommand{\ThyRussell}{\textbf{$\mathcal{T}_\text{Russell}$}\xspace}
-\newcommand{\ThyPTS}{\textbf{$\mathcal{T}_\text{PTS}$}\xspace}
+\definecolor{color-GAT}{HTML}{000000}
+\definecolor{color-Tarski}{HTML}{1080bf}
+\definecolor{color-Russell}{HTML}{db6840}
+\definecolor{color-PTS}{HTML}{397f32}
 
-\newcommand{\vdashG}{\vdash_{\textbf{\tiny G}}}
-\newcommand{\vdashT}{\vdash_{\textbf{\tiny T}}}
-\newcommand{\vdashR}{\vdash_{\textbf{\tiny R}}}
-\newcommand{\vdashP}{\vdash_{\textbf{\tiny P}}}
+\newcommand{\ThyGAT}{\textcolor{color-GAT}{\textbf{$\mathcal{T}_\text{GAT}$}}\xspace}
+\newcommand{\ThyTarski}{\textcolor{color-Tarski}{\textbf{$\mathcal{T}_\text{Tarski}$}}\xspace}
+\newcommand{\ThyRussell}{\textcolor{color-Russell}{\textbf{$\mathcal{T}_\text{Russell}$}}\xspace}
+\newcommand{\ThyPTS}{\textcolor{color-PTS}{\textbf{$\mathcal{T}_\text{PTS}$}}\xspace}
 
-% Text command for text strings I need to type in math mode
+\newcommand{\vdashG}{\mathrel{\textcolor{color-GAT}{\vdash_{\textbf{\tiny G}}}}}
+\newcommand{\vdashT}{\mathrel{\textcolor{color-Tarski}{\vdash_{\textbf{\tiny T}}}}}
+\newcommand{\vdashR}{\mathrel{\textcolor{color-Russell}{\vdash_{\textbf{\tiny R}}}}}
+\newcommand{\vdashP}{\mathrel{\textcolor{color-PTS}{\vdash_{\textbf{\tiny P}}}}}
+
+\newcommand{\eraseT}[1]{\textcolor{color-Tarski}{\lvert} #1 \textcolor{color-Tarski}{\rvert_{\mathsf{T}}}}
+\newcommand{\eraseR}[1]{\textcolor{color-Russell}{\lvert} #1 \textcolor{color-Russell}{\rvert_{\mathsf{R}}}}
+\newcommand{\eraseP}[1]{\textcolor{color-PTS}{\lvert} #1 \textcolor{color-PTS}{\rvert_{\mathsf{P}}}}
+\NewDocumentCommand{\liftG}{o m}{\lceil #2 \rceil\IfValueT{#1}{_{#1}}}
+
 \newcommand{\coe}{\mathsf{coe}}
 \newcommand{\JoinTy}{\mathsf{Join}}
 \newcommand{\nf}{\mathsf{nf}}
@@ -209,7 +217,7 @@ of this work, and for his comments on the mechanized proof.}
 
 % Rocq links
 
-\DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=1em]{icon-rocq-blue-eps-converted-to.pdf}}}
+\DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=.9em]{icon-rocq-blue-eps-converted-to.pdf}}}
 \DeclareDocumentCommand{\formfile}{O{blob/8920605948f1c2d0b92fd81ace628cb6996f46fe/} m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2}{\coqlogo}}
 
@@ -221,11 +229,8 @@ of this work, and for his comments on the mechanized proof.}
 \maketitle
 
 \begin{abstract}
-    We present a modular and algorithmic proof for the equivalence of different
-    presentations of type theory, notably relating Russell and Tarski presentations of cumulative
-    universe hierarchies. More generally, we relate the generalised algebraic and pure type system formulations of the syntax, bridging
-    the gap between the type theory used to prove metatheoretical results, and the one used in practical proof systems.
-    Our work can also be seen as an effort to extend initiality results to implicit presentations of type theory.
+    We present a modular and elementary proof for the equivalence of different
+    presentations of type theory, notably relating Russell and Tarski presentations of cumulative universe hierarchies. More generally, we relate the generalised algebraic and pure type system formulations of the syntax, bridging the gap between the type theory used to prove metatheoretical results, and the one used in practical proof systems. Our work can also be seen as an effort to extend initiality results to implicit presentations of type theory.
 \end{abstract}
 
 \input{sections/introduction}

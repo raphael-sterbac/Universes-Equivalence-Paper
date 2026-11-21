@@ -4,15 +4,55 @@
 
 In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to \ThyGAT.
 
-First, we describe \ThyTarski, which has implicit substitutions and exactly the same rules as the GAT 
-of section $2$. 
+All those other presentations will have \emph{implicit substitutions}, meaning that it is defined as a meta-operation rather than as an operation of the theory.
+
+More precisely, a substitution is a map $\alpha : \bN \to \mathsf{Tm}$ assigning a raw term to each de Bruijn index, with action $A[\alpha]$ and $a[\alpha]$ defined inductively (see \zcref{appendix:rules}). We define: 
+\begin{align*}
+    \mathsf{id}(n) &:= v_n, &
+    \mathsf{wk}(n) &:= v_{n+1}, &
+    (\alpha \circ \beta)(n) &:= (\alpha(n))[\beta], \\
+    (\alpha, u)(0) &:= u, &
+    (\alpha, u)(n+1) &:= \alpha(n), &
+    \alpha^+ &:= (\alpha \circ \mathsf{wk}, v_0), \\
+    e\p &:= e[\mathsf{wk}], &
+    e\p^+ &:= e[\mathsf{wk}^+], &
+    e[a] &:= e[(\mathsf{id}, a)].
+\end{align*}
+Typing $\Delta \vdash \alpha : \Gamma$ and conversion $\Delta \vdash \alpha = \alpha' : \Gamma$ of simultaneous substitutions are defined inductively by:
+
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Delta \vdash}
+    \infer1{\Delta \vdash \alpha : 1}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Delta \vdash \mathsf{wk} \circ \alpha : \Gamma}
+    \hypo{\Delta \vdash \alpha(0) : A[\mathsf{wk} \circ \alpha]}
+    \infer3{\Delta \vdash \alpha : \Gamma.A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Delta \vdash}
+    \infer1{\Delta \vdash \alpha = \alpha' : 1}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash A \;\type}
+    \hypo{\Delta \vdash \mathsf{wk} \circ \alpha = \mathsf{wk} \circ \alpha' : \Gamma}
+    \hypo{\Delta \vdash \alpha(0) = \alpha'(0) : A[\mathsf{wk} \circ \alpha]}
+    \infer3{\Delta \vdash \alpha = \alpha' : \Gamma.A}
+  }
+\end{mathparsmall}
+
+The theory \ThyTarski is the same deductive system as \ThyGAT, but without context annotations and with implicit substitutions.
 A main goal of this paper is to relate \ThyTarski to the implicit formulation \textit{à la Russell} of cumulative universes denoted with \ThyRussell.
 The latter conflates types and terms, with implicit inclusion between universes. 
 This system cannot be formulated algebraically, as this would involve adding a sort equation and a stratification of the sort of types $\Type_n$ which we would need to be included in each other.
 
 Both \ThyTarski and \ThyRussell have dependent products, lambda abstraction and application, described in the same way, with the
 following rules.
-
 
 \begin{figure}[H]
     \centering
@@ -158,6 +198,8 @@ we require the decoding and lifting operation to be strict, and natural.
     \label{fig:rulesconv}
 \end{figure}
 
+\textcolor{red}{TODO: missing $\Gamma$ well-formed hypothesis in fig. 2/3 ?}
+
 Now, for the theory \ThyRussell (Russell universes), types and terms are conflated, and thus
 we should be able to deduce $\Gamma \vdashR A \; \type$ from $\Gamma \vdashR A : \U_n$. Conversely,
 the intuition is that whenever $\Gamma \vdashR A \; \type$ then we should have  : \[\exists n \in \bN, \ \Gamma \vdashR A : \U_n\]
@@ -214,74 +256,72 @@ For a full and extensive description of the systems, please refer to \zcref{appe
 
 \subsection{Forgetful maps}
 
-Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones.
+Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones. All those maps are defined over raw untyped terms, and we will prove that they preserve derivations.
 
-First, we define a morphism of theories between \ThyGAT and \ThyTarski which makes substitutions implicit.
-To do this, we map substitutions in \ThyGAT to a list of elementary substitutions in \ThyTarski, as there is no composition in this system. Then, when translating the action of a substitution
-on a term or a type, we can unfold that list to get a type obtained by applying all those substitutions successively.
+First, we define a forgetful map $\eraseT{\cdot}$ from \ThyGAT{} to \ThyTarski{} which makes substitutions implicit by interpreting explicit substitutions of \ThyGAT{} as meta-level simultaneous substitutions on de Bruijn indices.
 
 \begin{definition}
-    We define $\fold(.)$ inductively by: 
+    We define $\eraseT{\cdot}$ inductively by:
+
+    \noindent
+    \begin{minipage}{0.42\linewidth}
+    \begin{align*}
+        \eraseT{(\U_n)_\Gamma} &= \U_n\\
+        \eraseT{(\U_m^n)_\Gamma} &= \U_m^n,\\
+        \eraseT{\q_{\Gamma,A}} &= v_0\\
+        \eraseT{\Id_\Gamma} &= \mathsf{id}\\
+        \eraseT{()_\Gamma} &= \mathsf{id}
+    \end{align*}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\linewidth}
+    \begin{align*}
+        \eraseT{A\sigma} &= \eraseT{A}[\eraseT{\sigma}]\\
+        \eraseT{a\sigma} &= \eraseT{a}[\eraseT{\sigma}]\\
+        \eraseT{\p_{\Gamma,A}} &= \mathsf{wk}\\
+        \eraseT{(\sigma, a)} &= (\eraseT{\sigma}, \eraseT{a})\\
+        \eraseT{\sigma\delta} &= \eraseT{\sigma} \circ \eraseT{\delta}
+    \end{align*}
+    \end{minipage}
+\end{definition}
+
+Then, we define the next forgetful map, which erases the lift and decoding operation of  Tarski-style universes, and sends codes to the corresponding type formers. Concretely, this operation forgets about all the explicit coercions given by the presentation à la Tarski, and leaves everything implicit.
+
+\begin{definition}[\formline{Erasure.v}{10}{Erasurefunction} Universe erasure]
+    We $\eraseR{\cdot}$ inductively by:
 
     \noindent
     \begin{minipage}{0.40\linewidth}
     \begin{align*}
-        \fold(\q) &= v_0\\
-        \fold([a]) &= [\fold(a)]\\
-        \fold(A \sigma) &= (...(\fold(A)\sigma_1)...)...\sigma_n\\
-        \fold(a \sigma) &= (...(\fold(a)\sigma_1)...)...\sigma_n\\ 
+        \eraseR{\U_n} &= \U_n\\
+        \eraseR{\U_m^n} &= \U_m\\
+        \eraseR{\app(A,B,c,a)} &= \app(\eraseR{A},\eraseR{B},\eraseR{c},\eraseR{a})\\
+        \eraseR{\lambda(A,B,b)} &= \lambda(\eraseR{A},\eraseR{B},\eraseR{b})\\
+        \eraseR{v_i} &= v_i
     \end{align*}
     \end{minipage}
     \hfill
     \begin{minipage}{0.40\linewidth}
     \begin{align*}
-        \fold(\p) &= \p\\
-        \fold(\Id) &= []\\ 
-        \fold(\sigma\delta) &= \fold(\sigma) @ \fold(\delta)\\
-        \fold(\sigma^+) &= (\sigma_1^+,..., \sigma_n^+)
+        \eraseR{T_n(a)} &= \eraseR{a}\\
+        \eraseR{t_m^n(a)} &= \eraseR{a}\\
+        \eraseR{\Pi^n(a,b)} &= \Pi(\eraseR{a}, \eraseR{b})\\
+        \eraseR{\Pi(A, B)} &= \Pi(\eraseR{A}, \eraseR{B})
     \end{align*}
     \end{minipage}
 \end{definition}
 
-Then, we define the following erasure operation, which erases the lift and decoding operation of 
-Tarski-style universes, and sends codes to the corresponding type formers. Concretely, this operation
-forgets about all the explicit coercions given by the presentation à la Tarski, and leaves everything implicit.
-
-\begin{definition}[\formline{Erasure.v}{10}{Erasurefunction} Erasure]
-    We define the erasure operation $|.|$ inductively by:
-
-    \noindent
-    \begin{minipage}{0.40\linewidth}
-    \begin{align*}
-        |\U_n| &= \U_n\\
-        |\U_m^n| &= \U_m\\
-        |\app(A,B,c,a)| &= \app(|A|,|B|,|c|,|a|)\\
-        |\lambda(A,B,b)| &= \lambda(|A|,|B|,|b|)\\
-        |v_i| &= v_i\\
-    \end{align*}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.40\linewidth}
-    \begin{align*}
-        |T_n(a)| &= |a|\\
-        |t_m^n(a)| &= |a|\\
-        |\Pi^n(a,b)| &= \Pi(|a|, |b|)\\
-        |\Pi(A, B)| &= \Pi(|A|, |B|)
-    \end{align*}
-    \end{minipage}
-\end{definition}
-
-Finally, we define the map $\strip$  which erases type annotations from a term of the system \ThyRussell, and gives a term of \ThyPTS.
+Finally, we define the map $\eraseP{\cdot}$ which erases type annotations from a term of the system \ThyRussell, and gives a term of \ThyPTS.
 This is analogous to the one defined by \citet{Streicher}.
 
 \begin{definition}
-    We define $\strip$ inductively by :
+    We define $\eraseP{\cdot}$ inductively by :
     \begin{align*}
-        \strip(\lambda (A,B,b)) &= \lambda(\strip(A), \strip(b))\\ 
-        \strip(\app (A,B,c,a)) &= \strip(c) \; \strip(a)\\
-        \strip(v_i) &= v_i 
-        \strip(\Pi(A,B)) &= \Pi(\strip(A), \strip(B))\\
-        \strip(\U_n) &= \U_n
+        \eraseP{\lambda (A,B,b)} &= \lambda(\eraseP{A}, \eraseP{b})\\ 
+        \eraseP{\app (A,B,c,a)} &= \eraseP{c} \; \eraseP{a}\\
+        \eraseP{v_i} &= v_i \\
+        \eraseP{\Pi(A,B)} &= \Pi(\eraseP{A}, \eraseP{B})\\
+        \eraseP{\U_n} &= \U_n
     \end{align*}
 \end{definition}
 
@@ -296,10 +336,9 @@ result, and is often referred to as a \emph{coherence} lemma.
 \end{remark}
 
 In the next sections, we will prove such lemmas for each of our theories. With those, we will be able to lift a derivation from an implicit theory to an explicit one.
-The situation is summarized in \zcref{hierarchy-zoo}, where the strong arrows are the known forgetful maps, and the dotted arrows are the sections we will be constructing.
+The situation is summarized in \zcref{hierarchy-zoo}, where the strong arrows are the known forgetful maps, and the dotted arrows are the sections we will be constructing, with the necessary definitional inversion properties.
 Semantically, this means that their corresponding Categories with Families (CwFs) are all isomorphic to the initial CwF of \ThyGAT.
-In particular, any model $\mathcal{M}$ of the GAT in Section 2.1 interprets well-typed derivations of the implicit, unannotated system $\mathcal{T}_P$.
-However, those theories crucially do not have the same categories of models, as the decoding operation is not necessarily injective in a model of \ThyGAT. 
+In particular, any model $\mathcal{M}$ of the GAT in Section 2.1 interprets well-typed derivations of the implicit, unannotated system $\mathcal{T}_P$. However, those theories crucially do not have the same categories of models, as the decoding operation is not necessarily injective in a model of \ThyGAT. 
 
 \begin{figure}[!ht]
 \centering
@@ -307,26 +346,22 @@ However, those theories crucially do not have the same categories of models, as 
 \begin{circuitikz}
 \tikzstyle{every node}=[font=\LARGE]
 
-\draw  (-2.5,18.75) rectangle  node {\LARGE \ThyGAT} (2.5,16.25);
-\draw  (5,18.75) rectangle  node {\LARGE \ThyTarski} (10,16.25);
-\draw  (12.5,18.75) rectangle  node {\LARGE \ThyRussell} (17.5,16.25);
-\draw  (20,18.75) rectangle  node {\LARGE \ThyPTS} (25,16.25);
+\draw (0,18.75)    rectangle node {\LARGE \ThyGAT}     (3.5,16.25);
+\draw (8.5,18.75)  rectangle node {\LARGE \ThyTarski}  (12,16.25);
+\draw (17,18.75)   rectangle node {\LARGE \ThyRussell} (20.5,16.25);
+\draw (25.5,18.75) rectangle node {\LARGE \ThyPTS}     (29,16.25);
 
+\draw [->, >=Stealth] (3.5,18.25)  -- (8.5,18.25)  node[midway, fill=white]{$\eraseT{\cdot}$};
+\draw [->, >=Stealth] (12,18.25)   -- (17,18.25)   node[midway, fill=white]{$\eraseR{\cdot}$};
+\draw [->, >=Stealth] (20.5,18.25) -- (25.5,18.25) node[midway, fill=white]{$\eraseP{\cdot}$};
 
-
-
-
-
-\draw [->, >=Stealth] (2.5,18.25) -- (5,18.25)node[pos=0.5, fill=white]{$\fold$};
-\draw [->, >=Stealth] (10,18.25) -- (12.5,18.25)node[pos=0.5, fill=white]{$|.|$};
-\draw [->, >=Stealth] (17.5,18.25) -- (20,18.25)node[pos=0.5, fill=white]{$\strip$};
-\draw [->, >=Stealth, dashed] (5,16.75) -- (2.5,16.75);
-\draw [->, >=Stealth, dashed] (12.5,16.75) -- (10,16.75);
-\draw [->, >=Stealth, dashed] (20,16.75) -- (17.5,16.75);
+\draw [->, >=Stealth, dashed] (8.5,16.75)  -- (3.5,16.75);
+\draw [->, >=Stealth, dashed] (17,16.75)   -- (12,16.75)   node[midway, below=2pt]{$\U$-inj, $\U \neq \Pi$};
+\draw [->, >=Stealth, dashed] (25.5,16.75) -- (20.5,16.75) node[midway, below=2pt]{$\U$/$\Pi$-inj, $\U \neq \Pi$};
 \end{circuitikz}
 }%
 
-\caption{The hierarchy of theories}
+\caption{The zoo of syntaxes}
 \label{hierarchy-zoo}
 \end{figure}
 
