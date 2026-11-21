@@ -5,7 +5,7 @@ All the results of this section have been completely formalised \textit{by hand}
 
 First, we show that the erasure operation $\eraseR{\cdot}$ preserves derivations.
 
-\begin{lemma}[\formline{Erasure.v}{143}{Erasurecorrection} Correctness of erasure]
+\begin{lemma}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/EraseDeriv.agda} \formline{Erasure.v}{143}{Erasurecorrection} Correctness of erasure]
     If $\Gamma \vdashT J$ in \ThyTarski, then $\eraseR{\Gamma} \vdashR \eraseR{J}$ in \ThyRussell.
 \end{lemma}
 
@@ -115,7 +115,7 @@ in this setting we will prove that $\Gamma \vdashT A = T_n(a)$.
 
 Thus, we shall prove the following lemma, which is one of the most technical result of this paper. 
 
-\begin{lemma}[\formline{Equivalence.v}{813}{eraseinjty}] \label{mainuniverse}
+\begin{lemma}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/UniquenessTermPartial.agda} \formline{Equivalence.v}{813}{eraseinjty}] \label{mainuniverse}
     In \ThyTarski, we have:
     \begin{enumerate}
     \item If $\Gamma \vdashT A\; \type$ and $\Gamma \vdashT B\; \type$ with $\eraseR{A} = \eraseR{B}$, then  $\Gamma \vdashT A = B$.
@@ -247,8 +247,8 @@ computational behaviour.
 
 Now we prove the following theorem, stating the formal equivalence between the two systems:
 
-\begin{theorem}[\formline{Equivalence.v}{1379}{sectionctx} Section of erasure]\label{equT1T2}
-    If $\Gamma \vdashR J$ in the system \ThyRussell, then there exists a unique, up to conversion judgment
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Equivalence.agda} \formline{Equivalence.v}{1379}{sectionctx} Section of erasure]\label{equT1T2}
+    If $\Gamma \vdashR J$ in the system \ThyRusicon-rocq-blue-eps-converted-tosell, then there exists a unique, up to conversion judgment
     $\Gamma_1 \vdashT J_1$ in the system \ThyTarski such that $\eraseR{\Gamma_1} = \Gamma$ and $\eraseR{J_1} = J$.
 \end{theorem}
 

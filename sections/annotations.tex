@@ -10,8 +10,8 @@ of cumulativity.
 Just as we did for the previous equivalence result, we prove that the forgetful map $\eraseP{\cdot}$ preserves
 derivations.
 
-\begin{theorem}
-    If $\Gamma \vdashR J$ in \ThyRussell, then we have a derivation $\eraseP{\Gamma} \vdashP \eraseP{J}$ in \ThyPTS.
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/StripDeriv.agda} Correctness]
+    If $\Gamma \vdashR J$ in \ThyRussell, then we have a derivation $\eraseP{\Gamma} \vdashP \eraseP{J}$.
 \end{theorem}
 \begin{proof}
     We just need to prove that the stripping of rules in \ThyRussell are admissible in \ThyPTS, which
@@ -106,7 +106,7 @@ We now state and prove the main lemma of this section by structural induction on
 
 Combining \zcref{streichT2T2'} with the diagonal lemma (\zcref{lem:join-diag}), we deduce the following direct corollary, analogous to \zcref{uniqueness} of the previous section.
 
-\begin{corollary}\label{cor:strip-uniq}
+\begin{corollary}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/StripUniqNF.agda}]\label{cor:strip-uniq}
     If $\Gamma \vdashR u_0 : A_0$ and $\Gamma \vdashR u_1 : A_1$ in \ThyRussell with $\eraseP{u_0} = \eraseP{u_1}$ and $\eraseP{A_0} = \eraseP{A_1}$, then $\Gamma \vdashR A_0 = A_1$ and $\Gamma \vdashR u_0 = u_1 : A_0$.
 \end{corollary}
 \begin{proof}
@@ -116,7 +116,7 @@ Combining \zcref{streichT2T2'} with the diagonal lemma (\zcref{lem:join-diag}), 
 Finally, we can show the following theorem, which exhibits the section of the forgetful map $\eraseP{\cdot}$, showing the equivalence
 of \ThyRussell and \ThyPTS.
 
-\begin{theorem}\label{equT2T2'}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/SectionR.agda}]\label{equT2T2'}
     If $\Gamma \vdashP J$ in \ThyPTS, then we have a unique up to conversion judgment 
     $\Gamma' \vdashR J'$ in \ThyRussell such that $\eraseP{\Gamma'} = \Gamma$ and $\eraseP{J'} = J$.
 \end{theorem}

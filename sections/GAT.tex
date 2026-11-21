@@ -206,14 +206,14 @@ In \citet{definitional-inv}, terms are interpreted in a Scott Domain $D$, and un
 Finally, to prove $\Pi$-injectivity in open contexts, we use the same proof technique using logical relations as in \citet[Section 2.6]{definitional-inv}. 
 This gives the following theorems, that we will use extensively throughout the paper.
 
-\begin{theorem}[Injectivity of dependent product]\label{Pi-inj}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/PiInjectivityR.agda} Injectivity of dependent product]\label{Pi-inj}
     The dependent product is injective in \ThyGAT: if $\Gamma \vdashG \Pi(A,B) = \Pi(A',B')$, then $\Gamma \vdashG A = A'$ and $\Gamma.A \vdashG B = B'$.
 \end{theorem}
 
-\begin{theorem}[\formline{Utils.v}{1019}{Uinj} Injectivity of universes]\label{univ-inj}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} \formline{Utils.v}{1019}{Uinj} Injectivity of universes]\label{univ-inj}
     If we have $\Gamma \vdashG \U_{n_0} = \U_{n_1}$ in \ThyGAT, then $n_0 = n_1$. 
 \end{theorem}
 
-\begin{theorem}[\formline{Utils.v}{1023}{noconfusion} No-Confusion]\label{no-confusion}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} \formline{Utils.v}{1023}{noconfusion} No-Confusion]\label{no-confusion}
     For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in \ThyGAT: $\Gamma \vdashG \Pi(A,B) = \U_n$. 
 \end{theorem}

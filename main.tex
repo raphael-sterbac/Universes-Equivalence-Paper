@@ -220,10 +220,12 @@
 \DeclareDocumentCommand{\coqlogo}{}{\raisebox{-.2em}{\includegraphics[height=.9em]{icon-rocq-blue-eps-converted-to.pdf}}}
 \DeclareDocumentCommand{\formfile}{O{blob/8920605948f1c2d0b92fd81ace628cb6996f46fe/} m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2}{\coqlogo}}
-
 \DeclareDocumentCommand{\formline}{O{blob/8920605948f1c2d0b92fd81ace628cb6996f46fe/} m m m}{%
   \href{https://github.com/raphael-sterbac/Russell-Tarski-Equivalence/\IfValueT{#1}{#1}#2\#L#3}{\coqlogo}}
 
+% Agda links
+\DeclareDocumentCommand{\agdalogo}{}{\raisebox{-.2em}{\includegraphics[height=.9em]{agda.pdf}}}
+\DeclareDocumentCommand{\agdalink}{m}{\href{#1}{\agdalogo}}
 \begin{document}
 
 \maketitle
