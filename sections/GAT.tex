@@ -31,9 +31,11 @@ We have four sorts: contexts, substitutions, types, and elements.
     \begin{minipage}{0.50\linewidth}
         \begin{align*}
             \Gamma : \ctx &\vdashG \Id_\Gamma : \Gamma \rightarrow \Gamma\\
-            \Theta, \Delta, \Gamma : \ctx, \sigma : \Delta \rightarrow \Gamma, \delta : \Theta \rightarrow \Delta &\vdashG \sigma\delta : \Theta \rightarrow \Gamma\\
+            \Theta, \Delta, \Gamma : \ctx, \sigma : \Delta \rightarrow \Gamma, \delta : \Theta \rightarrow \Delta &\vdashG \sigma\delta : \Theta \rightarrow \Gamma
         \end{align*}
     \end{minipage}
+
+    \vspace{1em}
 
     which satisfies the following equations (we omit the contexts for the sake of simplicity) :
 
@@ -156,7 +158,6 @@ This fully explicit syntax is the usual way to present type theory with cumulati
 \begin{definition}[Tarski universes]
     \ThyGAT has a countable list of universes $\U_n$ with a decoding operation $T_l(\cdot)$, 
     codes for type connectives $\Pi^n$ and $\U_l^m$, and lifting operations $t_l^m$.
-
     \begin{align*}
             \Gamma : \ctx &\vdashG (\U_l)_\Gamma : \Type(\Gamma)\\
             \Gamma : \ctx &\vdashG (\U_l^m)_\Gamma : \Elem(\Gamma,(\U_m)_\Gamma) \quad (l < m)\\
@@ -193,24 +194,16 @@ It is important to note that those equations have been carefully chosen so that 
 
 \subsection{Injectivity and no-confusion}
 
-\textcolor{red}{TODO: rework to be more readable/self-contained}
-
 In the next sections, we will rely on three definitional inversion properties: injectivity of $\Pi$-types, injectivity of universes, and no-confusion between $\Pi$ and $\U_n$. 
 Rather than proving them as corollaries of normalisation (which requires a strong metatheory) or via untyped confluence (which fails in the presence of judgemental $\eta$-equality), we establish them using the new domain-theoretic technique of \citet{definitional-inv}. 
 We refer the reader to \citet[Section 2]{definitional-inv} for the general construction and focus on the adaptation to a cumulative hierarchy of universes. The details of the proof can be found in the Agda formalisation \cite{auto-formalisation}.
 
-In \citet{definitional-inv}, terms are interpreted in a Scott domain $D$ constructed elementarily via its conditional upper semi-lattice of compact elements $C = \bigcup_{k \in \bN} C_k$ (representing finite observations), where the identification $\lambda(\perp) = \perp$ validates the $\eta$-rule for functions while type constructors remain distinct from $\perp$. 
-In their paper, \citet[Section 3]{definitional-inv} models a universe hierarchy by erasing levels into a single semantic code $\U$ and recovering universe injectivity from the logical relation.
-
-To take our cumulative hierarchy into account, we equip $C$ with a hierarchy of universe codes $\U_n$ ($n \in \bN$), while keeping the stage-indexed semantic membership relation $u :_k \U_n$ not interacting with levels, so that $\U_m :_{k+1} \U_n$ holds for all $m, n$. 
-This has two consequences:
+In \citet{definitional-inv}, terms are interpreted in a Scott Domain $D$, and universe hierarchies are modelled  by erasing levels into a single semantic code $\U$ and recovering universe injectivity from the logical relation \cite[Section 3]{definitional-inv}. Here, to take our cumulative hierarchy into account, we equip the domain with a hierarchy of universe codes $\U_n$ ($n \in \bN$).
 \begin{itemize}
     \item \textit{Cumulativity and Tarski coercions.} Because semantic membership in $\U_n$ ignores the level $n$, cumulativity holds trivially in the model. Moreover, we interpret decodings $T_n(a)$ and lifts $t_n^p(a)$ as the identity on semantic elements, and codes $\Pi^n(a,b), \U_m^n$ are interpreted by the same semantic constructors as $\Pi(A,B), \U_m$. Thus, all the naturality and functoriality equations hold by definition.
-    \item \textit{Universe injectivity and no-confusion.} Because the codes $\U_n$ and $\Pi(a,b)$ are already distinct in $C$, soundness of the model in the constant bottom environment $\rho_\perp(x) = \perp$ directly gives \zcref{univ-inj} and \zcref{no-confusion}.
+    \item \textit{Universe injectivity and no-confusion.} Because the codes $\U_n$ and $\Pi(a,b)$ are already distinct in the domain, soundness of the model in the constant bottom environment directly gives \zcref{univ-inj} and \zcref{no-confusion}.
 \end{itemize}
-
-Finally, to prove $\Pi$-injectivity in open contexts, we use the logical relation of \citet[Section 2.6]{definitional-inv} indexed by compact observations $a \in C_k$. By structural induction on derivations, we prove that the model is adequate: every derivable conversion $\Gamma \vdashG A = B$ is valid in the logical relation at any compact approximation $a$ of $A$. Evaluating adequacy on $\Gamma \vdashG \Pi(A,B) = \Pi(A',B')$ at the compact witness $\Pi(\perp,\perp)$ yields $\Gamma \vdashG A = A'$ and $\Gamma.A \vdashG B = B'$.
-
+Finally, to prove $\Pi$-injectivity in open contexts, we use the same proof technique using logical relations as in \citet[Section 2.6]{definitional-inv}. 
 This gives the following theorems, that we will use extensively throughout the paper.
 
 \begin{theorem}[Injectivity of dependent product]\label{Pi-inj}

@@ -17,9 +17,10 @@ We now show that \ThyGAT{} and \ThyTarski{} are equivalent, relating the explici
 
 To lift derivations back to \ThyGAT{} and recover the context annotations, we define a lifting operation $\liftG{-}$, parameterized by the current context $\Gamma$ of \ThyGAT:
 \begin{align*}
-    \liftG{1} &:= 1, & \liftG{\Gamma.A} &:= \Gamma'.\liftG[\Gamma']{A} \quad (\text{where } \Gamma' := \liftG{\Gamma}), \\
-    \liftG[\Gamma.A]{v_0} &:= \q_{\Gamma,A}, & \liftG[\Gamma.B]{v_{n+1}} &:= \liftG[\Gamma]{v_n}\p_{\Gamma,B}, \\
-    \liftG[\Gamma]{\U_n} &:= (\U_n)_\Gamma, & \liftG[\Gamma]{\U_m^n} &:= (\U_m^n)_\Gamma,
+    \liftG{1} &:= 1 & \liftG{\Gamma.A} &:= \Gamma'.\liftG[\Gamma']{A} \quad (\text{where } \Gamma' := \liftG{\Gamma}) \\
+    \liftG[\Gamma.A]{v_0} &:= \q_{\Gamma,A} & \liftG[\Gamma.B]{v_{n+1}} &:= \liftG[\Gamma]{v_n}\p_{\Gamma,B} \\
+    \liftG[\Gamma]{\U_n} &:= (\U_n)_\Gamma & \liftG[\Gamma]{\U_m^n} &:= (\U_m^n)_\Gamma\\
+    \liftG[\Delta \to 1]{\alpha} &:= ()_\Delta & \liftG[\Delta \to \Gamma.A]{\alpha} &:= (\liftG[\Delta \to \Gamma]{\mathsf{wk} \circ \alpha}, \liftG[\Delta]{\alpha(0)})
 \end{align*}
 
 \begin{lemma}[Right inverse]\label{embedding-rightinverse}

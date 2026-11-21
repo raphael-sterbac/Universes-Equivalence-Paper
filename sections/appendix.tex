@@ -26,190 +26,6 @@ All four systems share the same rules for context well-formation and context con
   }
 \end{mathparsmall}
 
-\subsection{The system \ThyTarski : Tarski universes}
-
-We specify the system \ThyTarski{} with derivation rules.
-This formulation with rules is used to prove properties by induction on derivations.
-We start with the well-formed type judgment $\Gamma \vdashT A \;\type$ and the typing judgment $\Gamma \vdashT a : A$:
-
-\begin{mathparsmall}
-  \ebrule{
-    \hypo{\Gamma \vdashT A \;\type}
-    \infer1{\Gamma.A \vdashT v_0 : A\p}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT v_n : A}
-    \hypo{\Gamma \vdashT B \;\type}
-    \infer2{\Gamma.B \vdashT v_{n+1} : A\p}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A \;\type}
-    \hypo{\Gamma.A \vdashT B \;\type}
-    \infer2{\Gamma \vdashT \Pi(A, B) \;\type}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma.A \vdashT b : B}
-    \hypo{\Gamma.A \vdashT B \;\type}
-    \hypo{\Gamma \vdashT A \;\type}
-    \infer3{\Gamma \vdashT \lambda(A,B,b) : \Pi(A, B)}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT c : \Pi(A, B)}
-    \hypo{\Gamma \vdashT a : A}
-    \hypo{\Gamma.A \vdashT B \;\type}
-    \hypo{\Gamma \vdashT A \;\type}
-    \infer4{\Gamma \vdashT \app(A,B,c,a) : B[a]}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT}
-    \infer1{\Gamma \vdashT \U_n \;\type}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_n}
-    \infer1{\Gamma \vdashT T_n(a) \;\type}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_n}
-    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
-    \hypo{\Gamma \vdashT T_n(a) \;\type}
-    \infer3{\Gamma \vdashT \Pi^n(a, b) : \U_n}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT}
-    \infer1[($m<n$)]{\Gamma \vdashT \U_m^n : \U_n}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_m}
-    \infer1[($m\leq n$)]{\Gamma \vdashT t_m^n(a) : \U_n}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : A}
-    \hypo{\Gamma \vdashT A = B}
-    \infer2{\Gamma \vdashT a : B}
-  }
-\end{mathparsmall}
-
-The equivalence, congruence, and conversion rules for $\Gamma \vdashT A = B$ and $\Gamma \vdashT a = b : A$ are given by:
-
-\begin{mathparsmall}
-  \ebrule{
-    \hypo{\Gamma \vdashT a = a' : A}
-    \hypo{\Gamma \vdashT A = B}
-    \infer2{\Gamma \vdashT a = a' : B}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A \;\type}
-    \infer1{\Gamma \vdashT A = A}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A = B}
-    \hypo{\Gamma \vdashT A = C}
-    \infer2{\Gamma \vdashT B = C}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : A}
-    \infer1{\Gamma \vdashT a = a : A}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a = b : A}
-    \hypo{\Gamma \vdashT a = c : A}
-    \infer2{\Gamma \vdashT b = c : A}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A = A'}
-    \hypo{\Gamma.A \vdashT B = B'}
-    \infer2{\Gamma \vdashT \Pi(A, B) = \Pi(A', B')}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A = A'}
-    \hypo{\Gamma.A \vdashT B = B'}
-    \hypo{\Gamma.A \vdashT b = b' : B}
-    \infer3{\Gamma \vdashT \lambda(A,B,b) = \lambda(A',B',b') : \Pi(A, B)}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT A = A'}
-    \hypo{\Gamma.A \vdashT B = B'}
-    \hypo{\Gamma \vdashT c = c' : \Pi(A, B)}
-    \hypo{\Gamma \vdashT a = a' : A}
-    \infer4{\Gamma \vdashT \app(A,B,c,a) = \app(A',B',c',a') : B[a]}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a = a' : \U_n}
-    \infer1{\Gamma \vdashT T_n(a) = T_n(a')}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a = a' : \U_n}
-    \infer1[($n\leq p$)]{\Gamma \vdashT t_n^p(a) = t_n^p(a') : \U_p}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a = a' : \U_n}
-    \hypo{\Gamma.T_n(a) \vdashT b = b' : \U_n}
-    \infer2{\Gamma \vdashT \Pi^n(a, b) = \Pi^n(a', b') : \U_n}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma.A \vdashT b : B}
-    \hypo{\Gamma \vdashT a : A}
-    \infer2[($\beta$-rule)]{\Gamma \vdashT \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT f : \Pi(A, B)}
-    \infer1[($\eta$-rule)]{\Gamma \vdashT f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_n}
-    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
-    \infer2{\Gamma \vdashT T_n(\Pi^n(a, b)) = \Pi(T_n(a),T_n(b))}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_n}
-    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
-    \infer2[($n\leq p$)]{\Gamma \vdashT t_n^p(\Pi^n(a, b)) = \Pi^p(t_n^p(a),t_n^p(b)) : \U_p}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT}
-    \infer1[($m<n$)]{\Gamma \vdashT T_n(\U_m^n) = \U_m}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT}
-    \infer1[($m<n\leq p$)]{\Gamma \vdashT t_n^p(\U_m^n) = \U_m^p : \U_p}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_m}
-    \infer1[($m \leq n$)]{\Gamma \vdashT T_n(t_m^n(a)) = T_m(a)}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashT a : \U_m}
-    \infer1[($m\leq n\leq p$)]{\Gamma \vdashT t_n^p(t_m^n(a)) = t_m^p(a) : \U_p}
-  }
-\end{mathparsmall}
 
 \subsection{The system \ThyGAT : explicit substitutions}
 
@@ -220,20 +36,6 @@ The system \ThyGAT{} is the deductive presentation of the Generalized Algebraic 
     a,b ::= \app(A,B,c,a) \; | \; \lambda(A,B,b) \; | \; t_m^n(a) \; | \; (\U_m^n)_\Gamma \; | \; \Pi^n(a, b) \; | \; \q_{\Gamma,A} \; | \; a\sigma \\
     \sigma , \delta ::= \sigma \delta \; | \; \Id_\Gamma \; | \; ()_\Gamma \; | \; (\sigma, a) \; | \; \p_{\Gamma,A}
 \end{gather*}
-Following Definition 5, we write $[a] := (\Id_\Gamma, a) : \Gamma \rightarrow \Gamma.A$ and $\sigma^+ := (\sigma\p_{\Delta,A\sigma}, \q_{\Delta,A\sigma}) : \Delta.A\sigma \rightarrow \Gamma.A$.
-The logical and universe rules of \ThyGAT{} are those of \ThyTarski{}, except that de Bruijn indices $v_n$ are replaced by the projection term $\q_{\Gamma,A}$ (and $v_0$ in the $\eta$-rule is replaced by $\q_{\Gamma,A}$):
-
-\begin{mathparsmall}
-  \ebrule{
-    \hypo{\Gamma \vdashG A \;\type}
-    \infer1{\Gamma.A \vdashG \q_{\Gamma,A} : A\p_{\Gamma,A}}
-  }
-  \and
-  \ebrule{
-    \hypo{\Gamma \vdashG f : \Pi(A, B)}
-    \infer1[($\eta$-rule)]{\Gamma \vdashG f = \lambda(A,B,\app(A\p_{\Gamma,A},B\p_{\Gamma,A}^+,f\p_{\Gamma,A}, \q_{\Gamma,A})) : \Pi(A, B)}
-  }
-\end{mathparsmall}
 
 The formation, equivalence, and congruence rules for substitutions and their actions on types and terms are:
 
@@ -441,9 +243,184 @@ Finally, the conversion rules for the substitution calculus and its naturality o
   }
 \end{mathparsmall}
 
-\subsection{The system \ThyRussell : Russell with annotations}
+\subsection{The system \ThyTarski : Tarski universes}
 
-We specify the system \ThyRussell{}, which replaces the Tarski universe operations of \ThyTarski{} with Russell universes and silent cumulativity:
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma \vdashT A \;\type}
+    \infer1{\Gamma.A \vdashT v_0 : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT v_n : A}
+    \hypo{\Gamma \vdashT B \;\type}
+    \infer2{\Gamma.B \vdashT v_{n+1} : A\p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A \;\type}
+    \hypo{\Gamma.A \vdashT B \;\type}
+    \infer2{\Gamma \vdashT \Pi(A, B) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdashT b : B}
+    \hypo{\Gamma.A \vdashT B \;\type}
+    \hypo{\Gamma \vdashT A \;\type}
+    \infer3{\Gamma \vdashT \lambda(A,B,b) : \Pi(A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT c : \Pi(A, B)}
+    \hypo{\Gamma \vdashT a : A}
+    \hypo{\Gamma.A \vdashT B \;\type}
+    \hypo{\Gamma \vdashT A \;\type}
+    \infer4{\Gamma \vdashT \app(A,B,c,a) : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT}
+    \infer1{\Gamma \vdashT \U_n \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \infer1{\Gamma \vdashT T_n(a) \;\type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
+    \hypo{\Gamma \vdashT T_n(a) \;\type}
+    \infer3{\Gamma \vdashT \Pi^n(a, b) : \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT}
+    \infer1[($m<n$)]{\Gamma \vdashT \U_m^n : \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_m}
+    \infer1[($m\leq n$)]{\Gamma \vdashT t_m^n(a) : \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : A}
+    \hypo{\Gamma \vdashT A = B}
+    \infer2{\Gamma \vdashT a : B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a = a' : A}
+    \hypo{\Gamma \vdashT A = B}
+    \infer2{\Gamma \vdashT a = a' : B}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A \;\type}
+    \infer1{\Gamma \vdashT A = A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A = B}
+    \hypo{\Gamma \vdashT A = C}
+    \infer2{\Gamma \vdashT B = C}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : A}
+    \infer1{\Gamma \vdashT a = a : A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a = b : A}
+    \hypo{\Gamma \vdashT a = c : A}
+    \infer2{\Gamma \vdashT b = c : A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A = A'}
+    \hypo{\Gamma.A \vdashT B = B'}
+    \infer2{\Gamma \vdashT \Pi(A, B) = \Pi(A', B')}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A = A'}
+    \hypo{\Gamma.A \vdashT B = B'}
+    \hypo{\Gamma.A \vdashT b = b' : B}
+    \infer3{\Gamma \vdashT \lambda(A,B,b) = \lambda(A',B',b') : \Pi(A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT A = A'}
+    \hypo{\Gamma.A \vdashT B = B'}
+    \hypo{\Gamma \vdashT c = c' : \Pi(A, B)}
+    \hypo{\Gamma \vdashT a = a' : A}
+    \infer4{\Gamma \vdashT \app(A,B,c,a) = \app(A',B',c',a') : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a = a' : \U_n}
+    \infer1{\Gamma \vdashT T_n(a) = T_n(a')}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a = a' : \U_n}
+    \infer1[($n\leq p$)]{\Gamma \vdashT t_n^p(a) = t_n^p(a') : \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a = a' : \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b = b' : \U_n}
+    \infer2{\Gamma \vdashT \Pi^n(a, b) = \Pi^n(a', b') : \U_n}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma.A \vdashT b : B}
+    \hypo{\Gamma \vdashT a : A}
+    \infer2[($\beta$-rule)]{\Gamma \vdashT \app(A,B,\lambda(A,B,b),a) = b[a] : B[a]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT f : \Pi(A, B)}
+    \infer1[($\eta$-rule)]{\Gamma \vdashT f = \lambda(A,B,\app(A\p,B\p^+,f\p, v_0)) : \Pi(A, B)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
+    \infer2{\Gamma \vdashT T_n(\Pi^n(a, b)) = \Pi(T_n(a),T_n(b))}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \hypo{\Gamma.T_n(a) \vdashT b : \U_n}
+    \infer2[($n\leq p$)]{\Gamma \vdashT t_n^p(\Pi^n(a, b)) = \Pi^p(t_n^p(a),t_n^p(b)) : \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT}
+    \infer1[($m<n$)]{\Gamma \vdashT T_n(\U_m^n) = \U_m}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT}
+    \infer1[($m<n\leq p$)]{\Gamma \vdashT t_n^p(\U_m^n) = \U_m^p : \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_m}
+    \infer1[($m \leq n$)]{\Gamma \vdashT T_n(t_m^n(a)) = T_m(a)}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_m}
+    \infer1[($m\leq n\leq p$)]{\Gamma \vdashT t_n^p(t_m^n(a)) = t_m^p(a) : \U_p}
+  }
+\end{mathparsmall}
+
+\subsection{The system \ThyRussell : Russell with annotations}
 
 \begin{mathparsmall}
   \ebrule{
@@ -509,11 +486,7 @@ We specify the system \ThyRussell{}, which replaces the Tarski universe operatio
     \hypo{\Gamma \vdashR A = B}
     \infer2{\Gamma \vdashR a : B}
   }
-\end{mathparsmall}
-
-The equivalence, congruence, and conversion rules for \ThyRussell{} are:
-
-\begin{mathparsmall}
+  \and
   \ebrule{
     \hypo{\Gamma \vdashR a = a' : A}
     \hypo{\Gamma \vdashR A = B}
@@ -593,8 +566,6 @@ The equivalence, congruence, and conversion rules for \ThyRussell{} are:
 
 \subsection{The system \ThyPTS : Russell without annotations}
 
-We specify the system \ThyPTS{}, which removes the codomain annotation from $\lambda$-abstractions and the domain/codomain annotations from applications in \ThyRussell{}:
-
 \begin{mathparsmall}
   \ebrule{
     \hypo{\Gamma \vdashP A \;\type}
@@ -657,11 +628,7 @@ We specify the system \ThyPTS{}, which removes the codomain annotation from $\la
     \hypo{\Gamma \vdashP A = B}
     \infer2{\Gamma \vdashP a : B}
   }
-\end{mathparsmall}
-
-The equivalence, congruence, and conversion rules for \ThyPTS{} are:
-
-\begin{mathparsmall}
+  \and
   \ebrule{
     \hypo{\Gamma \vdashP a = a' : A}
     \hypo{\Gamma \vdashP A = B}

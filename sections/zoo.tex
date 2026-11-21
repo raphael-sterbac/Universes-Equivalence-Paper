@@ -119,7 +119,7 @@ Then, the operations of \ThyGAT can be translated as formation and introduction 
         \begin{minipage}{0.95\textwidth}
 \begin{mathparsmall}
   \ebrule{
-    \hypo{}
+    \hypo{\Gamma \vdashT}
     \infer1{\Gamma \vdashT \U_n \;\type}
   }
   \and
@@ -136,7 +136,7 @@ Then, the operations of \ThyGAT can be translated as formation and introduction 
   }
   \and
   \ebrule{
-    \hypo{}
+    \hypo{\Gamma \vdashT}
     \infer1[($m<n$)]{\Gamma \vdashT \U_m^n: \U_n}
   }
   \and
@@ -148,10 +148,10 @@ Then, the operations of \ThyGAT can be translated as formation and introduction 
 \end{minipage}%
     }
     \caption{Universe rules of \ThyTarski}
-    \label{fig:rulesconv}
+    \label{fig:tarski-univ}
 \end{figure}
 
-The equations of \ThyGAT can be translated as conversion rules for \ThyTarski (\zcref{fig:rulesconv}). Namely,
+The equations of \ThyGAT can be translated as conversion rules for \ThyTarski (\zcref{fig:tarski-conv}). Namely,
 we require the decoding and lifting operation to be strict, and natural.
 
 \begin{figure}[H]
@@ -173,13 +173,13 @@ we require the decoding and lifting operation to be strict, and natural.
   }
   \and
   \ebrule{
-    \hypo{}
-    \infer1[$m<n$]{\Gamma \vdashT T_n(\U_m^n) = \U_m}
+    \hypo{\Gamma \vdashT}
+    \infer1[($m<n$)]{\Gamma \vdashT T_n(\U_m^n) = \U_m}
   }
   \and
   \ebrule{
-    \hypo{}
-    \infer1[($n\leq p$)]{\Gamma \vdashT t_n^p(\U_m^n) = \U_m^p : \U_p}
+    \hypo{\Gamma \vdashT}
+    \infer1[($m<n\leq p$)]{\Gamma \vdashT t_n^p(\U_m^n) = \U_m^p : \U_p}
   }
   \and
   \ebrule{
@@ -195,10 +195,8 @@ we require the decoding and lifting operation to be strict, and natural.
 \end{minipage}%
     }
     \caption{Conversion rules of \ThyTarski}
-    \label{fig:rulesconv}
+    \label{fig:tarski-conv}
 \end{figure}
-
-\textcolor{red}{TODO: missing $\Gamma$ well-formed hypothesis in fig. 2/3 ?}
 
 Now, for the theory \ThyRussell (Russell universes), types and terms are conflated, and thus
 we should be able to deduce $\Gamma \vdashR A \; \type$ from $\Gamma \vdashR A : \U_n$. Conversely,
@@ -215,7 +213,7 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
         \begin{minipage}{0.95\textwidth}
 \begin{mathparsmall}
 \ebrule{
-    \hypo{}
+    \hypo{\Gamma \vdashR}
     \infer1{\Gamma \vdashR \U_n \;\type}
   }
   \and
@@ -231,7 +229,7 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
   }
   \and
   \ebrule{
-    \hypo{}
+    \hypo{\Gamma \vdashR}
     \infer1[($m<n$)]{\Gamma \vdashR \U_m: \U_n}
   }
   \and
@@ -243,7 +241,7 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
 \end{minipage}%
     }
     \caption{Universe rules of \ThyRussell}
-    \label{fig:rulesconv}
+    \label{fig:russell-univ}
 \end{figure}
 
 Finally, we also consider a system \ThyPTS, which removes redundant type annotations in functional application
@@ -261,13 +259,13 @@ Now, we relate the previously defined theories, by exhibiting forgetful translat
 First, we define a forgetful map $\eraseT{\cdot}$ from \ThyGAT{} to \ThyTarski{} which makes substitutions implicit by interpreting explicit substitutions of \ThyGAT{} as meta-level simultaneous substitutions on de Bruijn indices.
 
 \begin{definition}
-    We define $\eraseT{\cdot}$ inductively by:
+    We define $\eraseT{\cdot}$ by structural recursion on the raw syntax of \ThyGAT{} (acting homomorphically on $\Pi, \lambda, \app, T_n, t_m^n, \Pi^n$):
 
     \noindent
     \begin{minipage}{0.42\linewidth}
     \begin{align*}
         \eraseT{(\U_n)_\Gamma} &= \U_n\\
-        \eraseT{(\U_m^n)_\Gamma} &= \U_m^n,\\
+        \eraseT{(\U_m^n)_\Gamma} &= \U_m^n\\
         \eraseT{\q_{\Gamma,A}} &= v_0\\
         \eraseT{\Id_\Gamma} &= \mathsf{id}\\
         \eraseT{()_\Gamma} &= \mathsf{id}
@@ -285,10 +283,10 @@ First, we define a forgetful map $\eraseT{\cdot}$ from \ThyGAT{} to \ThyTarski{}
     \end{minipage}
 \end{definition}
 
-Then, we define the next forgetful map, which erases the lift and decoding operation of  Tarski-style universes, and sends codes to the corresponding type formers. Concretely, this operation forgets about all the explicit coercions given by the presentation à la Tarski, and leaves everything implicit.
+Then, we define the next forgetful map, which erases the lift and decoding operation of Tarski-style universes, and sends codes to the corresponding type formers. Concretely, this operation forgets about all the explicit coercions given by the presentation à la Tarski, and leaves everything implicit.
 
 \begin{definition}[\formline{Erasure.v}{10}{Erasurefunction} Universe erasure]
-    We $\eraseR{\cdot}$ inductively by:
+    We define $\eraseR{\cdot}$ inductively by:
 
     \noindent
     \begin{minipage}{0.40\linewidth}
@@ -330,7 +328,7 @@ In the following, we will prove lemmas of the following shape, following \citet{
 \textbf{Lemma.} If $\Gamma \vdash t,t' : A$ in $\mathcal{T}$ with $|t| = |t'|$ in $\mathcal{T}'$, then we have : $\Gamma \vdash t = t' : A$ in $\mathcal{T}$.\\
 
 \begin{remark}As mentioned in the introduction, this relates to elaboration in proof assistants. 
-Concretely, this lemma means that if two terms are syntactically the same in the implicit user/ syntax, then they should have the same
+Concretely, this lemma means that if two terms are syntactically the same in the implicit user syntax, then they should have the same
 computational behaviour in the core system, and thus should be convertible. This is to be compared with a simulation
 result, and is often referred to as a \emph{coherence} lemma.
 \end{remark}
@@ -338,7 +336,7 @@ result, and is often referred to as a \emph{coherence} lemma.
 In the next sections, we will prove such lemmas for each of our theories. With those, we will be able to lift a derivation from an implicit theory to an explicit one.
 The situation is summarized in \zcref{hierarchy-zoo}, where the strong arrows are the known forgetful maps, and the dotted arrows are the sections we will be constructing, with the necessary definitional inversion properties.
 Semantically, this means that their corresponding Categories with Families (CwFs) are all isomorphic to the initial CwF of \ThyGAT.
-In particular, any model $\mathcal{M}$ of the GAT in Section 2.1 interprets well-typed derivations of the implicit, unannotated system $\mathcal{T}_P$. However, those theories crucially do not have the same categories of models, as the decoding operation is not necessarily injective in a model of \ThyGAT. 
+In particular, any model $\mathcal{M}$ of the GAT in Section 2.1 interprets well-typed derivations of the implicit, unannotated system \ThyPTS. However, those theories crucially do not have the same categories of models, as the decoding operation is not necessarily injective in a model of \ThyGAT. 
 
 \begin{figure}[!ht]
 \centering
