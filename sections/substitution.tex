@@ -30,6 +30,8 @@ To lift derivations back to \ThyGAT{} and recover the context annotations, we de
         \item For any raw $\Gamma$ and type $A$ of \ThyTarski{}, we have $\eraseT{\liftG[\Delta]{A}} = A$ (where $\Delta := \liftG{\Gamma}$).
         \item For any raw $\Gamma$ and term $a$ of \ThyTarski{}, we have $\eraseT{\liftG[\Delta]{a}} = a$ (where $\Delta := \liftG{\Gamma}$).
     \end{itemize}
+
+    \textcolor{red}{TODO: correct raw context above}
 \end{lemma}
 \begin{proof}
     By induction, using the equality $\eraseT{\liftG[\Gamma]{v_n}\p_{\Gamma,B}} = v_n[\mathsf{wk}] = v_{n+1}$.
