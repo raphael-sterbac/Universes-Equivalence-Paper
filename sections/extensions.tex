@@ -1,26 +1,87 @@
-\section{Extensions of our result}\label{extension}
+\section{Algebraic levels and Explicit Universe Polymorphism}\label{extension}
 
-\textcolor{red}{TODO: rework this section}
+In this section, we illustrate the modularity of our proof method by showing that it extends to the theory of \citet{polymorphism, bcde2026}, with explicit universe polymorphism and cumulative universes indexed by internal levels.
 
-In this section, we illustrate the modularity of our proof method by showing that it extends to more complicated systems.
-In fact, we believe that the proof should extend to various flavours of type theories, as long as they satisfy definitional inversion.
+For the theory without constraints, the proof of the previous sections can be adapted directly by simply making the reasoning on levels internal to the theory. We already know that this theory enjoys definitional inversion as it is normalising \cite{fuss-free}. However, for a theory with constraints, things get more complicated. Here, we only sketch the proof idea, but the proof for this extended system has been auto-formalised in Agda \cite{auto-formalisation}.
 
-For instance, we describe how to extend our equivalence result to the theory of \citet{polymorphism, bcde2026}, with explicit universe polymorphism and cumulative universes indexed by internal levels.
-For the theory without constraints, the proof of the previous sections can be adapted directly by simply making the reasoning on levels internal to the theory. We already know that this theory enjoys definitional inversion as it is normalising \cite{fuss-free} However, for a theory with constraints, things get more complicated. Here, we only sketch the proof idea, but the proof for this extended system has been auto-formalised in Agda \cite{auto-formalisation}.
+In this system, levels are now an actual sort with variables, suprema, and successors: 
+$l ::= \alpha_i \mid l \vee m \mid l^+$
+Additionally, we have constraints of the form $\psi ::= l = m$, which can represent $l \leq m$ as $l \vee m = m$ and $l < m$ as $l^+ \leq m$.
+Contexts can be extended with level variables $\Gamma, \alpha$ and constraints $\Gamma, \psi$. We add level and constraints products $[\alpha]A$, $[\psi]A$, together with an empty type $\emptyset : \U_l$.
+Those new constructs obey to the following rules. 
 
-In this system, contexts can be extended with level variables $\Gamma, \alpha$ and level constraints $\Gamma, \psi$, we also have level and constraint products $[\alpha]A$, $[\psi]A$.
+\begin{mathparsmall}
+  \ebrule{
+    \hypo{\Gamma, \alpha \vdash A \; \type}
+    \infer1{\Gamma \vdash [\alpha]A \; \type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma, \alpha \vdash u : A}
+    \infer1{\Gamma \vdash \langle \alpha \rangle_A u : [\alpha]A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash t : [\alpha]A}
+    \infer1{\Gamma \vdash t_A l : A[l/\alpha]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma, \alpha \vdash u : A}
+    \infer1{\Gamma \vdash (\langle \alpha \rangle_A u)_A l = u[l/\alpha] : A[l/\alpha]}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdash t : [\alpha]A}
+    \infer1{\Gamma \vdash t = \langle \alpha \rangle_A (t^\uparrow_{A^\uparrow}\,\alpha) : [\alpha]A}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma, \psi \vdash A \; \type}
+    \infer1{\Gamma \vdash [\psi]A \; \type}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma, \psi \vdash t : A}
+    \infer1{\Gamma \vdash \langle \psi \rangle_A t : [\psi]A}
+  }
+  \and
+  \ebrule{
+    \hypo{\psi \text{ valid in } \Gamma}
+    \hypo{\Gamma \vdash A \; \type}
+    \infer2{\Gamma \vdash [\psi]A = A}
+  }
+  \and
+  \ebrule{
+    \hypo{\psi \text{ valid in } \Gamma}
+    \hypo{\Gamma \vdash t : A}
+    \infer2{\Gamma \vdash \langle \psi \rangle_A t = t : A}
+  }
+\end{mathparsmall}
 
-\textcolor{red}{TODO: add rules}
+\noindent In addition, constraint products respect constraint equivalence $\psi \Leftrightarrow \psi'$, and whenever the level context has a \emph{loop} (i.e., $l < l$ is valid), collapse rules equate every type $A$ to $\emptyset$ and every term $t : A$ to $\emptyset : A$.
 
-First, to relate the Tarski and Russell presentations (\ThyTarski and \ThyRussell). In \zcref{sectionT1T2}, we observe that for universe levels we only needed to take suprema and infima. In fact, the lower universe $\U_k$ of \zcref{mainuniverse} is given by $\min(n_0,n_1)$ in the base cases. To reconstruct this operation internally, we observe that in any consistent context, if a constraint $l \leq n_0$ and $l \leq n_1$ holds, we can use decidability of the arithmetic on levels.
+First, we relate the Tarski and Russell presentations (\ThyTarski and \ThyRussell). Because \zcref{mainuniverse} compares codes by lifting them to the join of their universes, the proof of \zcref{sectionT1T2} adapts directly by replacing $\max(n_0, n_1)$ with the internal supremum $n_0 \vee n_1$.
+To handle inconsistent level contexts, we use the decidability of loop-checking \cite{loopchecking}: at each step of the proof, we first decide whether $\Gamma$ has a loop. If it doesn't, universe injectivity holds and the proof of \zcref{sectionT1T2} goes through, and otherwise the statement holds vacuously.
 
-\textcolor{red}{TODO: this actually doesn't make sense, the preorder is not total}
-
-Second, to relate the annotated and unannotated Russell presentations (\ThyRussell and \ThyPTS), where $\eraseP{\cdot}$ also erases the type annotations on $\langle \alpha \rangle_A u$, $\langle \psi \rangle_A t$, and $t_A l$), we extend the join and coercion method of \zcref{sectionT2T2'}. Because cumulativity does not act structurally on $[\alpha]A$ or $[\psi]A$, we extend \zcref{def:join} with join rules for $[\alpha]B_i$ and $[\psi]B_i$, where universe joins use the internal supremum $\U_{k \vee m}$ and the corresponding coercions are defined by $\eta$-expansion.
+Second, we relate the annotated and unannotated presentations (\ThyRussell and \ThyPTS), where $\eraseP{\cdot}$ also erases the type annotations on $\langle \alpha \rangle_A u$, $\langle \psi \rangle_A t$, and $t_A l$. We extend the join and coercion method of \zcref{sectionT2T2'}. Because cumulativity does not act structurally on $[\alpha]A$ or $[\psi]A$, we extend \zcref{def:join} with join rules for $[\alpha]B_i$ and $[\psi]B_i$, where universe joins use the internal supremum $\U_{k \vee m}$ and the corresponding coercions are defined by $\eta$-expansion:
 \[
-    \coe_{[\alpha]B \leq [\alpha]L'}(t) := \langle \alpha \rangle_{L'}\,\coe_{B \leq L'}((t\p)_{B\p^+}\,\alpha), \qquad
+    \coe_{[\alpha]B \leq [\alpha]L'}(t) := \langle \alpha \rangle_{L'}\,\coe_{B \leq L'}(t^\uparrow_{B^\uparrow}\,\alpha), \qquad
     \coe_{[\psi]B \leq [\psi]L'}(t) := \langle \psi \rangle_{L'}\,\coe_{B \leq L'}(t).
 \]
-For the diagonal lemma (\zcref{lem:join-diag}) to go through for constraint products, we add the natural $\eta$-rule for constraint products :
-\[\Gamma \vdashR \langle \psi \rangle_A t  = t : [\psi]A \quad \text{when} \quad \Gamma \vdashR t : [\psi]A\]
-Moreover, since $[\psi]A = A$ holds whenever $\psi$ is valid in $\Gamma$, a constraint product is not necessarily distinct from a universe, $\Pi$-type, or level product. Thus, the domain model has a guard-aware no-confusion property stating that in a consistent context, if $[\psi]A$ is convertible to $\U_l$, $\Pi(C,B)$, or $[\alpha]B$, then $\psi$ is valid in $\Gamma$.
+For the diagonal lemma (\zcref{lem:join-diag}) to go through for constraint products, we add the natural $\eta$-rule for constraint products:
+\[
+    \Gamma \vdashR \langle \psi \rangle_A t = t : [\psi]A \quad \text{when} \quad \Gamma \vdashR t : [\psi]A.
+\]
+
+Moreover, since $[\psi]A = A$ holds whenever $\psi$ is valid in $\Gamma$, a constraint product is not necessarily distinct from $\U_l$, $\Pi$, or $[\alpha]A$.
+Thus, we need a \emph{guard-aware} no-confusion property:
+
+\begin{theorem}[Guard-aware no-confusion]
+In a loop-free context $\Gamma$, if $\Gamma \vdashR X = [\psi]A$ where $X$ is $\U_l$, $\Pi(C,B)$, or $[\alpha]B$, then $\psi$ must be valid in $\Gamma$.
+\end{theorem}
+\begin{proof}
+This follows directly from soundness of domain model. In this model, whenever $\psi$ is not valid in $\Gamma$, the type $[\psi]A$ denotes the trivial singleton $\{\bot\}$, whereas $\U_l$, $\Pi(C,B)$, and $[\alpha]B$ all contain non trivial elements. Hence, any conversion $\Gamma \vdashR X = [\psi]A$ forces $\psi$ to be valid in $\Gamma$.
+\end{proof}
+
+In the join proof, whenever a join is inverted against $\U_l$, $\Pi$, or $[\alpha]$, this property guarantees that any outer guard joins have valid constraints and can be stripped using $[\psi]A = A$.
