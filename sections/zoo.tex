@@ -5,7 +5,7 @@
 In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to \ThyGAT.
 All those systems will have \emph{implicit substitutions}, meaning that it is defined as a meta-operation rather than as an operation of the theory.
 
-More precisely, a substitution is a map $\alpha : \bN \to \mathsf{Tm}$ assigning a raw term to each de Bruijn index, with action $A[\alpha]$ and $a[\alpha]$ defined inductively (see \zcref{appendix:rules}). We define: 
+More precisely, a substitution is a map $\alpha : \bN \to \mathsf{Tm}$ assigning a raw term to each de Bruijn index, with action $A[\alpha]$ and $a[\alpha]$ defined inductively. We define: 
 \begin{align*}
     \mathsf{id}(n) &:= v_n, &
     \mathsf{wk}(n) &:= v_{n+1}, &
@@ -187,6 +187,11 @@ we require the decoding and lifting operation to be strict, and natural.
   \ebrule{
     \hypo{\Gamma \vdashT a : \U_m}
     \infer1[($m\leq n\leq p$)]{\Gamma \vdashT t_n^p(t_m^n(a)) = t_m^p(a): \U_p}
+  }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \infer1{\Gamma \vdashT t_n^n(a) = a : \U_n}
   }
 \end{mathparsmall}
 \end{minipage}%

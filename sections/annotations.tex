@@ -134,9 +134,10 @@ system, with the additional rule for cumulativity.
 
 If we wanted to go even further, we could also remove the annotation of the variable from the lambda abstraction, again
 following \citet{Streicher}.
-However to do so, we crucially need to rely on the full normalisation result, as removing this annotation can lead to multiple non-convertible derivations for the same judgement, as shown by the following example.
+However to do so, we crucially need to rely on the full normalisation result, as removing this annotation breaks the structural induction of \zcref{streichT2T2'}: the same judgement can be derived using subterms with non-convertible types, as shown by the following example.
     
 \begin{example}
-        We have two derivations : $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_p)$, which are not convertible when $n<p$.
-        Then we can derive the same judgement from those two premises: $t :\U_n \vdashP (\lambda \,y.t) \; (\lambda \,x.x) : \U_n$
+        We have two derivations: $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_p)$, whose types are not convertible when $n<p$.
+        Then we can derive the same judgement from those two premises: $t :\U_n \vdashP (\lambda \,y.t) \; (\lambda \,x.x) : \U_n$.
+        While the two resulting derivations in \ThyRussell are still convertible (both $\beta$-reduce to $t$), the two lifts of $\lambda \,y.t$ have non-convertible domain annotations $\Pi(\U_n,\U_n)$ and $\Pi(\U_n,\U_p)$ and therefore admit no join, preventing a direct proof by structural induction without normalisation.
 \end{example}

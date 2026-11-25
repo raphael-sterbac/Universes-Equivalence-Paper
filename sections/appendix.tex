@@ -201,6 +201,11 @@ All systems share the same rules for context well-formation and context conversi
     \hypo{\Gamma \vdashT a : \U_m}
     \infer1[($m\leq n\leq p$)]{\Gamma \vdashT t_n^p(t_m^n(a)) = t_m^p(a) : \U_p}
   }
+  \and
+  \ebrule{
+    \hypo{\Gamma \vdashT a : \U_n}
+    \infer1{\Gamma \vdashT t_n^n(a) = a : \U_n}
+  }
 \end{mathparsmall}
 
 \subsection{The system \ThyRussell : Russell with annotations}

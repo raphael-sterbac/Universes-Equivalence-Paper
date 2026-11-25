@@ -39,17 +39,18 @@ To lift derivations back to \ThyGAT{} and recover the context annotations, we de
 \begin{lemma}[Correctness of $\liftG{-}$]\label{embedding-correctness}
     The embedding $\liftG{-}$ preserves derivations:
     \begin{itemize}
-        \item If $\Gamma \vdashT J$ and $\Gamma' := \liftG{\Gamma}$, then $\Gamma' \vdashG \liftG[\Gamma']{J}$. 
-        \item If $\Delta \vdashT \alpha : \Gamma$ with $\Delta' := \liftG{\Delta}$, then $\vdashG \liftG[\Delta' \to \Gamma']{\alpha} : \Delta' \to \Gamma'$
+        \item If $\Gamma \vdashT$, then $\liftG{\Gamma} \vdashG$. More generally, if $\Gamma \vdashT J$ and $\vdashG \Gamma' = \liftG{\Gamma}$, then $\Gamma' \vdashG \liftG[\Gamma']{J}$ (with $\Gamma' \vdashG \liftG[\Gamma']{A} = \liftG[\liftG{\Gamma}]{A}$ for types, and similarly for terms).
+        \item If $\Delta \vdashT \alpha : \Gamma$ with $\vdashG \Gamma' = \liftG{\Gamma}$ and $\vdashG \Delta' = \liftG{\Delta}$, then $\vdashG \liftG[\Delta' \to \Gamma']{\alpha} : \Delta' \to \Gamma'$.
         \item For every $\Gamma \vdashT A\;\type$, we have $\Delta' \vdashG \liftG[\Gamma']{A}\,\liftG[\Delta' \to \Gamma']{\alpha} = \liftG[\Delta']{A[\alpha]}$.
         \item For every $\Gamma \vdashT a : A$, we have $\Delta' \vdashG \liftG[\Gamma']{a}\,\liftG[\Delta' \to \Gamma']{\alpha} = \liftG[\Delta']{a[\alpha]} : \liftG[\Delta']{A[\alpha]}$.
     \end{itemize}
 \end{lemma}
 \begin{proof}
-    We prove by mutual induction that $\liftG{-}$ preserves derivations and commutes with substitution.
+    We first prove the canonical case ($\Gamma' := \liftG{\Gamma}$, $\Delta' := \liftG{\Delta}$) by mutual induction, showing that $\liftG{-}$ preserves derivations and commutes with substitution.
 
     For $v_n$, we prove commutation by induction on $n$. 
     For binders, it follows from the functoriality equations of \ThyGAT{} and the identity $(\liftG[\Delta' \to \Gamma']{\alpha})^+ = \liftG[\Delta'.A' \to \Gamma'.\tilde{A}]{\alpha^+}$ where $\tilde{A} := \liftG[\Gamma']{A}$ and $A' := \liftG[\Delta']{A[\alpha]}$. Using this commutation property, the rules of \ThyTarski{} involving the meta-substitution translate directly to derivable rules in \ThyGAT{}.
+    The extension to arbitrary convertible contexts $\Gamma', \Delta'$ then follows by congruence and context conversion.
 \end{proof}
 
 \begin{lemma}[Left inverse modulo conversion]\label{embedding-leftinverse}
