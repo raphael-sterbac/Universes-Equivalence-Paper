@@ -86,7 +86,7 @@ We also need context extension, in the sense of the following.
     \ThyGAT has the following operations:
     \begin{align*}
         \Gamma : \ctx, A : \Type(\Gamma) &\vdashG \Gamma.A : \ctx\\
-        \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A) &\vdashG (\sigma,a) : \Delta  \rightarrow \Gamma.A\\
+        \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma, a: \Elem(\Gamma,A\sigma) &\vdashG (\sigma,a) : \Delta  \rightarrow \Gamma.A\\
         \Gamma : \ctx, A : \Type(\Gamma) &\vdashG \p_{\Gamma,A} : \Gamma.A \rightarrow \Gamma \\
         \Gamma : \ctx, A : \Type(\Gamma) &\vdashG \q_{\Gamma,A} : \Elem(\Gamma.A, A\p_{\Gamma,A})
     \end{align*}
@@ -125,7 +125,7 @@ we can recover the usual presentation of substitution, as defined in the followi
 Now, we can add logical structure via type connectives in our theory, starting with dependent products.
 
 \begin{definition}[Dependent product]
-     We require the following operations, corresponding to the dependent product with lambda abstraction and application:
+    \ThyGAT has the following operations:
      \begin{align*}
          \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A) &\vdashG \Pi(A,B) : \Type(\Gamma)\\
          \Gamma : \ctx, A : \Type(\Gamma), B : \Type(\Gamma.A), b : \Elem(\Gamma.A,B) &\vdashG \lambda(A,B,b) : \Elem(\Gamma,\Pi(A,B))\\
@@ -190,7 +190,7 @@ This fully explicit syntax is the usual way to present type theory with cumulati
     \end{minipage}
 \end{definition}
 
-It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes. In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire}, where they are described as requiring \textit{`full reflection''}. This presentation is intrinsically typed \cite{CWF-CCD,QIIT}, but in the following we will work with the corresponding extrinsic system, which is defined as a deductive system over raw terms (see \zcref{appendix:rules}). 
+It is important to note that those equations have been carefully chosen so that this presentation is equivalent to the \textit{implicit} Russell universes. In fact, those naturality and functoriality equations are already well-known and already appear in the work of \citet{assaf, thire}, where they are described as requiring \textit{`full reflection''}. This presentation is intrinsically typed \cite{CWF-CCD,QIIT}, but in the following we will work with the corresponding extrinsic system, which is defined as a deductive system over raw terms. 
 
 \subsection{Injectivity and no-confusion}
 
@@ -210,10 +210,10 @@ This gives the following theorems, that we will use extensively throughout the p
     The dependent product is injective in \ThyGAT: if $\Gamma \vdashG \Pi(A,B) = \Pi(A',B')$, then $\Gamma \vdashG A = A'$ and $\Gamma.A \vdashG B = B'$.
 \end{theorem}
 
-\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} \formline{Utils.v}{1019}{Uinj} Injectivity of universes]\label{univ-inj}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} Injectivity of universes]\label{univ-inj}
     If we have $\Gamma \vdashG \U_{n_0} = \U_{n_1}$ in \ThyGAT, then $n_0 = n_1$. 
 \end{theorem}
 
-\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} \formline{Utils.v}{1023}{noconfusion} No-Confusion]\label{no-confusion}
+\begin{theorem}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/Injectivity.agda} No-Confusion]\label{no-confusion}
     For any types $A$ and $B$, and any level $n$, the following judgement is not derivable in \ThyGAT: $\Gamma \vdashG \Pi(A,B) = \U_n$. 
 \end{theorem}

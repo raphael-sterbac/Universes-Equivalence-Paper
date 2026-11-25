@@ -1,0 +1,65 @@
+\section{Semantics and Initiality}\label{sec:semantics}
+
+We now show how the syntactic equivalences of Sections~\ref{sectionT0T1}--\ref{sectionT2T2'} allow us to interpret the implicit presentation \ThyPTS{} in semantic models of type theory, and to extend initiality.
+
+While we used the usual presentation with pairing $(\sigma, a)$ for \ThyGAT, giving interpretation in models is simpler using substitutions à la Ehrhard \cite{Ehrhard1988}. We define a variant \ThyE{} of \ThyGAT{} with operations $\cdot^+$ and $[\cdot]$:
+
+\begin{definition}[Ehrhard's substitutions]
+    The theory \ThyE{} is obtained from \ThyGAT{} by replacing pairing $(\cdot,\cdot)$ with operations $\cdot^+$ and $[\cdot]$:
+    \begin{align*}
+        \Gamma, \Delta : \ctx, A : \Type(\Gamma), \sigma : \Delta \rightarrow \Gamma &\vdashE \sigma^{+(A)} : \Delta.A\sigma \rightarrow \Gamma.A \\
+        \Gamma : \ctx, A : \Type(\Gamma), a : \Elem(\Gamma, A) &\vdashE [a]_A : \Gamma \rightarrow \Gamma.A
+    \end{align*}
+    \begin{gather*}
+        \Id^{+(A)} = \Id, \qquad
+        (\sigma\delta)^{+(A)} = \sigma^{+(A)}\,\delta^{+(A\sigma)}, \qquad
+        \p\,\sigma^{+(A)} = \sigma\,\p, \qquad
+        \q\,\sigma^{+(A)} = \q, \\
+        \p\,[a]_A = \Id, \qquad
+        \q\,[a]_A = a, \qquad
+        [a]_A\,\sigma = \sigma^{+(A)}\,[a\sigma]_{A\sigma}, \qquad
+        \p^{+(A)}\,[\q]_{A\p} = \Id.
+    \end{gather*}
+\end{definition}
+
+This presentation makes formalisation of models easier in an intensional metatheory, as the laws of usual type formers such as $\Pi$, $\Sigma$ use those primitives, whereas with pairing we would need to transport equality between types in the model.
+
+\begin{lemma}[Equivalence of \ThyGAT{} and \ThyE{}]\label{lem:gat-ehrhard}
+    The theories \ThyGAT{} and \ThyE{} are equivalent: their substitution operations are interdefinable and mutually inverse up to conversion.
+\end{lemma}
+\begin{proof}
+    We translate \ThyE{} into \ThyGAT{} by defining $\sigma^{+(A)} := (\sigma\p, \q)$ and $[a]_A := (\Id, a)$. All equations follow from the pairing laws of \ThyGAT{}. Conversely, we define $(\sigma, a) := \sigma^{+(A)}[a]_{A\sigma}$ and again all equations are directly derivable, for instance:
+    $\p(\sigma, a) = \p\,\sigma^{+(A)}\,[a]_{A\sigma} = \sigma\,\p\,[a]_{A\sigma} = \sigma$.
+    Both round-trips reduce to the identity up to conversion.
+\end{proof}
+
+Any derivation is finite and only refers to a finite number of universe levels. Hence, we will interpret them in models with a bounded universe hierarchy.
+
+\begin{definition}[Model]
+    A \emph{model of level $N$} is a category with families in Ehrhard's presentation, equipped with dependent products and a cumulative Tarski hierarchy $\U_0, \dots, \U_N$ with decoding $T_n$, codes $\Pi^n, \U_m^n$, and lifts $t_m^n$.
+\end{definition}
+
+We can define an interpretation for expressions of \ThyE{} in a given model $\mathcal{M}$ \cite{Hofmann1997, CWF-CCD, noteGAT}. We can prove soundness for this interpretation by induction, which composes with our equivalences ($\ThyPTS \simeq \ThyRussell \simeq \ThyTarski \simeq \ThyGAT \simeq \ThyE$) to give the following interpretation result.
+
+\begin{theorem}[Semantics of \ThyPTS{}]\label{thm:russell-semantics}
+    For every model $\mathcal{M}$ of level $N \in \bN$, every derivable judgment of \ThyPTS{} bounded by level $N$ has a unique denotation in $\mathcal{M}$ via \ThyE{}, independently of the choice of lift, and such that convertible contexts, types, and terms have equal denotations.
+\end{theorem}
+\begin{proof}
+    Existence follows by lifting a judgment along our equivalences and soundness of the semantics. For uniqueness, two lifts of the same judgment have convertible contexts, lifted types and terms in \ThyE{}, so by soundness they have the same denotation. Finally, lifting a conversion judgment in \ThyPTS{} gives an equality in \ThyE{}, with a common denotation.
+\end{proof}
+
+A morphism of models consists of maps on contexts, substitutions, types, and terms which preserve every operation. The initial model for this notion of morphism is the term model $\mathcal{I}_N$ of \ThyE{} (at a level $N \in \bN$), whose types and terms correspond to the syntactic types and terms of \ThyE{}, paired with their contexts and quotiented by the equations \cite{Cartmell, CWF-CCD, Brunerie}.
+
+\begin{theorem}[Initiality]\label{thm:initiality}
+    For every $N \in \bN$, $\mathcal{I}_N$ is initial i.e. for every model $\mathcal{M}$ of level $N$, there exists a unique morphism $\mathcal{I}_N \to \mathcal{M}$, given by the interpretation map.
+\end{theorem}
+\begin{proof}
+    Existence is obtained by interpreting representatives, and soundness guarantees that it does not depend on this choice. For uniqueness, an induction shows that two morphisms $\mathcal{I}_N \to \mathcal{M}$ agree on the class of every derivable context, type, term, and substitution.
+\end{proof}
+
+This means that through our equivalences, the elements of $\mathcal{I}_N$ correspond bijectively to derivable judgments of \ThyPTS{} modulo conversion. In the auto-formalisation, we instantiated \zcref{thm:russell-semantics} in three concrete models.
+\begin{itemize}
+    \item \emph{Iterative sets.} Following \cite{Gylterud2018, aczel}, we interpret types as families of iterative sets and $\U_n$ is the set $V_n$ of iterative sets at meta-level $n$. Here the universe lift $V_m \to V_n$ is not the identity. This illustrates that it is crucial to interpret from a theory with Tarski universes, as a direct interpretation of \ThyPTS{} would otherwise have to choose lifts and prove coherence.
+    \item \emph{Univalent posets.} We give an interpretation in the category with families of fibrant types on finite posets \cite{Coquand2026Unit} (with fibrations given by relative contractibility), equipped with one universe $\U_0$ closed under $\Pi$ with strict decoding $T(\ulcorner A \urcorner) = A$, natural in substitutions.
+    \item \emph{Simplicial sets.} On simplicial sets, the classifier consists of horn-filling operations, and the fibration structure of $\mathsf{El}$ is obtained by turning horn fillers into box fillers and back. We take two universes $\U_0 \subset \U_1$ of horn-filling operations, with inclusion $\iota : \U_0 \rightarrow \U_1$, and the code-map category with families: a type over $\Gamma$ is a map $A : \Gamma \rightarrow \U_1$, its terms are the sections of $\mathsf{El}_1$ pulled back along $A$. The decoding is defined as $T(a) := \iota \circ a$ and its strictness follows from horn-to-box filling commuting along monomorphisms.
+\end{itemize}

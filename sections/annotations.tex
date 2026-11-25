@@ -1,4 +1,4 @@
-\section{Unannotated syntax (\ThyRussell and \ThyPTS)}\label{sectionT2T2'}
+\subsection{Unannotated syntax (\ThyRussell and \ThyPTS)}\label{sectionT2T2'}
 
 Finally, we prove our last equivalence result between \ThyRussell and \ThyPTS, relating
 annotated and unannotated syntax. Concretely, the target theory \ThyPTS is the closest we can
@@ -99,7 +99,7 @@ We now state and prove the main lemma of this section by structural induction on
     \begin{itemize}
         \item \underline{Conversion join:} We have $\Gamma \vdashR \Pi(C_0, D_0) = \Pi(C_1, D_1)$ and $\Gamma \vdashR c_0 = c_1 : \Pi(C_0, D_0)$. By $\Pi$-injectivity, $\Gamma \vdashR C_0 = C_1$ and $\Gamma.C_0 \vdashR D_0 = D_1$. \zcref{lem:join-diag} on the join for $a_0, a_1$ gives $\Gamma \vdashR a_0 = a_1 : C_0$, and congruence of $\app$ concludes.
         \item \underline{Product join:} We have $L = \Pi(A, L')$ with $\Gamma \vdashR \Pi(C_i, D_i) = \Pi(A, B_i)$ and $\Gamma.A \vdashR \JoinTy(B_0, B_1, L') \leadsto (\coe_{B_0}, \coe_{B_1})$. By $\Pi$-injectivity, $\Gamma \vdashR C_i = A$ and $\Gamma.C_i \vdashR D_i = B_i$. In particular, $\Gamma \vdashR C_0 = C_1$, so \zcref{lem:join-diag} again gives $\Gamma \vdashR a_0 = a_1 : A$. Applying $\Gamma \vdashR \coe_0(c_0) = \coe_1(c_1) : \Pi(A, L')$ to $a_0$, using the $\beta$-computation rule for coercions on both sides, and congruence of $\app$ gives: 
-        \[\Gamma \vdashR \coe_{B_0[a_0]}(u_0) = \coe_{B_1[a_0]}(u_1) : L'[a_0],\]
+        $\Gamma \vdashR \coe_{B_0[a_0]}(u_0) = \coe_{B_1[a_0]}(u_1) : L'[a_0]$
         which is a join for $B_0[a_0]$ and $B_1[a_0]$, and hence for $D_0[a_0]$ and $D_1[a_1]$.
     \end{itemize}
 \end{proof}
@@ -138,5 +138,5 @@ However to do so, we crucially need to rely on the full normalisation result, as
     
 \begin{example}
         We have two derivations : $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_n)$ and $t :\U_n \vdashP \lambda \,x.x : \Pi(\U_n,\U_p)$, which are not convertible when $n<p$.
-        Then we can derive the same judgement from those two premises: \[t :\U_n \vdashP (\lambda \,y.t) \; (\lambda \,x.x) : \U_n\]
+        Then we can derive the same judgement from those two premises: $t :\U_n \vdashP (\lambda \,y.t) \; (\lambda \,x.x) : \U_n$
 \end{example}

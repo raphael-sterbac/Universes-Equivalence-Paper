@@ -3,8 +3,7 @@
 \subsection{Implicit presentations}
 
 In this section, we introduce the more implicit presentations of type theory, which we will prove equivalent to \ThyGAT.
-
-All those other presentations will have \emph{implicit substitutions}, meaning that it is defined as a meta-operation rather than as an operation of the theory.
+All those systems will have \emph{implicit substitutions}, meaning that it is defined as a meta-operation rather than as an operation of the theory.
 
 More precisely, a substitution is a map $\alpha : \bN \to \mathsf{Tm}$ assigning a raw term to each de Bruijn index, with action $A[\alpha]$ and $a[\alpha]$ defined inductively (see \zcref{appendix:rules}). We define: 
 \begin{align*}
@@ -18,7 +17,7 @@ More precisely, a substitution is a map $\alpha : \bN \to \mathsf{Tm}$ assigning
     e\p^+ &:= e[\mathsf{wk}^+], &
     e[a] &:= e[(\mathsf{id}, a)].
 \end{align*}
-Typing $\Delta \vdash \alpha : \Gamma$ and conversion $\Delta \vdash \alpha = \alpha' : \Gamma$ of simultaneous substitutions are defined inductively by:
+Typing $\Delta \vdash \alpha : \Gamma$ and conversion $\Delta \vdash \alpha = \alpha' : \Gamma$ are defined by:
 
 \begin{mathparsmall}
   \ebrule{
@@ -50,9 +49,7 @@ The theory \ThyTarski is the same deductive system as \ThyGAT, but without conte
 A main goal of this paper is to relate \ThyTarski to the implicit formulation \textit{à la Russell} of cumulative universes denoted with \ThyRussell.
 The latter conflates types and terms, with implicit inclusion between universes. 
 This system cannot be formulated algebraically, as this would involve adding a sort equation and a stratification of the sort of types $\Type_n$ which we would need to be included in each other.
-
-Both \ThyTarski and \ThyRussell have dependent products, lambda abstraction and application, described in the same way, with the
-following rules.
+Both \ThyTarski and \ThyRussell have dependent products, lambda abstraction and application, described with the following rules.
 
 \begin{figure}[H]
     \centering
@@ -245,18 +242,16 @@ is expressed by asking for the proper inclusion of universes : if $\Gamma \vdash
 \end{figure}
 
 Finally, we also consider a system \ThyPTS, which removes redundant type annotations in functional application
-and lambda abstraction from \ThyRussell. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ become $c \; a$ and $\lambda_{x:A} b$.
+and lambda abstraction from \ThyRussell. Thus, $\app(A,B,c,a)$ and $\lambda(A,B,b)$ become $c \; a$ and $\lambda(A,b)$.
 This system is closer to the practical syntax of type theory, inherited from the lambda calculus,
 and often referred to as the "pure type system" presentation (PTS).
-
-
-For a full and extensive description of the systems, please refer to \zcref{appendix:rules}.
+For a full description of the systems, please refer to \zcref{appendix:rules}.
 
 \subsection{Forgetful maps}
 
 Now, we relate the previously defined theories, by exhibiting forgetful translations from the more explicit presentations to the less explicit ones. All those maps are defined over raw untyped terms, and we will prove that they preserve derivations.
 
-First, we define a forgetful map $\eraseT{\cdot}$ from \ThyGAT{} to \ThyTarski{} which makes substitutions implicit by interpreting explicit substitutions of \ThyGAT{} as meta-level simultaneous substitutions on de Bruijn indices.
+First, we define a forgetful map $\eraseT{\cdot}$ from \ThyGAT{} to \ThyTarski{} which makes substitutions implicit by interpreting explicit substitutions of \ThyGAT{} as meta-level substitutions.
 
 \begin{definition}
     We define $\eraseT{\cdot}$ by structural recursion on the raw syntax of \ThyGAT{} (acting homomorphically on $\Pi, \lambda, \app, T_n, t_m^n, \Pi^n$):

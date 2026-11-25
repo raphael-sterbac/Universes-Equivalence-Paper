@@ -1,4 +1,4 @@
-\section{Tarski and Russell universes (\ThyTarski and \ThyRussell)}\label{sectionT1T2}
+\subsection{Tarski and Russell universes (\ThyTarski and \ThyRussell)}\label{sectionT1T2}
 
 We now prove the main result of the paper : equivalence of Tarski-style and Russell-style universes i.e. of \ThyTarski and \ThyRussell.
 All the results of this section have been completely formalised \textit{by hand} in Rocq.
@@ -45,10 +45,12 @@ We also need the following lemma, which will allow us to modify derivations give
 \end{lemma}
 
 Now, we would want to state the main result, by adapting the arguments of \citet{Streicher}. One could try to prove the
-following statement:\\
+following statement:
 
+\vspace{0.5em}
 \textbf{Lemma.} If we have $\Gamma \vdashT u_0 : A_0$ and $\Gamma \vdashT u_1 : A_1$ such that $\eraseR{u_0} = \eraseR{u_1}$
-in \ThyRussell, then necessarily they are convertible i.e. $\Gamma \vdashT A_0 = A_1$ and $\Gamma \vdashT u_0 = u_1 : A_0$\\
+in \ThyRussell, then necessarily they are convertible i.e. $\Gamma \vdashT A_0 = A_1$ and $\Gamma \vdashT u_0 = u_1 : A_0$
+\vspace{0.5em}
 
 However, this fails when $u_0$ and $u_1$ are codes in different universes. For instance, we have $\Gamma \vdashT \U_m^n : \U_n$ and $\Gamma \vdashT \U_m^l : \U_l$
 which have the same erasure $\eraseR{\U_m^n} = \eraseR{\U_m^l} = \U_m$, but are not convertible (at least if $n \neq l$). Therefore,
@@ -112,8 +114,7 @@ Even with this generalised lemma, we would get stuck in the proof for the case o
 whose erasure is $\eraseR{A} = \eraseR{a}$, then we cannot deduce much on $A$ itself as it could well be any type.
 Nevertheless, we still know that $\Gamma \vdashR A : \U_n$ holds in Russell-style because it is the same syntactic term as $a$. This should indicate that $A$ is a small type, i.e. a decoded type, and
 in this setting we will prove that $\Gamma \vdashT A = T_n(a)$.
-
-Thus, we shall prove the following lemma, which is one of the most technical result of this paper. 
+Thus, we shall prove the following lemma. 
 
 \begin{lemma}[\agdalink{https://github.com/coquand/domain-semantics/blob/main/ERT/UniquenessTermPartial.agda} \formline{Equivalence.v}{813}{eraseinjty}] \label{mainuniverse}
     In \ThyTarski, we have:
@@ -149,14 +150,10 @@ Thus, we shall prove the following lemma, which is one of the most technical res
     We prove the property by mutual induction on $A$ and $u_0$, proving the three statements at the same time. For each of the cases of
     the induction, we need a "catch-up" lemma which inverts the erasure hypothesis. Concretely the issue is that we cannot 
     deduce from $\eraseR{u_1} = \Pi(A,B)$ that $u_1$ is a dependent product, as it could well be the decoding of a code $T_n(\Pi^n(a,b))$, or
-    even a decoding of a lift $T_n(t_m^n(a))$. To solve this, we need to do another induction on $u_1$ for each case.
-
-    We now present some of the key cases of the proof.\\
-
-    \textcolor{red}{TODO: Check error in the following}
+    even a decoding of a lift $T_n(t_m^n(a))$. To solve this, we need to do another induction on $u_1$ for each case. We present key cases of the proof.
 
     \textit{Lambda abstraction.} If $u_0 = \lambda(C_0,B_0,b_0)$, then we necessarily have $\Gamma \vdashT A_0 = \Pi(C_0,B_0)$,
-        and by inversion, the derivation $\Gamma \vdashT u_0 : A_0$ looks like :
+        and by inversion, the derivation $\Gamma \vdashT u_0 : A_0$ looks like:
 
     \begin{mathparsmall}
       \ebrule{
@@ -170,26 +167,26 @@ Thus, we shall prove the following lemma, which is one of the most technical res
 
     \begin{itemize}
         \item \underline{First case:} $u_1 = \lambda(C_1, B_1, b_1)$ with $\eraseR{C_1} = \eraseR{C_0}$, $\eraseR{B_1} = \eraseR{B_0}$, $\eraseR{b_1} = \eraseR{b_0}$.
-    Also, by inversion $\Gamma \vdashT u_1 : A_1$ is necessarily of the same shape. 
+    Also, by inversion $\Gamma \vdashT u_1 : A_1$ is necessarily of the same shape, with $\Gamma \vdashT A_1 = \Pi(C_1,B_1)$.
     Using the induction hypothesis on $C_0$ with $C_1$, we get $\Gamma \vdashT C_0 = C_1$.
-    Then, by \zcref{Transform} we get a derivation
-    $\Gamma,C_0 \vdashT b_1 : B_1$. Now we can apply the induction hypothesis on $b_0$ with $b_1$, and get two cases. 
-    
-    In the first case, we get directly derivations $\Gamma.C_0 \vdashT b_1 = b_0 : B_0$ and $\Gamma.C_0 \vdashT B_0 = B_1$,
-    and using congruence equations we obtain the desired $\Gamma \vdashT u_0 = u_1 : A_0$.
-    
-    In the second case, we get $\Gamma \vdashT A_0 = \U_{n_0}$, from which we deduce $\Gamma \vdashT \Pi(C_0,B_0) = \U_{n_0}$,
-    which is a contradiction by \zcref{no-confusion}.
+    Then, by \zcref{Transform}, we get derivations $\Gamma.C_0 \vdashT B_1 \; \type$ and $\Gamma.C_0 \vdashT b_1 : B_1$.
+    Applying the induction hypothesis on $B_0$ with $B_1$ yields $\Gamma.C_0 \vdashT B_0 = B_1$, and applying it on $b_0$ with $b_1$ gives two cases.
+
+    In the first case, we directly get $\Gamma.C_0 \vdashT b_0 = b_1 : B_0$.
+
+    In the second case, we get $\Gamma.C_0 \vdashT B_0 = \U_{n_0}$, $\Gamma.C_0 \vdashT B_1 = \U_{n_1}$, and convertible terms
+    $\Gamma.C_0 \vdashT v_0 = v_1 : \U_k$ lifting to $b_0$ and $b_1$.
+    Since $\Gamma.C_0 \vdashT B_0 = B_1$, transitivity gives $\Gamma.C_0 \vdashT \U_{n_0} = \U_{n_1}$, hence $n_0 = n_1$ by injectivity of universes,
+    and therefore $\Gamma.C_0 \vdashT b_0 = b_1 : B_0$ by congruence and transitivity.
+
+    In both cases, using congruence equations for $\Pi$ and $\lambda$, we obtain the desired $\Gamma \vdashT A_0 = A_1$ and $\Gamma \vdashT u_0 = u_1 : A_0$.
 
     \item \underline{Second case:} $u_1 = t_n^m(a)$, and we will show that this case is not possible.
-        Indeed, we thus have $A_1 = \U_m$ and $\eraseR{u_1} = \eraseR{a} = \eraseR{u_0}$ and we can apply the induction hypothesis
-        on $a$, and in each case we obtain either $\Gamma \vdashT A_0 = \U_m$ or $\Gamma \vdashT A_0 = \U_{n_0}$, which
-        are absurd because of \zcref{no-confusion}.
+        By inversion, we have $\Gamma \vdashT A_1 = \U_m$ and $\Gamma \vdashT a : \U_n$.
+        Since $\eraseR{u_1} = \eraseR{a} = \eraseR{u_0}$, we can apply the inner induction hypothesis on $a$,
+        and in each case we obtain either $\Gamma \vdashT A_0 = \U_n$ or $\Gamma \vdashT A_0 = \U_{n_0}$,
+        which contradict \zcref{no-confusion} since $\Gamma \vdashT A_0 = \Pi(C_0,B_0)$.
     \end{itemize}
-
-    The case of lambda abstraction illustrated the main arguments used, and how no-confusion plays an 
-    essential role to our arguments. However, in more complicated cases, we cannot always eliminate lifting
-    cases.\\
 
     \textit{Code for a universe.} If $u_0$ is a code for a universe, then by inversion :
     \begin{mathparsmall}
@@ -258,7 +255,7 @@ Now we prove the following theorem, stating the formal equivalence between the t
     Uniqueness up to conversion follows directly from the previous lemma. We have to construct the derivation 
     by induction on the rules of \ThyRussell, making an extensive use of the previous lemma for rules with two premises. Indeed,
     when using the induction hypothesis on two premises, we need to make sure that the same types have 
-    the same translations. To illustrate this, we detail the case of the product.\\
+    the same translations. To illustrate this, we detail the case of the product.
 
     \textit{Dependent Product.} If the last rule applied in \ThyRussell is :
     \begin{mathparsmall}
